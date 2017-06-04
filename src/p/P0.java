@@ -7,7 +7,7 @@ public class P0 extends AbstractPacket {
 	@PacketField
 	private final int id=0;
 	@PacketField
-	String username;
+	public String username;
 	@PacketField
-	int protocolVersion;
+	public int protocolVersion;
 }

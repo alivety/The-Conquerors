@@ -3,8 +3,11 @@ package io.github.alivety.conquerors;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 
@@ -20,6 +23,8 @@ import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPL;
 
 public class Main {
+	public static final int PRO_VER=0;
+	public static final Random random=new Random();
 	public static Logger out;
 	private static Map<String, Object> asMap(Object... args) {
 	    Map<String, Object> argMap = new HashMap<String, Object>();
@@ -67,7 +72,10 @@ public class Main {
 	}
 	
 	public static void setupLogger(ConquerorsApp app) {
-		out=LogManager.getLogger(app.getClass().getSimpleName());
+		out=LogManager.getLogger(app.getClass().getSimpleName().toLowerCase());
+		out.info("setup");
+		out.info(System.getProperties());
+		out.info(System.getenv());
 	}
 	
 	public static AbstractPacket decode(ByteBuffer buf) {
@@ -95,5 +103,23 @@ public class Main {
 			Main.handleError(e);
 			return null;
 		}
+	}
+	
+	public static String uuid(String object) {
+		return object+"["+Main.random.nextInt()+"]";
+	}
+	
+	public static String formatChatMessage(String sender,String msg) {
+		SimpleDateFormat df=new SimpleDateFormat("k:m");
+		String date=df.format(new Date());
+		if (sender==null) {
+			return msg+" ("+date+")";
+		} else {
+			return sender+": "+msg+" ("+date+")";
+		}
+	}
+	
+	public static String formatChatMessage(String msg) {
+		return formatChatMessage(null,msg);
 	}
 }

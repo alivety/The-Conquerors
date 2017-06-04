@@ -7,5 +7,5 @@ public class P8 extends AbstractPacket {
 	@PacketField
 	private final int id=8;
 	@PacketField
-	private String message;
+	public String message;
 }
