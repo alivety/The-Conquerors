@@ -1,5 +1,7 @@
 package io.github.alivety.conquerors.server;
 
+import static io.github.alivety.conquerors.event.EventPriority.SYS;
+
 import io.github.alivety.conquerors.event.SubscribeEvent;
 import io.github.alivety.conquerors.events.LoginRequestEvent;
 import io.github.alivety.conquerors.events.PlayerChatEvent;
@@ -8,11 +10,6 @@ import io.github.alivety.conquerors.events.PlayerMoveUnitsEvent;
 import io.github.alivety.conquerors.events.PlayerMovedEvent;
 import io.github.alivety.conquerors.events.WindowRequestedEvent;
 import io.github.alivety.conquerors.events.WindowSlotSelectedEvent;
-
-import static io.github.alivety.conquerors.event.EventPriority.*;
-
-import io.github.alivety.conquerors.Main;
-import io.github.alivety.conquerors.event.Event;
 
 public class ServerEventSubscriber {
 	@SubscribeEvent(SYS)
