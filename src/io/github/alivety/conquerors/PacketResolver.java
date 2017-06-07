@@ -1,14 +1,40 @@
 package io.github.alivety.conquerors;
 
-import java.util.HashMap;
-
 import javax.annotation.Nonnull;
 
 import io.github.alivety.conquerors.event.Event;
-import io.github.alivety.conquerors.events.*;
+import io.github.alivety.conquerors.events.EntityMovedEvent;
+import io.github.alivety.conquerors.events.EntityOwnershipChangedEvent;
+import io.github.alivety.conquerors.events.EntityRemovedEvent;
+import io.github.alivety.conquerors.events.EntityResizedEvent;
+import io.github.alivety.conquerors.events.EntitySpawnEvent;
+import io.github.alivety.conquerors.events.LoginRequestEvent;
+import io.github.alivety.conquerors.events.LoginSuccessEvent;
+import io.github.alivety.conquerors.events.PlayerChatEvent;
+import io.github.alivety.conquerors.events.PlayerDisconnectEvent;
+import io.github.alivety.conquerors.events.PlayerListUpdatedEvent;
+import io.github.alivety.conquerors.events.PlayerMoveUnitsEvent;
+import io.github.alivety.conquerors.events.PlayerMovedEvent;
+import io.github.alivety.conquerors.events.WindowOpenedEvent;
+import io.github.alivety.conquerors.events.WindowRequestedEvent;
+import io.github.alivety.conquerors.events.WindowSlotSelectedEvent;
 import io.github.alivety.conquerors.server.Player;
 import io.github.alivety.ppl.AbstractPacket;
-import p.*;
+import p.P0;
+import p.P1;
+import p.P10;
+import p.P11;
+import p.P12;
+import p.P14;
+import p.P15;
+import p.P16;
+import p.P17;
+import p.P18;
+import p.P4;
+import p.P5;
+import p.P6;
+import p.P8;
+import p.P9;
 
 public class PacketResolver {
 	public Event resolve(@Nonnull AbstractPacket p,Player client) throws IllegalArgumentException, IllegalAccessException {

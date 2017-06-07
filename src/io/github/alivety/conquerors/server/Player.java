@@ -7,13 +7,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.google.common.base.Throwables;
-
 import io.github.alivety.conquerors.Main;
 import io.github.alivety.ppl.AbstractPacket;
-import p.P10;
-import p.P18;
-import p.P8;
 
 public class Player extends Unit {
 	private final SocketChannel ch;
@@ -42,6 +37,10 @@ public class Player extends Unit {
 		}
 	}
 	
+	public void packet(int pid,Object...fields) {
+		this.write(Main.createPacket(pid, fields));
+	}
+	
 	public String username() {
 		return username;
 	}
@@ -62,5 +61,18 @@ public class Player extends Unit {
 	
 	public String toString() {
 		return username()+" - "+spatialID;
+	}
+	
+	public String[] getUnitIDs() {
+		return unitsSpatialID.toArray(new String[unitsSpatialID.size()]);
+	}
+	
+	public Unit[] getUnits() {
+		String[] ids=this.getUnitIDs();
+		Unit[] units=new Unit[ids.length];
+		for (int i=0;i<units.length;i++) {
+			units[i]=server.unitBySpatialID(ids[i]);
+		}
+		return units;
 	}
 }

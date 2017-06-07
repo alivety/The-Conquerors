@@ -1,6 +1,5 @@
 package io.github.alivety.conquerors.events;
 
-import io.github.alivety.conquerors.Main;
 import io.github.alivety.conquerors.event.Cancelable;
 import io.github.alivety.conquerors.event.PRET;
 import io.github.alivety.conquerors.server.Player;

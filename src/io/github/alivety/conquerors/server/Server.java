@@ -1,5 +1,6 @@
 package io.github.alivety.conquerors.server;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
@@ -30,9 +31,13 @@ public class Server implements ConquerorsApp {
 	private HashMap<String,Unit> units=new HashMap<String,Unit>();
 	private Stack<Entry<Player,AbstractPacket>> packets=new Stack<Entry<Player, AbstractPacket>>();
 	public void go() {
-		Main.setupLogger(this);
+		try {
+			Main.setupLogger(this);
+		} catch (IOException e2) {
+			Main.handleError(e2);
+		}
 		Main.server=1;
-		Main.EVENT_BUS.subscribe(new ServerEventSubscriber());
+		Main.EVENT_BUS.subscribe(new ServerEventSubscriber(this));
 		Main.EVENT_BUS.bus(new DummyEvent());
 		try {
 			PPLServer server=new PPLServer().addListener(new SocketListener(){
@@ -80,7 +85,7 @@ public class Server implements ConquerorsApp {
 		}
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void registerPlayer(Player p) {
 		P0 p0=(P0) p.job();
 		if (p0.protocolVersion!=Main.PRO_VER) p.write(Main.createPacket(2, "You are running a different version of the game"));
@@ -91,8 +96,8 @@ public class Server implements ConquerorsApp {
 	    broadcast(Main.createPacket(4, "model","material",p.spatialID));
 	    broadcast(Main.createPacket(12, new Object[]{this.playerList()}));
 	    //p.write(Main.createPacket(5,p.spatialID,x,y,z));
-	    broadcast(Main.createPacket(9, Main.formatChatMessage(p.username+" has joined the game")));*/
-	}
+	    broadcast(Main.createPacket(9, Main.formatChatMessage(p.username+" has joined the game")));
+	}*/
 	
 	protected void disconnect(Player p) {
 		broadcast(Main.createPacket(11, p.spatialID));
@@ -129,6 +134,10 @@ public class Server implements ConquerorsApp {
 	
 	public void registerUnit(Unit unit) {
 		units.put(unit.getSpatialID(), unit);
+	}
+	
+	public Unit unregister(Unit unit) {
+		return units.remove(unit);
 	}
 	
 	private synchronized void push(Entry<Player,AbstractPacket> e) {

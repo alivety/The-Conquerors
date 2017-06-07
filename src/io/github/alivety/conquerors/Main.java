@@ -1,5 +1,6 @@
 package io.github.alivety.conquerors;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,7 +12,6 @@ import java.util.Random;
 import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.client.Client;
-import io.github.alivety.conquerors.event.Event;
 import io.github.alivety.conquerors.event.EventBus;
 import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.AbstractPacket;
@@ -41,7 +41,8 @@ public class Main {
 	    }
 	    return argMap;
 	  }
-	public static void main(String[]args) {
+	public static void main(String[]args) throws IOException {
+		out=Logger.getLogger("default");
 		Vector v1=Main.nv(50,674,23);
 		Vector v2=Main.nv(23,64,53);
 		System.out.println(v1 +"~"+v2+" = "+v1.distance(v2));
@@ -66,12 +67,16 @@ public class Main {
 	}
 	
 	public static void handleError(Throwable t) {
-		out.error(Throwables.getStackTraceAsString(t));
+		if (out!=null) {
+			out.error(Throwables.getStackTraceAsString(t));
+		} else {
+			t.printStackTrace(System.out);
+		}
 		ErrorDialog ed=new ErrorDialog("Unexpected system error", "An uncaught error occured", t);
 		ed.setVisible(true);
 	}
 	
-	public static void setupLogger(ConquerorsApp app) {
+	public static void setupLogger(ConquerorsApp app) throws IOException {
 		out=Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		out.info("setup");
 		out.info(System.getProperties());

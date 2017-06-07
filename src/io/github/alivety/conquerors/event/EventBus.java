@@ -5,11 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.reflect.TypeToken;
-import com.google.common.reflect.TypeToken.TypeSet;
 
 import io.github.alivety.conquerors.Main;
-import io.github.alivety.conquerors.server.Player;
-import io.github.alivety.ppl.AbstractPacket;
 
 public class EventBus {
 	private ListenerList listeners=new ListenerList();
@@ -77,7 +74,7 @@ public class EventBus {
 				if (!evt.isCanceled()) {
 					l.call(evt);
 				} else {
-					Main.out.debug("System-level listeners cannot act upon canceled events");
+					Main.out.debug("System-level "+l+" cannot act upon "+evt);
 				}
 			} else {
 				l.call(evt);
