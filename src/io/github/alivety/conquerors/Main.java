@@ -12,6 +12,7 @@ import com.google.common.base.Throwables;
 import io.github.alivety.conquerors.client.Client;
 import io.github.alivety.conquerors.event.Event;
 import io.github.alivety.conquerors.event.EventBus;
+import io.github.alivety.conquerors.event.PacketResolver;
 import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPL;
@@ -21,6 +22,7 @@ public class Main {
 	public static final Random random=new Random();
 	public static Logger out;
 	public static final EventBus EVENT_BUS=new EventBus();
+	public static int server=0;
 	private static Map<String, Object> asMap(Object... args) {
 	    Map<String, Object> argMap = new HashMap<String, Object>();
 	    for (int i = 0; i < args.length; i += 2) {
@@ -124,4 +126,6 @@ public class Main {
 	public static Vector nv(float x,float y,float z) {
 		return new Vector(x,y,z);
 	}
+
+	public static final PacketResolver resolver=new PacketResolver();
 }

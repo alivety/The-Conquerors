@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.alivety.conquerors.Main;
+import io.github.alivety.conquerors.server.Player;
+import io.github.alivety.ppl.AbstractPacket;
 
 public class EventBus {
 	private ListenerList listeners=new ListenerList();
@@ -61,6 +63,7 @@ public class EventBus {
 	}
 	
 	public void bus(Event evt) {
+		listeners.rebuild();
 		while (listeners.hasMore()) {
 			listeners.next().call(evt);
 		}

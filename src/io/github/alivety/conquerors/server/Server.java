@@ -16,6 +16,7 @@ import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.ConquerorsApp;
 import io.github.alivety.conquerors.Main;
+import io.github.alivety.conquerors.event.Event;
 import io.github.alivety.conquerors.event.SubscribeEvent;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPLServer;
@@ -29,6 +30,7 @@ public class Server implements ConquerorsApp {
 	private Stack<Entry<Player,AbstractPacket>> packets=new Stack<Entry<Player, AbstractPacket>>();
 	public void go() {
 		Main.setupLogger(this);
+		Main.server=1;
 		Main.EVENT_BUS.subscribe(this);
 		try {
 			PPLServer server=new PPLServer().addListener(new SocketListener(){
@@ -57,7 +59,12 @@ public class Server implements ConquerorsApp {
 			//long time=new Date().getTime();
 			while (has()) {
 				Entry<Player,AbstractPacket> e=pop();
-				e.getKey().handle(e.getValue());
+				try {
+					Event evt=Main.resolver.resolve(e.getValue(), e.getKey());
+					Main.EVENT_BUS.bus(evt);
+				} catch (IllegalAccessException e1) {
+					Main.handleError(e1);
+				}
 				Main.out.info(e.getKey()+": "+e.getValue());
 			}
 		}
