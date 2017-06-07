@@ -15,17 +15,17 @@ import p.P10;
 import p.P18;
 import p.P8;
 
-public class Player {
+public class Player extends Unit {
 	private final SocketChannel ch;
 	private final Server server;
 	private long created=new Date().getTime();
 	protected String username=null;
-	public String spatialID;
 	private int money,mpm=5;
 	private AbstractPacket job;
 	private boolean works=true;
 	private List<String> unitsSpatialID=new ArrayList<String>();
 	public Player(SocketChannel ch,Server server) {
+		super(server);
 		this.ch=ch;
 		this.server=server;
 	}
@@ -55,6 +55,7 @@ public class Player {
 			} else if (id==10) {
 				P10 p10=(P10)job;
 				server.broadcast(Main.createPacket(5, this.spatialID, p10.x, p10.y, p10.z));
+				this.teleport(Main.nv(p10.x, p10.y, p10.z));
 			} else if (id==13) {
 				server.disconnect(this);
 				works = false;
@@ -88,5 +89,19 @@ public class Player {
 	
 	public AbstractPacket job() {
 		return job;
+	}
+
+	@Override
+	public String getUnitType() {
+		return "player";
+	}
+
+	@Override
+	public String getOwnerSpatialID() {
+		return null;
+	}
+	
+	public String toString() {
+		return username()+" - "+spatialID;
 	}
 }

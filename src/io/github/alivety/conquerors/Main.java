@@ -1,7 +1,5 @@
 package io.github.alivety.conquerors;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,15 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.google.common.base.Throwables;
-import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.client.Client;
+import io.github.alivety.conquerors.event.Event;
+import io.github.alivety.conquerors.event.EventBus;
 import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPL;
@@ -26,6 +20,7 @@ public class Main {
 	public static final int PRO_VER=0;
 	public static final Random random=new Random();
 	public static Logger out;
+	public static final EventBus EVENT_BUS=new EventBus();
 	private static Map<String, Object> asMap(Object... args) {
 	    Map<String, Object> argMap = new HashMap<String, Object>();
 	    for (int i = 0; i < args.length; i += 2) {
@@ -45,6 +40,9 @@ public class Main {
 	    return argMap;
 	  }
 	public static void main(String[]args) {
+		Vector v1=Main.nv(50,674,23);
+		Vector v2=Main.nv(23,64,53);
+		System.out.println(v1 +"~"+v2+" = "+v1.distance(v2));
 		try {
 		Map<String, Object> arg=asMap(args);
 		System.setProperty("log4j.configurationFile","configuration.xml");
@@ -57,7 +55,7 @@ public class Main {
 			Client client=new Client();
 			client.go();
 		} else {
-			out=LogManager.getLogger("undefined");
+			out=Logger.getLogger("undefined");
 			throw new IllegalStateException("c-value must be either 0 or 1");
 		}
 		} catch (Exception e) {
@@ -72,7 +70,7 @@ public class Main {
 	}
 	
 	public static void setupLogger(ConquerorsApp app) {
-		out=LogManager.getLogger(app.getClass().getSimpleName().toLowerCase());
+		out=Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		out.info("setup");
 		out.info(System.getProperties());
 		out.info(System.getenv());
@@ -121,5 +119,9 @@ public class Main {
 	
 	public static String formatChatMessage(String msg) {
 		return formatChatMessage(null,msg);
+	}
+	
+	public static Vector nv(float x,float y,float z) {
+		return new Vector(x,y,z);
 	}
 }

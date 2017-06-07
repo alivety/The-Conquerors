@@ -4,16 +4,19 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Stack;
 
 import javax.swing.JOptionPane;
 
+import com.google.common.collect.Maps;
+
 import io.github.alivety.conquerors.ConquerorsApp;
 import io.github.alivety.conquerors.Main;
+import io.github.alivety.conquerors.event.SubscribeEvent;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPLServer;
 import io.github.alivety.ppl.SocketListener;
@@ -22,8 +25,11 @@ import p.P0;
 public class Server implements ConquerorsApp {
 	HashMap<SocketChannel,Player> lookup=new HashMap<SocketChannel,Player>();
 	private List<Player> players=new ArrayList<Player>();
+	private HashMap<String,Unit> units=new HashMap<String,Unit>();
+	private Stack<Entry<Player,AbstractPacket>> packets=new Stack<Entry<Player, AbstractPacket>>();
 	public void go() {
 		Main.setupLogger(this);
+		Main.EVENT_BUS.subscribe(this);
 		try {
 			PPLServer server=new PPLServer().addListener(new SocketListener(){
 				public void connect(SocketChannel ch) throws Exception {
@@ -34,7 +40,7 @@ public class Server implements ConquerorsApp {
 
 				public void read(SocketChannel ch, ByteBuffer msg) throws Exception {
 					AbstractPacket p=Main.decode(msg);
-					lookup.get(ch).handle(p);
+					Server.this.push(Maps.immutableEntry(lookup.get(ch), p));
 				}
 
 				public void exception(SocketChannel h, Throwable t) {
@@ -48,7 +54,12 @@ public class Server implements ConquerorsApp {
 		}
 		
 		while (true) {
-			long time=new Date().getTime();
+			//long time=new Date().getTime();
+			while (has()) {
+				Entry<Player,AbstractPacket> e=pop();
+				e.getKey().handle(e.getValue());
+				Main.out.info(e.getKey()+": "+e.getValue());
+			}
 		}
 	}
 	
@@ -60,18 +71,18 @@ public class Server implements ConquerorsApp {
 		}
 	}
 	
-	protected void registerPlayer(Player p) {
+	@SubscribeEvent
+	public void registerPlayer(Player p) {
 		P0 p0=(P0) p.job();
 		if (p0.protocolVersion!=Main.PRO_VER) p.write(Main.createPacket(2, "You are running a different version of the game"));
 	    if (Arrays.asList(this.playerList()).contains(p0.username)) p.write(Main.createPacket(2, "Someone with that username is already connected"));
-	    
-	    p.spatialID=Main.uuid("player");
+	    /*
 	    p.username=p0.username;
 	    p.write(Main.createPacket(1, p.spatialID));
 	    broadcast(Main.createPacket(4, "model","material",p.spatialID));
 	    broadcast(Main.createPacket(12, new Object[]{this.playerList()}));
 	    //p.write(Main.createPacket(5,p.spatialID,x,y,z));
-	    broadcast(Main.createPacket(9, Main.formatChatMessage(p.username+" has joined the game")));
+	    broadcast(Main.createPacket(9, Main.formatChatMessage(p.username+" has joined the game")));*/
 	}
 	
 	protected void disconnect(Player p) {
@@ -92,17 +103,34 @@ public class Server implements ConquerorsApp {
 		return names.toArray(new String[names.size()]);
 	}
 	
-	/*
-	private Stack<AbstractPacket> packets=new Stack<AbstractPacket>();
-	private synchronized void push(AbstractPacket p) {
-		packets.push(p);
+	public Unit unitBySpatialID(String spatialID) {
+		return units.get(spatialID);
 	}
 	
-	private synchronized AbstractPacket pop() {
+	public Player playerByUsername(String username) {	
+		Iterator<Player> iter=players.iterator();
+		while (iter.hasNext()) {
+			Player p=iter.next();
+			if (p.username()!=null) {
+				if (p.username.equals(username)) return p;
+			}
+		}
+		return null;
+	}
+	
+	public void registerUnit(Unit unit) {
+		units.put(unit.getSpatialID(), unit);
+	}
+	
+	private synchronized void push(Entry<Player,AbstractPacket> e) {
+		packets.push(e);
+	}
+	
+	private synchronized Entry<Player,AbstractPacket> pop() {
 		return packets.pop();
 	}
 	
 	private synchronized boolean has() {
 		return !packets.empty();
-	}*/
+	}
 }
