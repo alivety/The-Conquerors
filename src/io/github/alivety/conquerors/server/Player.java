@@ -42,47 +42,6 @@ public class Player extends Unit {
 		}
 	}
 	
-	public void handle(AbstractPacket p) {
-		if (!works) return;
-		try {
-			job=p;
-			int id=job.getPacketID();
-			if (id==0) {
-				server.registerPlayer(this);
-			} else if (id==8) {
-				P8 p8=(P8)job;
-				server.broadcast(Main.createPacket(9, Main.formatChatMessage(this.username, p8.message)));
-			} else if (id==10) {
-				P10 p10=(P10)job;
-				server.broadcast(Main.createPacket(5, this.spatialID, p10.x, p10.y, p10.z));
-				this.teleport(Main.nv(p10.x, p10.y, p10.z));
-			} else if (id==13) {
-				server.disconnect(this);
-				works = false;
-			} else if (id==14) {
-				//TODO windows
-			} else if (id==16) {
-				//TODO windows
-			} else if (id==18) {
-				P18 p18=(P18)job;
-				for (String s : p18.spatialID) {
-					if (!unitsSpatialID.contains(s)) {
-						write(Main.createPacket(9, Main.formatChatMessage("You attempted to control a unit that does not belong to you. SHAME!")));
-						return;
-					}
-					//TODO movement planning
-				}
-			}
-			else {
-				throw new IllegalArgumentException("Unknown packet "+p);
-			}
-		} catch (Exception e) {
-			works = false;
-			Main.out.error(Throwables.getStackTraceAsString(e));
-			server.disconnect(this);
-		}
-	}
-	
 	public String username() {
 		return username;
 	}

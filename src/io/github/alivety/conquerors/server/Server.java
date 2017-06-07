@@ -18,6 +18,7 @@ import io.github.alivety.conquerors.ConquerorsApp;
 import io.github.alivety.conquerors.Main;
 import io.github.alivety.conquerors.event.Event;
 import io.github.alivety.conquerors.event.SubscribeEvent;
+import io.github.alivety.conquerors.events.DummyEvent;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPLServer;
 import io.github.alivety.ppl.SocketListener;
@@ -31,7 +32,8 @@ public class Server implements ConquerorsApp {
 	public void go() {
 		Main.setupLogger(this);
 		Main.server=1;
-		Main.EVENT_BUS.subscribe(this);
+		Main.EVENT_BUS.subscribe(new ServerEventSubscriber());
+		Main.EVENT_BUS.bus(new DummyEvent());
 		try {
 			PPLServer server=new PPLServer().addListener(new SocketListener(){
 				public void connect(SocketChannel ch) throws Exception {

@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -47,7 +48,7 @@ public class Main {
 		try {
 		Map<String, Object> arg=asMap(args);
 		System.setProperty("log4j.configurationFile","configuration.xml");
-		int c=/*JOptionPane.showOptionDialog(null, "Are you hosting a server or playing the game?", "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)*/1;
+		int c=/*JOptionPane.showOptionDialog(null, "Are you hosting a server or playing the game?", "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)*/0;
 		if (arg.containsKey("server")) c=0;
 		if (c==0) {//Server
 			Server server=new Server();
@@ -124,6 +125,10 @@ public class Main {
 	
 	public static Vector nv(float x,float y,float z) {
 		return new Vector(x,y,z);
+	}
+	
+	public static List<Class<?>> getSuperclassesOf(Object target) {
+		return null;
 	}
 
 	public static final PacketResolver resolver=new PacketResolver();

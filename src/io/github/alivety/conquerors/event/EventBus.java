@@ -4,6 +4,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.reflect.TypeToken;
+import com.google.common.reflect.TypeToken.TypeSet;
+
 import io.github.alivety.conquerors.Main;
 import io.github.alivety.conquerors.server.Player;
 import io.github.alivety.ppl.AbstractPacket;
@@ -36,12 +39,12 @@ public class EventBus {
 					Main.handleError(e);
 				}
 			} else {
-				Main.out.debug(this+": "+evt+" not instance of "+this.evt);
+				Main.out.debug(this+": "+evt+" not instance of "+this.evt.getSimpleName());
 			}
 		}
 		
 		public String toString() {
-			return "EventListener[ctx="+context+"; method="+method+"; priority="+priority+"]";
+			return "EventListener[ctx="+context.getClass().getSimpleName()+"#"+method.getName()+"; priority="+priority+"]";
 		}
 	}
 	
@@ -53,24 +56,32 @@ public class EventBus {
 				Class<?>[] paramTypes=m.getParameterTypes();
 				if (paramTypes.length>1) throw new IllegalArgumentException("Event subscribers may only catch one event");
 				if (paramTypes.length<1) throw new IllegalArgumentException("Event subscribes must catch one event");
-				if (!((paramTypes[0].getSuperclass().equals(Event.class)) || paramTypes[0].equals(Event.class))) throw new IllegalArgumentException("Event subscribers must have a subclass of Event as the sole paramater");
+				
+				TypeToken<?> type=TypeToken.of(paramTypes[0]);
+				TypeToken<?> event=TypeToken.of(Event.class);
+				if (!type.getTypes().contains(event)) throw new IllegalArgumentException("Event subscribers must have a subclass of Event as the sole paramater");
 				SubscribeEvent a=m.getAnnotation(SubscribeEvent.class);
 				list.add(new EventListener(a.value(),target,m,(Class<Event>) paramTypes[0]));
 			}
 		}
 		listeners.expand(list);
+		Main.out.debug(listeners.size()+" listeners");
 		Main.out.debug(listeners);
 	}
 	
 	public void bus(Event evt) {
 		listeners.rebuild();
 		while (listeners.hasMore()) {
-			listeners.next().call(evt);
+			EventListener l=listeners.next();
+			if (l.priority==5) {
+				if (!evt.isCanceled()) {
+					l.call(evt);
+				} else {
+					Main.out.debug("System-level listeners cannot act upon canceled events");
+				}
+			} else {
+				l.call(evt);
+			}
 		}
-		if (evt.isCanceled()) {
-			Main.out.debug(evt+" is canceled");
-			return;
-		}
-		evt.post();
 	}
 }

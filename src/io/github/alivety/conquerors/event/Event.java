@@ -18,4 +18,7 @@ public class Event {
 	}
 	
 	public void post() {}
+	public final String toString() {
+		return this.getClass().getSimpleName()+"[canceled="+isCanceled+"]";
+	}
 }

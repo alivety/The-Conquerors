@@ -51,4 +51,8 @@ public class ListenerList {
 	public void rebuild() {
 		this.rebuild(Arrays.asList(orginal));
 	}
+	
+	public int size() {
+		return orginal.length;
+	}
 }

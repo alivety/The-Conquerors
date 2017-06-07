@@ -60,9 +60,7 @@ public class PacketResolver {
 		} else if (id==18) {
 			P18 p18=(P18)p;
 			return new PlayerMoveUnitsEvent(client,p18.spatialID,p18.x,p18.y,p18.z);
-		}
-		
-		else {
+		} else {
 			throw new NullPointerException("No packet with id="+id);
 		}
 	}
