@@ -7,5 +7,5 @@ public class P15 extends AbstractPacket {
 	@PacketField
 	private final int id=15;
 	@PacketField
-	private String[] slots;
+	public String[] slots;
 }

@@ -7,5 +7,7 @@ public class P6 extends AbstractPacket {
 	@PacketField
 	private final int id=6;
 	@PacketField
-	private float x,y,z;
+	public String spatialID;
+	@PacketField
+	public float x,y,z;
 }

@@ -14,14 +14,17 @@ public class PlayerChatEvent extends PRET implements Cancelable {
 		this.message=message;
 	}
 	
+	public PlayerChatEvent(String message) {
+		this.message=message;
+	}
+	
 	@Override
 	public void post() {
-		if (Main.server==0) {
+		if (client==null) {//client side
 			
-		} else {
+		} else {//server side
 			
 		}
-		
 		//TODO server-side and client-side
 	}
 	

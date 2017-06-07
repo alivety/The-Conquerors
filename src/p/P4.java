@@ -7,5 +7,5 @@ public class P4 extends AbstractPacket {
 	@PacketField
 	private final int id=4;
 	@PacketField
-	private String model,material,spatialId;
+	public String model,material,spatialId;
 }

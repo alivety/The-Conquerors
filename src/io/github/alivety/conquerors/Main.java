@@ -12,7 +12,6 @@ import com.google.common.base.Throwables;
 import io.github.alivety.conquerors.client.Client;
 import io.github.alivety.conquerors.event.Event;
 import io.github.alivety.conquerors.event.EventBus;
-import io.github.alivety.conquerors.event.PacketResolver;
 import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PPL;

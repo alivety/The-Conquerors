@@ -7,5 +7,5 @@ public class P12 extends AbstractPacket {
 	@PacketField
 	private final int id=12;
 	@PacketField
-	private String[] list;
+	public String[] list;
 }

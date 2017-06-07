@@ -7,5 +7,5 @@ public class P1 extends AbstractPacket {
 	@PacketField
 	private final int id=1;
 	@PacketField
-	String spatialID;
+	public String spatialID;
 }

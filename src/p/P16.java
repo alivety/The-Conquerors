@@ -7,7 +7,7 @@ public class P16 extends AbstractPacket {
 	@PacketField
 	private final int id=16;
 	@PacketField
-	private String spatialID;
+	public String spatialID;
 	@PacketField
-	private int slot;
+	public int slot;
 }
