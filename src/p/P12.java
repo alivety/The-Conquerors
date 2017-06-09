@@ -5,7 +5,7 @@ import io.github.alivety.ppl.PacketField;
 
 public class P12 extends AbstractPacket {
 	@PacketField
-	private final int id=12;
+	private final int id = 12;
 	@PacketField
 	public String[] list;
 }

@@ -7,46 +7,48 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import io.github.alivety.conquerors.Main;
+import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.ppl.AbstractPacket;
 
 public class Player extends Unit {
 	private final SocketChannel ch;
 	private final Server server;
-	private long created=new Date().getTime();
-	protected String username=null;
-	private int money,mpm=5;
+	private final long created = new Date().getTime();
+	protected String username = null;
+	private int money;
+	private final int mpm = 5;
 	private AbstractPacket job;
-	private boolean works=true;
-	private List<String> unitsSpatialID=new ArrayList<String>();
-	public Player(SocketChannel ch,Server server) {
+	private final boolean works = true;
+	private final List<String> unitsSpatialID = new ArrayList<String>();
+
+	public Player(final SocketChannel ch, final Server server) {
 		super(server);
-		this.ch=ch;
-		this.server=server;
+		this.ch = ch;
+		this.server = server;
 	}
-	
-	private void write(ByteBuffer buf) throws IOException {
-		ch.write(buf);
+
+	private void write(final ByteBuffer buf) throws IOException {
+		this.ch.write(buf);
 	}
-	
-	public void write(AbstractPacket p) {
+
+	public void write(final AbstractPacket p) {
 		try {
 			this.write(Main.encode(p));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Main.handleError(e);
 		}
 	}
-	
-	public void packet(int pid,Object...fields) {
+
+	public void packet(final int pid, final Object... fields) {
 		this.write(Main.createPacket(pid, fields));
 	}
-	
+
 	public String username() {
-		return username;
+		return this.username;
 	}
-	
+
 	public AbstractPacket job() {
-		return job;
+		return this.job;
 	}
 
 	@Override
@@ -58,21 +60,21 @@ public class Player extends Unit {
 	public String getOwnerSpatialID() {
 		return null;
 	}
-	
+
+	@Override
 	public String toString() {
-		return username()+" - "+spatialID;
+		return this.username() + " - " + this.spatialID;
 	}
-	
+
 	public String[] getUnitIDs() {
-		return unitsSpatialID.toArray(new String[unitsSpatialID.size()]);
+		return this.unitsSpatialID.toArray(new String[this.unitsSpatialID.size()]);
 	}
-	
+
 	public Unit[] getUnits() {
-		String[] ids=this.getUnitIDs();
-		Unit[] units=new Unit[ids.length];
-		for (int i=0;i<units.length;i++) {
-			units[i]=server.unitBySpatialID(ids[i]);
-		}
+		final String[] ids = this.getUnitIDs();
+		final Unit[] units = new Unit[ids.length];
+		for (int i = 0; i < units.length; i++)
+			units[i] = this.server.unitBySpatialID(ids[i]);
 		return units;
 	}
 }

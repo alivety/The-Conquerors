@@ -5,9 +5,9 @@ import io.github.alivety.ppl.PacketField;
 
 public class P18 extends AbstractPacket {
 	@PacketField
-	private final int id=18;
+	private final int id = 18;
 	@PacketField
 	public String[] spatialID;
 	@PacketField
-	public float x,y,z;
+	public float x, y, z;
 }

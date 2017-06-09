@@ -2,14 +2,14 @@ package io.github.alivety.conquerors.client;
 
 import java.io.IOException;
 
-import io.github.alivety.conquerors.ConquerorsApp;
-import io.github.alivety.conquerors.Main;
+import io.github.alivety.conquerors.common.ConquerorsApp;
+import io.github.alivety.conquerors.common.Main;
 
 public class Client implements ConquerorsApp {
 	public void go() {
 		try {
 			Main.setupLogger(this);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			Main.handleError(e);
 		}
 	}
