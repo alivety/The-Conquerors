@@ -19,9 +19,6 @@ public class Event {
 		this.isCanceled = canceled;
 	}
 
-	public void post() {
-	}
-
 	@Override
 	public final String toString() {
 		return this.getClass().getSimpleName() + "[canceled=" + this.isCanceled + "]";

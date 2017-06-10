@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.PlayerObject;
 
 public class Client implements ConquerorsApp {
 	public void go() {
@@ -12,5 +13,9 @@ public class Client implements ConquerorsApp {
 		} catch (final IOException e) {
 			Main.handleError(e);
 		}
+	}
+
+	public PlayerObject[] getOnlinePlayers() {
+		return null;
 	}
 }

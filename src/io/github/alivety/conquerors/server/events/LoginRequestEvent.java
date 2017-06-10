@@ -1,13 +1,12 @@
 package io.github.alivety.conquerors.server.events;
 
-import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.event.Cancelable;
-import io.github.alivety.conquerors.common.event.PRET;
+import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.Serverside;
 
 @Serverside
-public class LoginRequestEvent extends PRET implements Cancelable {
+public class LoginRequestEvent extends Event implements Cancelable {
 	public PlayerObject client;
 	public String username;
 	public int protocolVersion;
@@ -17,11 +16,4 @@ public class LoginRequestEvent extends PRET implements Cancelable {
 		this.username = username;
 		this.protocolVersion = protocolVersion;
 	}
-
-	@Override
-	public void post() {
-		this.client.write(Main.createPacket(1, this.client.getSpatialID()));
-		// TODO more stuff
-	}
-
 }

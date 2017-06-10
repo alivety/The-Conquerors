@@ -86,22 +86,6 @@ public class Server implements ConquerorsApp {
 		}
 	}
 
-	/*
-	 * @SubscribeEvent public void registerPlayer(Player p) { P0 p0=(P0)
-	 * p.job(); if (p0.protocolVersion!=Main.PRO_VER)
-	 * p.write(Main.createPacket(2,
-	 * "You are running a different version of the game")); if
-	 * (Arrays.asList(this.playerList()).contains(p0.username))
-	 * p.write(Main.createPacket(2,
-	 * "Someone with that username is already connected")); /*
-	 * p.username=p0.username; p.write(Main.createPacket(1, p.spatialID));
-	 * broadcast(Main.createPacket(4, "model","material",p.spatialID));
-	 * broadcast(Main.createPacket(12, new Object[]{this.playerList()}));
-	 * //p.write(Main.createPacket(5,p.spatialID,x,y,z));
-	 * broadcast(Main.createPacket(9,
-	 * Main.formatChatMessage(p.username+" has joined the game"))); }
-	 */
-
 	public String[] playerList() {
 		final List<String> names = new ArrayList<String>();
 		final Iterator<PlayerObject> iter = this.players.iterator();
@@ -146,5 +130,9 @@ public class Server implements ConquerorsApp {
 
 	private synchronized boolean has() {
 		return !this.packets.empty();
+	}
+
+	public PlayerObject[] getOnlinePlayers() {
+		return players.toArray(new PlayerObject[players.size()]);
 	}
 }

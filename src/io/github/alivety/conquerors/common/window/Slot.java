@@ -1,9 +1,12 @@
 package io.github.alivety.conquerors.common.window;
 
-import io.github.alivety.conquerors.server.OnlinePlayer;
+import io.github.alivety.conquerors.common.PlayerObject;
 
-public class Slot {
-	protected Slot(OnlinePlayer player) {
-		
+public abstract class Slot {
+	protected PlayerObject player;
+	protected Slot(PlayerObject player) {
+		this.player=player;
 	}
+	
+	public abstract void click();
 }

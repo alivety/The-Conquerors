@@ -1,4 +1,4 @@
-package p;
+package io.github.alivety.conquerors.common.packets;
 
 import io.github.alivety.ppl.AbstractPacket;
 import io.github.alivety.ppl.PacketField;
