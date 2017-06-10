@@ -23,6 +23,7 @@ public class Main {
 	public static Logger out;
 	public static final EventBus EVENT_BUS = new EventBus();
 	public static int server = 0;
+	private static final String PACKET_LOCATION="io.github.alivety.conquerors.common.packets.P";
 
 	private static Map<String, Object> asMap(final Object... args) {
 		final Map<String, Object> argMap = new HashMap<String, Object>();
@@ -47,7 +48,7 @@ public class Main {
 		Main.out = Logger.getLogger("default");
 		final Vector v1 = Main.nv(50, 674, 23);
 		final Vector v2 = Main.nv(23, 64, 53);
-		System.out.println(v1 + "~" + v2 + " = " + v1.distance(v2));
+		out.info(Main.createPacket(12));
 		try {
 			final Map<String, Object> arg = Main.asMap(args);
 			System.setProperty("log4j.configurationFile", "configuration.xml");
@@ -91,7 +92,7 @@ public class Main {
 
 	public static AbstractPacket decode(final ByteBuffer buf) {
 		try {
-			return AbstractPacket.decode("p.P", buf);
+			return AbstractPacket.decode(PACKET_LOCATION, buf);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
@@ -109,7 +110,7 @@ public class Main {
 
 	public static AbstractPacket createPacket(final int id, final Object... fields) {
 		try {
-			return AbstractPacket.c("p.P" + id, fields);
+			return AbstractPacket.c(PACKET_LOCATION + id, fields);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
