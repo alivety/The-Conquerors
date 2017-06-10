@@ -56,7 +56,8 @@ public class ServerEventSubscriber {
 
 	@SubscribeEvent(SYS)
 	public void onPlayerDisconnect(final PlayerDisconnectEvent evt) {
-		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.player.username() + " has left the game")));
+		this.server
+				.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.player.username() + " has left the game")));
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage("Their assets will now be liquidated")));
 		for (final UnitObject u : evt.player.getUnits()) {
 			this.server.broadcast(Main.createPacket(11, u.getSpatialID()));

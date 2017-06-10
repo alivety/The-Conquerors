@@ -8,14 +8,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.client.Client;
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.conquerors.server.Server;
-import io.github.alivety.ppl.AbstractPacket;
+import io.github.alivety.conquerors.test.Test;
 import io.github.alivety.ppl.PPL;
+import io.github.alivety.ppl.Packet;
 
 public class Main {
 	public static final int PRO_VER = 0;
@@ -23,7 +26,8 @@ public class Main {
 	public static Logger out;
 	public static final EventBus EVENT_BUS = new EventBus();
 	public static int server = 0;
-	private static final String PACKET_LOCATION="io.github.alivety.conquerors.common.packets.P";
+	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
+	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 
 	private static Map<String, Object> asMap(final Object... args) {
 		final Map<String, Object> argMap = new HashMap<String, Object>();
@@ -45,10 +49,7 @@ public class Main {
 	}
 
 	public static void main(final String[] args) throws IOException {
-		Main.out = Logger.getLogger("default");
-		final Vector v1 = Main.nv(50, 674, 23);
-		final Vector v2 = Main.nv(23, 64, 53);
-		out.info(Main.createPacket(12));
+		Main.out = Logger.getLogger("undefined");
 		try {
 			final Map<String, Object> arg = Main.asMap(args);
 			System.setProperty("log4j.configurationFile", "configuration.xml");
@@ -56,7 +57,7 @@ public class Main {
 					 * JOptionPane.showOptionDialog(null,
 					 * "Are you hosting a server or playing the game?",
 					 * "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)
-					 */0;
+					 */2;
 			if (arg.containsKey("server"))
 				c = 0;
 			if (c == 0) {// Server
@@ -65,10 +66,10 @@ public class Main {
 			} else if (c == 1) {// Client
 				final Client client = new Client();
 				client.go();
-			} else {
-				Main.out = Logger.getLogger("undefined");
+			} else if (c==2) {
+				new Test().go();
+			} else
 				throw new IllegalStateException("c-value must be either 0 or 1");
-			}
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}
@@ -90,16 +91,16 @@ public class Main {
 		Main.out.info(System.getenv());
 	}
 
-	public static AbstractPacket decode(final ByteBuffer buf) {
+	public static Packet decode(final ByteBuffer buf) {
 		try {
-			return AbstractPacket.decode(PACKET_LOCATION, buf);
+			return Packet.decode(Main.PACKET_LOCATION, buf);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
 		}
 	}
 
-	public static ByteBuffer encode(final AbstractPacket p) {
+	public static ByteBuffer encode(final Packet p) {
 		try {
 			return PPL.encapsulate(p.encode());
 		} catch (final Exception e) {
@@ -108,9 +109,9 @@ public class Main {
 		}
 	}
 
-	public static AbstractPacket createPacket(final int id, final Object... fields) {
+	public static Packet createPacket(final int id, final Object... fields) {
 		try {
-			return AbstractPacket.c(PACKET_LOCATION + id, fields);
+			return Packet.c(Main.PACKET_LOCATION + id, fields);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;

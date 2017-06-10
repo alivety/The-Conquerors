@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 /**
  * Event is to be handled on the server-side
- * 
+ *
  * @author sn
  *
  */

@@ -4,12 +4,12 @@ public abstract class UnitObject {
 	protected final String spatialID;
 	private Vector position;
 
-	protected UnitObject(String spatialID) {
+	protected UnitObject(final String spatialID) {
 		this.spatialID = spatialID;
 	}
-	
+
 	protected UnitObject() {
-		this.spatialID=Main.uuid(this.getUnitType());
+		this.spatialID = Main.uuid(this.getUnitType());
 	}
 
 	public abstract String getUnitType();

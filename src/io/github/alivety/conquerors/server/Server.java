@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
@@ -20,15 +21,17 @@ import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.DummyEvent;
-import io.github.alivety.ppl.AbstractPacket;
+import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
 import io.github.alivety.ppl.PPLServer;
+import io.github.alivety.ppl.Packet;
 import io.github.alivety.ppl.SocketListener;
 
 public class Server implements ConquerorsApp {
 	HashMap<SocketChannel, PlayerObject> lookup = new HashMap<SocketChannel, PlayerObject>();
 	private final List<PlayerObject> players = new ArrayList<PlayerObject>();
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
-	private final Stack<Entry<PlayerObject, AbstractPacket>> packets = new Stack<Entry<PlayerObject, AbstractPacket>>();
+	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
+	private final Stack<Runnable> tasks = new Stack<Runnable>();
 
 	public void go() {
 		try {
@@ -48,11 +51,22 @@ public class Server implements ConquerorsApp {
 				}
 
 				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
-					final AbstractPacket p = Main.decode(msg);
-					Server.this.push(Maps.immutableEntry(Server.this.lookup.get(ch), p));
+					final Packet p = Main.decode(msg);
+					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(ch), p));
+					Server.this.tasks_push(new Runnable() {
+						public void run() {
+							try {
+								final Event evt = Main.resolver.resolve(p, Server.this.lookup.get(ch));
+								Main.EVENT_BUS.bus(evt);
+							} catch (final Exception e) {
+								Main.handleError(e);
+							}
+						}
+					});
 				}
 
 				public void exception(final SocketChannel h, final Throwable t) {
+					Server.this.lookup.get(h).isReady=false;
 					Main.handleError(t);
 				}
 			});
@@ -63,21 +77,23 @@ public class Server implements ConquerorsApp {
 			Main.handleError(e);
 		}
 
-		while (true)
-			// long time=new Date().getTime();
-			while (this.has()) {
-				final Entry<PlayerObject, AbstractPacket> e = this.pop();
-				try {
-					final Event evt = Main.resolver.resolve(e.getValue(), e.getKey());
-					Main.EVENT_BUS.bus(evt);
-				} catch (final IllegalAccessException e1) {
-					Main.handleError(e1);
-				}
-				Main.out.info(e.getKey() + ": " + e.getValue());
+		Main.ses.scheduleWithFixedDelay(new Runnable() {
+			public void run() {
+				Server.this.tasks_push(new Runnable() {
+					public void run() {
+						for (final PlayerObject p : Server.this.getOnlinePlayers())
+							p.money += p.mpm;
+					}
+				});
 			}
+		}, 0, 1, TimeUnit.MINUTES);
+
+		while (true)
+			while (this.tasks_has())
+				this.tasks_pop().run();
 	}
 
-	protected void broadcast(final AbstractPacket p) {
+	protected void broadcast(final Packet p) {
 		final Iterator<PlayerObject> iter = this.players.iterator();
 		while (iter.hasNext()) {
 			final PlayerObject pl = iter.next();
@@ -120,19 +136,31 @@ public class Server implements ConquerorsApp {
 		return this.units.remove(u);
 	}
 
-	private synchronized void push(final Entry<PlayerObject, AbstractPacket> e) {
+	private synchronized void tasks_push(final Runnable r) {
+		this.tasks.push(r);
+	}
+
+	private synchronized Runnable tasks_pop() {
+		return this.tasks.pop();
+	}
+
+	private synchronized boolean tasks_has() {
+		return !this.tasks.empty();
+	}
+
+	private synchronized void packets_push(final Entry<PlayerObject, Packet> e) {
 		this.packets.push(e);
 	}
 
-	private synchronized Entry<PlayerObject, AbstractPacket> pop() {
+	private synchronized Entry<PlayerObject, Packet> packets_pop() {
 		return this.packets.pop();
 	}
 
-	private synchronized boolean has() {
+	private synchronized boolean packets_has() {
 		return !this.packets.empty();
 	}
 
 	public PlayerObject[] getOnlinePlayers() {
-		return players.toArray(new PlayerObject[players.size()]);
+		return this.players.toArray(new PlayerObject[this.players.size()]);
 	}
 }

@@ -38,8 +38,6 @@ public class EventBus {
 				} catch (final Exception e) {
 					Main.handleError(e);
 				}
-			else
-				Main.out.debug(this + ": " + evt + " not instance of " + this.evt.getSimpleName());
 		}
 
 		@Override
@@ -77,13 +75,11 @@ public class EventBus {
 		this.listeners.rebuild();
 		while (this.listeners.hasMore()) {
 			final EventListener l = this.listeners.next();
-			if (l.priority == 5) {
-				if (!evt.isCanceled())
-					l.call(evt);
-				else
-					Main.out.debug("System-level " + l + " cannot act upon " + evt);
-			} else
-				l.call(evt);
+			if (l.priority == 5)
+				if (evt.isCanceled())
+					continue;
+			Main.out.debug(l + " ~ " + evt);
+			l.call(evt);
 		}
 	}
 }
