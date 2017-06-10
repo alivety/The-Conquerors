@@ -16,6 +16,8 @@ import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.PlayerObject;
+import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.DummyEvent;
 import io.github.alivety.ppl.AbstractPacket;
@@ -23,10 +25,10 @@ import io.github.alivety.ppl.PPLServer;
 import io.github.alivety.ppl.SocketListener;
 
 public class Server implements ConquerorsApp {
-	HashMap<SocketChannel, Player> lookup = new HashMap<SocketChannel, Player>();
-	private final List<Player> players = new ArrayList<Player>();
-	private final HashMap<String, Unit> units = new HashMap<String, Unit>();
-	private final Stack<Entry<Player, AbstractPacket>> packets = new Stack<Entry<Player, AbstractPacket>>();
+	HashMap<SocketChannel, PlayerObject> lookup = new HashMap<SocketChannel, PlayerObject>();
+	private final List<PlayerObject> players = new ArrayList<PlayerObject>();
+	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
+	private final Stack<Entry<PlayerObject, AbstractPacket>> packets = new Stack<Entry<PlayerObject, AbstractPacket>>();
 
 	public void go() {
 		try {
@@ -40,7 +42,7 @@ public class Server implements ConquerorsApp {
 		try {
 			final PPLServer server = new PPLServer().addListener(new SocketListener() {
 				public void connect(final SocketChannel ch) throws Exception {
-					final Player p = new Player(ch, Server.this);
+					final PlayerObject p = new PlayerObject(ch);
 					Server.this.players.add(p);
 					Server.this.lookup.put(ch, p);
 				}
@@ -64,7 +66,7 @@ public class Server implements ConquerorsApp {
 		while (true)
 			// long time=new Date().getTime();
 			while (this.has()) {
-				final Entry<Player, AbstractPacket> e = this.pop();
+				final Entry<PlayerObject, AbstractPacket> e = this.pop();
 				try {
 					final Event evt = Main.resolver.resolve(e.getValue(), e.getKey());
 					Main.EVENT_BUS.bus(evt);
@@ -76,9 +78,9 @@ public class Server implements ConquerorsApp {
 	}
 
 	protected void broadcast(final AbstractPacket p) {
-		final Iterator<Player> iter = this.players.iterator();
+		final Iterator<PlayerObject> iter = this.players.iterator();
 		while (iter.hasNext()) {
-			final Player pl = iter.next();
+			final PlayerObject pl = iter.next();
 			if (pl.username() != null)
 				pl.write(p);
 		}
@@ -100,33 +102,27 @@ public class Server implements ConquerorsApp {
 	 * Main.formatChatMessage(p.username+" has joined the game"))); }
 	 */
 
-	protected void disconnect(final Player p) {
-		this.broadcast(Main.createPacket(11, p.spatialID));
-		this.broadcast(Main.createPacket(9, Main.formatChatMessage(p.username + " has left the game")));
-		p.username = null;
-	}
-
 	public String[] playerList() {
 		final List<String> names = new ArrayList<String>();
-		final Iterator<Player> iter = this.players.iterator();
+		final Iterator<PlayerObject> iter = this.players.iterator();
 		while (iter.hasNext()) {
-			final Player p = iter.next();
+			final PlayerObject p = iter.next();
 			if (p.username() != null)
 				names.add(p.username());
 		}
 		return names.toArray(new String[names.size()]);
 	}
 
-	public Unit unitBySpatialID(final String spatialID) {
+	public UnitObject unitBySpatialID(final String spatialID) {
 		return this.units.get(spatialID);
 	}
 
-	public Player playerByUsername(final String username) {
-		final Iterator<Player> iter = this.players.iterator();
+	public PlayerObject playerByUsername(final String username) {
+		final Iterator<PlayerObject> iter = this.players.iterator();
 		while (iter.hasNext()) {
-			final Player p = iter.next();
+			final PlayerObject p = iter.next();
 			if (p.username() != null)
-				if (p.username.equals(username))
+				if (p.username().equals(username))
 					return p;
 		}
 		return null;
@@ -136,15 +132,15 @@ public class Server implements ConquerorsApp {
 		this.units.put(unit.getSpatialID(), unit);
 	}
 
-	public Unit unregister(final Unit unit) {
-		return this.units.remove(unit);
+	public UnitObject unregister(final UnitObject u) {
+		return this.units.remove(u);
 	}
 
-	private synchronized void push(final Entry<Player, AbstractPacket> e) {
+	private synchronized void push(final Entry<PlayerObject, AbstractPacket> e) {
 		this.packets.push(e);
 	}
 
-	private synchronized Entry<Player, AbstractPacket> pop() {
+	private synchronized Entry<PlayerObject, AbstractPacket> pop() {
 		return this.packets.pop();
 	}
 

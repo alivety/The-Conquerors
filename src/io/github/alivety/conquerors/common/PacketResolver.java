@@ -12,7 +12,6 @@ import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
-import io.github.alivety.conquerors.server.Player;
 import io.github.alivety.conquerors.server.events.LoginRequestEvent;
 import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
 import io.github.alivety.conquerors.server.events.PlayerMoveUnitsEvent;
@@ -37,7 +36,7 @@ import p.P8;
 import p.P9;
 
 public class PacketResolver {
-	public Event resolve(@Nonnull final AbstractPacket p, final Player client)
+	public Event resolve(@Nonnull final AbstractPacket p, final PlayerObject client)
 			throws IllegalArgumentException, IllegalAccessException {
 		final int id = p.getPacketID();
 		if (id == 0) {
