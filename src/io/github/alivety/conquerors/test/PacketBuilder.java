@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.packets.PacketData;
 import io.github.alivety.ppl.Packet;
 
 public class PacketBuilder extends JFrame {
@@ -66,7 +67,15 @@ public class PacketBuilder extends JFrame {
 		lblPacketClass.setBounds(this.l_bounds_1, this.l_bounds_2, this.l_bounds_3, this.l_bounds_4);
 		this.contentPane.add(lblPacketClass);
 
-		this.textField = new JTextField(p.getClass().getName());
+		Class<?> packet=p.getClass();
+		String textfieldtext;
+		if (packet.isAnnotationPresent(PacketData.class)) {
+			PacketData data=packet.getAnnotation(PacketData.class);
+			textfieldtext=data.description();
+		} else {
+			textfieldtext=packet.getName();
+		}
+		this.textField = new JTextField(textfieldtext);
 		this.textField.setEditable(false);
 		this.textField.setBounds(this.tf_bounds_1, this.tf_bounds_2, this.tf_bounds_3, this.tf_bounds_4);
 		this.contentPane.add(this.textField);
