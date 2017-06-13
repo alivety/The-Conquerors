@@ -34,6 +34,7 @@ public class EventBus {
 		protected void call(final Event evt) {
 			if (this.evt.isInstance(evt))
 				try {
+					Main.out.debug(this+" invoked on "+evt);
 					this.method.invoke(this.context, evt);
 				} catch (final Exception e) {
 					Main.handleError(e);
@@ -78,7 +79,6 @@ public class EventBus {
 			if (l.priority == 5)
 				if (evt.isCanceled())
 					continue;
-			Main.out.debug(l + " ~ " + evt);
 			l.call(evt);
 		}
 	}
