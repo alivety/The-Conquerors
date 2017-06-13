@@ -10,7 +10,7 @@ public class Client implements ConquerorsApp {
 	public PlayerObject[] getOnlinePlayers() {
 		return null;
 	}
-
+	
 	public void go() {
 		try {
 			Main.setupLogger(this);

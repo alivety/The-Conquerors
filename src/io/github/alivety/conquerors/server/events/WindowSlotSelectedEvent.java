@@ -10,7 +10,7 @@ public class WindowSlotSelectedEvent extends Event implements Cancelable {
 	public PlayerObject player;
 	public String spatialID;
 	public int slot;
-
+	
 	public WindowSlotSelectedEvent(final PlayerObject player, final String spatialID, final int slot) {
 		this.player = player;
 		this.spatialID = spatialID;

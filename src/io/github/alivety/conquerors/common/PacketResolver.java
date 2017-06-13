@@ -68,7 +68,8 @@ public class PacketResolver {
 		} else if (id == 12) {
 			final P12 p12 = (P12) p;
 			return new PlayerListUpdatedEvent(p12.list);
-		} else if (id == 13) return new PlayerDisconnectEvent(client);
+		} else if (id == 13)
+			return new PlayerDisconnectEvent(client);
 		else if (id == 14) {
 			final P14 p14 = (P14) p;
 			return new WindowRequestedEvent(client, p14.spatialID);
@@ -84,6 +85,7 @@ public class PacketResolver {
 		} else if (id == 18) {
 			final P18 p18 = (P18) p;
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
-		} else throw new NullPointerException("No packet with id=" + id);
+		} else
+			throw new NullPointerException("No packet with id=" + id);
 	}
 }

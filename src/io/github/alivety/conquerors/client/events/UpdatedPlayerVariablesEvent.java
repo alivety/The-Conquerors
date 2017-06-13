@@ -7,7 +7,7 @@ import io.github.alivety.conquerors.common.events.Clientside;
 public class UpdatedPlayerVariablesEvent extends Event {
 	public int money, mpm;
 	public String[] unitSpatialID;
-
+	
 	public UpdatedPlayerVariablesEvent(final int money, final int mpm, final String[] unitSpatialID) {
 		this.money = money;
 		this.mpm = mpm;

@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  * @link http://balusc.blogspot.com/2007/08/generic-object-converter.html
  */
 public final class ObjectConverter {
-
+	
 	// Init
 	// ---------------------------------------------------------------------------------------
 	private static final Map<String, Method> CONVERTERS = new HashMap<String, Method>();
@@ -61,18 +61,17 @@ public final class ObjectConverter {
 	 * Date formater for string -> date conversion
 	 */
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(ObjectConverter.DATE_PATTERN);
-
+	
 	static {
 		// Preload converters.
 		final Method[] methods = ObjectConverter.class.getDeclaredMethods();
 		for (final Method method : methods)
-			if (method.getParameterTypes().length == 1) {
+			if (method.getParameterTypes().length == 1)
 				// Converter should accept 1 argument. This skips the convert()
 				// method.
 				ObjectConverter.CONVERTERS.put(method.getParameterTypes()[0].getName() + "_" + method.getReturnType().getName(), method);
-			}
 	}
-
+	
 	/**
 	 * Converts BigDecimal to Double.
 	 *
@@ -83,7 +82,7 @@ public final class ObjectConverter {
 	public static Double bigDecimalToDouble(final BigDecimal value) {
 		return new Double(value.doubleValue());
 	}
-
+	
 	/**
 	 * Converts Boolean to Integer. If boolean value is TRUE, then return 1,
 	 * else return 0.
@@ -95,7 +94,7 @@ public final class ObjectConverter {
 	public static Integer booleanToInteger(final Boolean value) {
 		return value.booleanValue() ? Integer.valueOf(1) : Integer.valueOf(0);
 	}
-
+	
 	/**
 	 * Converts Boolean to String.
 	 *
@@ -106,7 +105,7 @@ public final class ObjectConverter {
 	public static String booleanToString(final Boolean value) {
 		return value.toString();
 	}
-
+	
 	// Action
 	// -------------------------------------------------------------------------------------
 	/**
@@ -130,20 +129,23 @@ public final class ObjectConverter {
 	 *             InvocationTargetException.
 	 */
 	public static <T> Object convert(final Object from, final Class<T> to) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+		
 		// Null is just null.
-		if (from == null) return null;
-
+		if (from == null)
+			return null;
+		
 		// Can we cast? Then just do it.
-		if (to.isAssignableFrom(from.getClass())) return to.cast(from);
-
+		if (to.isAssignableFrom(from.getClass()))
+			return to.cast(from);
+		
 		// Lookup the suitable converter.
 		final String converterId = from.getClass().getName() + "_" + to.getName();
 		final Method converter = ObjectConverter.CONVERTERS.get(converterId);
-		if (converter == null) throw new UnsupportedOperationException("Cannot convert from " + from.getClass().getName() + " to " + to.getName() + ". Requested converter does not exist.");
-
+		if (converter == null)
+			throw new UnsupportedOperationException("Cannot convert from " + from.getClass().getName() + " to " + to.getName() + ". Requested converter does not exist.");
+		
 		return converter.invoke(ObjectConverter.CONVERTERS.get(converterId), from);
-
+		
 		// // Convert the value.
 		// try {
 		// return to.cast(converter.invoke(to, from));
@@ -153,7 +155,7 @@ public final class ObjectConverter {
 		// + ". Conversion failed with " + e.getMessage(), e);
 		// }
 	}
-
+	
 	/**
 	 * Converts Double to BigDecimal.
 	 *
@@ -164,7 +166,7 @@ public final class ObjectConverter {
 	public static BigDecimal doubleToBigDecimal(final Double value) {
 		return new BigDecimal(value.doubleValue());
 	}
-
+	
 	// Converters
 	// ---------------------------------------------------------------------------------
 	/**
@@ -178,11 +180,11 @@ public final class ObjectConverter {
 	public static Boolean integerToBoolean(final Integer value) {
 		return value.intValue() == 0 ? Boolean.FALSE : Boolean.TRUE;
 	}
-
+	
 	public static int IntegerToInt(final Integer i) {
 		return i.intValue();
 	}
-
+	
 	/**
 	 * Converts Integer to String.
 	 *
@@ -193,19 +195,19 @@ public final class ObjectConverter {
 	public static String integerToString(final Integer value) {
 		return value.toString();
 	}
-
+	
 	public static Long intToLong(final Integer integer) {
 		return new Long(integer);
 	}
-
+	
 	public static BigDecimal stringToBigDecimal(final String value) {
 		return new BigDecimal(value);
 	}
-
+	
 	public static BigInteger stringToBigInteger(final String value) {
 		return new BigInteger(value);
 	}
-
+	
 	/**
 	 * Converts String to Boolean.
 	 *
@@ -216,15 +218,15 @@ public final class ObjectConverter {
 	public static Boolean stringToBoolean(final String value) {
 		return Boolean.valueOf(value);
 	}
-
+	
 	public static Byte stringToByte(final String value) {
 		return new Byte(value);
 	}
-
+	
 	public static Character stringToChar(final String value) {
 		return value.charAt(0);
 	}
-
+	
 	/**
 	 * Converts string to date. String has to have format given with constant
 	 * DATE_PATTERN
@@ -240,19 +242,19 @@ public final class ObjectConverter {
 			throw new RuntimeException(ex);
 		}
 	}
-
+	
 	public static Double stringToDouble(final String value) {
 		return new Double(value);
 	}
-
+	
 	public static Float stringToFloat(final String value) {
 		return new Float(value);
 	}
-
+	
 	public static int stringToInt(final String s) {
 		return Integer.parseInt(s);
 	}
-
+	
 	/**
 	 * Converts String to Integer.
 	 *
@@ -263,15 +265,15 @@ public final class ObjectConverter {
 	public static Integer stringToInteger(final String value) {
 		return Integer.valueOf(value);
 	}
-
+	
 	public static Long stringToLong(final String value) {
 		return new Long(value);
 	}
-
+	
 	public static Short stringToShort(final String value) {
 		return new Short(value);
 	}
-
+	
 	private ObjectConverter() {
 		// Utility class, hide the constructor.
 	}

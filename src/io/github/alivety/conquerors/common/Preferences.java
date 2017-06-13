@@ -23,7 +23,7 @@ public class Preferences extends JFrame {
 		 *
 		 */
 		private static final long serialVersionUID = 4546426182193116949L;
-
+		
 		public Mode() {
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.setTitle("GameMode");
@@ -31,18 +31,21 @@ public class Preferences extends JFrame {
 			final JButton client = new JButton("Client");
 			client.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
+					Mode.this.dispose();
 					new Client().go();
 				}
 			});
 			final JButton server = new JButton("Server");
 			server.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
+					Mode.this.dispose();
 					new Server().go();
 				}
 			});
 			final JButton test = new JButton("Manual");
 			test.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
+					Mode.this.dispose();
 					new Test().go();
 				}
 			});
@@ -54,21 +57,22 @@ public class Preferences extends JFrame {
 			this.setLocationRelativeTo(null);
 		}
 	}
-
+	
 	/**
 	 *
 	 */
 	private static final long serialVersionUID = -4729521272308604150L;
-
+	
 	private final JSONObject prefs;
 	public String username;
 	public final JSONObject servers = null;
-
+	
 	public Preferences(final JSONObject prefs) throws IOException {
 		this.prefs = prefs;
 		final JPanel pane = new JPanel();
 		pane.add(new JLabel("Username: "));
-		@SuppressWarnings("unchecked") final JTextField username = new JTextField((String) prefs.getOrDefault("name", ""));
+		@SuppressWarnings("unchecked")
+		final JTextField username = new JTextField((String) prefs.getOrDefault("name", ""));
 		username.setColumns(20);
 		pane.add(username);
 		final JButton btn = new JButton("Login");
@@ -81,14 +85,14 @@ public class Preferences extends JFrame {
 		});
 		pane.add(btn);
 		this.add(pane);
-
+		
 		this.pack();
 		this.setLocationRelativeTo(null);
-
+		
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Login");
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	public void save() throws IOException {
 		this.prefs.put("name", this.username);
