@@ -1,4 +1,4 @@
-package io.github.alivety.conquerors.test;
+package io.github.alivety.conquerors.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -129,7 +129,8 @@ public final class ObjectConverter {
 	 *             InvocationTargetException.
 	 */
 	public static <T> Object convert(final Object from, final Class<T> to) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-
+		Main.out.debug(from);
+		Main.out.debug(to);
 		// Null is just null.
 		if (from == null)
 			return null;
@@ -249,6 +250,10 @@ public final class ObjectConverter {
 
 	public static Float stringToFloat(final String value) {
 		return new Float(value);
+	}
+	
+	public static float stringToPrimitiveFloat(String value) {
+		return stringToFloat(value).floatValue();
 	}
 
 	public static int stringToInt(final String s) {

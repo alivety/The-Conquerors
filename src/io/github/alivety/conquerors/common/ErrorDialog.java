@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 import com.google.common.base.Throwables;
 
 public class ErrorDialog extends JDialog {
-
+	private static final long serialVersionUID = -4420240235644032632L;
 	private final JPanel contentPane;
 
 	/**
@@ -25,14 +25,14 @@ public class ErrorDialog extends JDialog {
 	public ErrorDialog(final Throwable e) {
 		this.setTitle("Error");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		this.setBounds(100, 100, 600, 300);
+		this.setBounds(100, 100, 800, 400);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
 
 		final JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(5, 38, 569, 212); // -31, -88
+		scrollPane.setBounds(5, 38, 769, 312); // -31, -88
 		this.contentPane.add(scrollPane);
 
 		final JTextArea txtrHi = new JTextArea();

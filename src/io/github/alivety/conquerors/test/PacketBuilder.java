@@ -20,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.ObjectConverter;
 import io.github.alivety.conquerors.common.packets.PacketData;
 import io.github.alivety.ppl.Packet;
 
