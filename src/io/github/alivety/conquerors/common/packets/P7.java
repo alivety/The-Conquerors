@@ -4,8 +4,6 @@ import io.github.alivety.ppl.Packet;
 import io.github.alivety.ppl.PacketField;
 
 public class P7 extends Packet {
-	@PacketField
-	private final int id = 7;
-	@PacketField
-	public float x, y, z;
+	@PacketField private final int id = 7;
+	@PacketField public float x, y, z;
 }

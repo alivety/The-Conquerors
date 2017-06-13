@@ -55,7 +55,7 @@ public class Main {
 	public static void main(final String[] args) throws IOException {
 		Main.out = Logger.getLogger("undefined");
 		try {
-			final Map<String, Object> arg = Main.asMap((Object[])args);
+			final Map<String, Object> arg = Main.asMap((Object[]) args);
 			System.setProperty("log4j.configurationFile", "configuration.xml");
 			int c = /*
 					 * JOptionPane.showOptionDialog(null,
