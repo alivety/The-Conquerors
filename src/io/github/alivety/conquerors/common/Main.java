@@ -1,26 +1,26 @@
 package io.github.alivety.conquerors.common;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import javax.annotation.Nonnull;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+
 import com.google.common.base.Throwables;
 
-import io.github.alivety.conquerors.client.Client;
 import io.github.alivety.conquerors.common.event.EventBus;
-import io.github.alivety.conquerors.server.Server;
-import io.github.alivety.conquerors.test.ObjectConverter;
-import io.github.alivety.conquerors.test.Test;
 import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.Packet;
 
@@ -32,48 +32,19 @@ public class Main {
 	public static int server = 0;
 	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+	public static final File USER_PREFS=new File("prefs.json");
 
-	private static Map<String, Object> asMap(final Object... args) {
-		final Map<String, Object> argMap = new HashMap<String, Object>();
-		for (int i = 0; i < args.length; i += 2) {
-			String key;
-			try {
-				key = (String) args[i];
-			} catch (final ClassCastException cce) {
-				System.err.println(cce.getMessage());
-				System.err.println("args[" + i + "] " + args[i].toString());
-				throw cce;
-			}
-			if ((i + 1) < args.length) {
-				final Object value = args[i + 1];
-				argMap.put(key, value);
-			}
-		}
-		return argMap;
-	}
-
-	public static void main(final String[] args) throws IOException {
+	public static void main(final String[] arg) throws IOException {
 		Main.out = Logger.getLogger("undefined");
 		try {
-			final Map<String, Object> arg = Main.asMap((Object[]) args);
-			System.setProperty("log4j.configurationFile", "configuration.xml");
-			int c = /*
-					 * JOptionPane.showOptionDialog(null,
-					 * "Are you hosting a server or playing the game?",
-					 * "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)
-					 */1;
-			if (arg.containsKey("app"))
-				c = ObjectConverter.convert(arg.get("app"), Integer.class);
-			if (c == 0) {// Server
-				final Server server = new Server();
-				server.go();
-			} else if (c == 1) {// Client
-				final Client client = new Client();
-				client.go();
-			} else if (c == 2)
-				new Test().go();
-			else
-				throw new IllegalStateException("c-value must be either 0 or 1");
+			if (USER_PREFS.createNewFile()) {
+				FileWriter fw=new FileWriter(USER_PREFS);
+				fw.write(new JSONObject().toJSONString());
+				fw.flush();
+				fw.close();
+			}
+			JSONParser parser=new JSONParser();
+			new Preferences((JSONObject) parser.parse(new FileReader(USER_PREFS))).setVisible(true);;
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}
