@@ -7,5 +7,5 @@ public class P7 extends Packet {
 	@PacketField
 	private final int id = 7;
 	@PacketField
-	private float x, y, z;
+	public float x, y, z;
 }

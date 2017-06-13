@@ -20,8 +20,8 @@ import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
-import io.github.alivety.conquerors.common.events.DummyEvent;
 import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
+import io.github.alivety.conquerors.test.events.DummyEvent;
 import io.github.alivety.ppl.PPLServer;
 import io.github.alivety.ppl.Packet;
 import io.github.alivety.ppl.SocketListener;
@@ -66,7 +66,8 @@ public class Server implements ConquerorsApp {
 				}
 
 				public void exception(final SocketChannel h, final Throwable t) {
-					Server.this.lookup.get(h).isReady=false;
+					PlayerObject p=Server.this.lookup.get(h);
+					players.remove(p);
 					Main.handleError(t);
 				}
 			});

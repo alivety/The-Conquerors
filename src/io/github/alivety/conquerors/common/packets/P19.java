@@ -7,7 +7,7 @@ public class P19 extends Packet {
 	@PacketField
 	private final int id = 19;
 	@PacketField
-	private int money, mpm;
+	public int money, mpm;
 	@PacketField
-	String[] unitSpatialID;
+	public String[] unitSpatialID;
 }

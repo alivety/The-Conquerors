@@ -1,21 +1,27 @@
 package io.github.alivety.conquerors.common;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import javax.annotation.Nonnull;
+
 import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.client.Client;
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.conquerors.server.Server;
+import io.github.alivety.conquerors.test.ObjectConverter;
 import io.github.alivety.conquerors.test.Test;
 import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.Packet;
@@ -57,9 +63,10 @@ public class Main {
 					 * JOptionPane.showOptionDialog(null,
 					 * "Are you hosting a server or playing the game?",
 					 * "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)
-					 */2;
-			if (arg.containsKey("server"))
-				c = 0;
+					 */1;
+			if (arg.containsKey("app")) {
+				c=ObjectConverter.convert(arg.get("app"), Integer.class);
+			}
 			if (c == 0) {// Server
 				final Server server = new Server();
 				server.go();
@@ -117,6 +124,15 @@ public class Main {
 			return null;
 		}
 	}
+	
+	public static Packet getUnbuiltPacket(int id) {
+		try {
+			return (Packet) Class.forName(PACKET_LOCATION+id).getConstructor().newInstance();
+		} catch (Exception e) {
+			Main.handleError(e);
+			return null;
+		}
+	}
 
 	public static String uuid(final String object) {
 		return object + "[" + Main.random.nextInt() + "]";
@@ -130,6 +146,11 @@ public class Main {
 		else
 			return sender + ": " + msg + " (" + date + ")";
 	}
+	
+	public static void handleError(Throwable t,boolean close) {
+		if (close) Main.handleError(t);
+		else out.warn(Throwables.getStackTraceAsString(t));
+	}
 
 	public static String formatChatMessage(final String msg) {
 		return Main.formatChatMessage(null, msg);
@@ -141,6 +162,20 @@ public class Main {
 
 	public static List<Class<?>> getSuperclassesOf(final Object target) {
 		return null;
+	}
+	
+	public static String vardump(@Nonnull Object target) throws IllegalArgumentException, IllegalAccessException {
+		Class<?> cls=target.getClass();
+		Field[] fields=cls.getDeclaredFields();
+		StringBuilder sb=new StringBuilder();
+		sb.append(cls.getSimpleName()).append("{");
+		for (Field f : fields) {
+			f.setAccessible(true);
+			sb.append(f.getName()).append("=").append(f.get(target)).append(";");
+		}
+		String s = sb.toString();
+		s=s.substring(0,s.lastIndexOf(";"));
+		return s+"}";
 	}
 
 	public static final PacketResolver resolver = new PacketResolver();

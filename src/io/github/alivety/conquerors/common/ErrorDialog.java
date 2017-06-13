@@ -1,6 +1,7 @@
 package io.github.alivety.conquerors.common;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -20,6 +21,8 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import com.google.common.base.Throwables;
+
 public class ErrorDialog extends JFrame {
 
 	private final int dialogWidth = 500;
@@ -38,7 +41,7 @@ public class ErrorDialog extends JFrame {
 
 	private final JButton okButton = new JButton("OK");
 	private final JButton viewButton = new JButton("View Error");
-	private final JButton emailButton = new JButton("Email Error");
+	//private final JButton emailButton = new JButton("Email Error");
 
 	private final JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -46,10 +49,13 @@ public class ErrorDialog extends JFrame {
 
 		final StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors));
+		if (e.getCause()!=null) {
+			e.getCause().printStackTrace(new PrintWriter(errors));
+		}
 
 		this.setSize(this.dialogWidth, this.dialogHeight);
 
-		this.setResizable(false);
+		this.setResizable(true);
 		this.setLocationRelativeTo(null);
 
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,7 +64,7 @@ public class ErrorDialog extends JFrame {
 
 		this.errorLabel.setText(errorLabelText);
 
-		this.exceptionTextArea.setText(errors.toString());
+		this.exceptionTextArea.setText(Throwables.getStackTraceAsString(e));
 
 		this.exceptionTextAreaSP = new JScrollPane(this.exceptionTextArea);
 
@@ -115,8 +121,7 @@ public class ErrorDialog extends JFrame {
 
 		this.okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent e) {
-				ErrorDialog.this.setVisible(false);
-				System.exit(0);
+				ErrorDialog.this.doClose();
 			}
 		});
 
@@ -152,14 +157,22 @@ public class ErrorDialog extends JFrame {
 		this.addWindowFocusListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(final WindowEvent e) {
-				System.exit(0);
+				ErrorDialog.this.doClose();
 			}
 
 			@Override
 			public void windowClosing(final WindowEvent e) {
-				System.exit(0);
+				ErrorDialog.this.doClose();
 			}
 		});
 	}
 
+	private void doClose() {
+		this.setVisible(false);
+		if (Desktop.isDesktopSupported()) {
+			Main.out.debug("desktop is supported");
+			Desktop.getDesktop();
+		}
+		System.exit(0);
+	}
 }
