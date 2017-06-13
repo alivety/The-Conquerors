@@ -24,9 +24,13 @@ import io.github.alivety.conquerors.common.packets.PacketData;
 import io.github.alivety.ppl.Packet;
 
 public class PacketBuilder extends JFrame {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 6091057864086680639L;
 	private final JPanel contentPane;
 	private final JTextField textField;
-
+	
 	private final int tf_bounds_1 = 427;
 	private int tf_bounds_2 = 8;
 	private final int tf_bounds_3 = 428;
@@ -36,51 +40,51 @@ public class PacketBuilder extends JFrame {
 	private final int l_bounds_3 = 417;
 	private final int l_bounds_4 = 14;
 	private final int incr = 25;
-
+	
 	// public PacketBuilder(Packet p) {
 	// this.p=p;
 	// setTitle("Packet Builder: "+p.getClass().getName());
 	// textField.setText(p.getClass().getName());
 	// }
-
+	
 	/**
 	 * Create the frame.
 	 *
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	public PacketBuilder(final Test test, final Packet p, final boolean builder)
-			throws IllegalArgumentException, IllegalAccessException {
-		if (builder)
+	public PacketBuilder(final Test test, final Packet p, final boolean builder) throws IllegalArgumentException, IllegalAccessException {
+		if (builder) {
 			this.setTitle("Packet Builder");
-		else
+		} else {
 			this.setTitle("Packet Info");
-
+		}
+		
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 891, 300);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
-
+		
 		final JLabel lblPacketClass = new JLabel("Packet Class");
 		lblPacketClass.setBounds(this.l_bounds_1, this.l_bounds_2, this.l_bounds_3, this.l_bounds_4);
 		this.contentPane.add(lblPacketClass);
-
-		Class<?> packet=p.getClass();
+		
+		final Class<?> packet = p.getClass();
 		String textfieldtext;
 		if (packet.isAnnotationPresent(PacketData.class)) {
-			PacketData data=packet.getAnnotation(PacketData.class);
-			textfieldtext=data.description();
+			final PacketData data = packet.getAnnotation(PacketData.class);
+			textfieldtext = data.description();
 		} else {
-			textfieldtext=packet.getName();
+			textfieldtext = packet.getName();
 		}
 		this.textField = new JTextField(textfieldtext);
 		this.textField.setEditable(false);
 		this.textField.setBounds(this.tf_bounds_1, this.tf_bounds_2, this.tf_bounds_3, this.tf_bounds_4);
 		this.contentPane.add(this.textField);
 		this.textField.setColumns(10);
-
+		
 		final Class<?> cls = p.getClass();
 		final HashMap<Entry<String, JTextField>, Class<?>> typeMap = new HashMap<Entry<String, JTextField>, Class<?>>();
 		for (final Field f : cls.getFields()) {
@@ -98,16 +102,17 @@ public class PacketBuilder extends JFrame {
 				f.setAccessible(true);
 				final Object o = f.get(p);
 				String s;
-				if (o instanceof Object[])
+				if (o instanceof Object[]) {
 					s = Arrays.asList(((Object[]) o)).toString();
-				else
+				} else {
 					s = o.toString();
+				}
 				tf.setText(s);
 			}
 			typeMap.put(Maps.immutableEntry(f.getName(), tf), type);
 			this.contentPane.add(tf);
 		}
-
+		
 		if (builder) {
 			final JButton btnNewButton = new JButton("Build and Send");
 			btnNewButton.addActionListener(new ActionListener() {
@@ -134,5 +139,5 @@ public class PacketBuilder extends JFrame {
 			this.contentPane.add(btnNewButton);
 		}
 	}
-
+	
 }

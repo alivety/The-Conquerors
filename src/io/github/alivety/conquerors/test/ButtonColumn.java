@@ -34,19 +34,22 @@ import io.github.alivety.ppl.Packet;
  * number of the button that was clicked.
  *
  */
-public class ButtonColumn extends AbstractCellEditor
-		implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
+public class ButtonColumn extends AbstractCellEditor implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -2994470830409907638L;
 	private final JTable table;
 	private final Action action;
 	private int mnemonic;
 	private final Border originalBorder;
 	private Border focusBorder;
-
+	
 	private final JButton renderButton;
 	private final JButton editButton;
 	private Object editorValue;
 	private boolean isButtonColumnEditor;
-
+	
 	/**
 	 * Create the ButtonColumn to be used as a renderer and editor. The renderer
 	 * and editor will automatically be installed on the TableColumn of the
@@ -62,20 +65,20 @@ public class ButtonColumn extends AbstractCellEditor
 	public ButtonColumn(final JTable table, final Action action, final int column) {
 		this.table = table;
 		this.action = action;
-
+		
 		this.renderButton = new JButton();
 		this.editButton = new JButton();
 		this.editButton.setFocusPainted(false);
 		this.editButton.addActionListener(this);
 		this.originalBorder = this.editButton.getBorder();
 		this.setFocusBorder(new LineBorder(Color.BLUE));
-
+		
 		final TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(column).setCellRenderer(this);
 		columnModel.getColumn(column).setCellEditor(this);
 		table.addMouseListener(this);
 	}
-
+	
 	/**
 	 * Get foreground color of the button when the cell has focus
 	 *
@@ -84,7 +87,7 @@ public class ButtonColumn extends AbstractCellEditor
 	public Border getFocusBorder() {
 		return this.focusBorder;
 	}
-
+	
 	/**
 	 * The foreground color of the button when the cell has focus
 	 *
@@ -95,11 +98,11 @@ public class ButtonColumn extends AbstractCellEditor
 		this.focusBorder = focusBorder;
 		this.editButton.setBorder(focusBorder);
 	}
-
+	
 	public int getMnemonic() {
 		return this.mnemonic;
 	}
-
+	
 	/**
 	 * The mnemonic to activate the button when the cell has focus
 	 *
@@ -111,9 +114,8 @@ public class ButtonColumn extends AbstractCellEditor
 		this.renderButton.setMnemonic(mnemonic);
 		this.editButton.setMnemonic(mnemonic);
 	}
-
-	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
-			final int row, final int column) {
+	
+	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected, final int row, final int column) {
 		if (value == null) {
 			this.editButton.setText("");
 			this.editButton.setIcon(null);
@@ -127,20 +129,19 @@ public class ButtonColumn extends AbstractCellEditor
 			this.editButton.setText(value.toString());
 			this.editButton.setIcon(null);
 		}
-
+		
 		this.editorValue = value;
 		return this.editButton;
 	}
-
+	
 	public Object getCellEditorValue() {
 		return this.editorValue;
 	}
-
+	
 	//
 	// Implement TableCellRenderer interface
 	//
-	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-			final boolean hasFocus, final int row, final int column) {
+	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
 		if (isSelected) {
 			this.renderButton.setForeground(table.getSelectionForeground());
 			this.renderButton.setBackground(table.getSelectionBackground());
@@ -148,12 +149,13 @@ public class ButtonColumn extends AbstractCellEditor
 			this.renderButton.setForeground(table.getForeground());
 			this.renderButton.setBackground(UIManager.getColor("Button.background"));
 		}
-
-		if (hasFocus)
+		
+		if (hasFocus) {
 			this.renderButton.setBorder(this.focusBorder);
-		else
+		} else {
 			this.renderButton.setBorder(this.originalBorder);
-
+		}
+		
 		// renderButton.setText( (value == null) ? "" : value.toString() );
 		if (value == null) {
 			this.renderButton.setText("");
@@ -168,10 +170,10 @@ public class ButtonColumn extends AbstractCellEditor
 			this.renderButton.setText(value.toString());
 			this.renderButton.setIcon(null);
 		}
-
+		
 		return this.renderButton;
 	}
-
+	
 	//
 	// Implement ActionListener interface
 	//
@@ -181,13 +183,13 @@ public class ButtonColumn extends AbstractCellEditor
 	public void actionPerformed(final ActionEvent e) {
 		final int row = this.table.convertRowIndexToModel(this.table.getEditingRow());
 		this.fireEditingStopped();
-
+		
 		// Invoke the Action
-
+		
 		final ActionEvent event = new ActionEvent(this.table, ActionEvent.ACTION_PERFORMED, "" + row);
 		this.action.actionPerformed(event);
 	}
-
+	
 	//
 	// Implement MouseListener interface
 	//
@@ -197,23 +199,22 @@ public class ButtonColumn extends AbstractCellEditor
 	 * active. Make sure editing is stopped when the mouse is released.
 	 */
 	public void mousePressed(final MouseEvent e) {
-		if (this.table.isEditing() && (this.table.getCellEditor() == this))
+		if (this.table.isEditing() && (this.table.getCellEditor() == this)) {
 			this.isButtonColumnEditor = true;
+		}
 	}
-
+	
 	public void mouseReleased(final MouseEvent e) {
-		if (this.isButtonColumnEditor && this.table.isEditing())
+		if (this.isButtonColumnEditor && this.table.isEditing()) {
 			this.table.getCellEditor().stopCellEditing();
-
+		}
+		
 		this.isButtonColumnEditor = false;
 	}
-
-	public void mouseClicked(final MouseEvent e) {
-	}
-
-	public void mouseEntered(final MouseEvent e) {
-	}
-
-	public void mouseExited(final MouseEvent e) {
-	}
+	
+	public void mouseClicked(final MouseEvent e) {}
+	
+	public void mouseEntered(final MouseEvent e) {}
+	
+	public void mouseExited(final MouseEvent e) {}
 }

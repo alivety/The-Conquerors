@@ -22,7 +22,7 @@ public class Test implements ConquerorsApp {
 	public SocketChannel server;
 	protected PacketList pl;
 	private PacketListChooser plc;
-
+	
 	public void go() {
 		try {
 			Main.setupLogger(this);
@@ -34,7 +34,7 @@ public class Test implements ConquerorsApp {
 		final String host = JOptionPane.showInputDialog("Host");
 		final int port = Integer.parseInt(JOptionPane.showInputDialog("Port"));
 		Main.out.info(host + ":" + port);
-
+		
 		final PPLClient client = new PPLClient().addListener(new SocketListener() {
 			public void connect(final SocketChannel ch) throws Exception {
 				Main.out.info("connected");
@@ -42,7 +42,7 @@ public class Test implements ConquerorsApp {
 				// "alivety",Main.PRO_VER)));
 				Test.this.server = ch;
 			}
-
+			
 			public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
 				final Packet p = Main.decode(msg);
 				final JButton btn = new JButton("View Packet Data");
@@ -52,13 +52,12 @@ public class Test implements ConquerorsApp {
 							new PacketBuilder(Test.this, p, false).setVisible(true);
 						} catch (final IllegalAccessException e) {
 							Main.handleError(e);
-						}
-						;
+						} ;
 					}
 				});
 				Test.this.pl.addRow(new Object[] { "Server", p.getPacketID(), p });
 			}
-
+			
 			public void exception(final SocketChannel h, final Throwable t) {
 				Main.handleError(t);
 			}
@@ -68,20 +67,20 @@ public class Test implements ConquerorsApp {
 		} catch (final InterruptedException e) {
 			Main.handleError(e);
 		}
-
+		
 		this.pl = new PacketList(this);
 		this.pl.setVisible(true);
-
+		
 		this.plc = new PacketListChooser(this);
 		this.plc.setVisible(true);
 	}
-
+	
 	public PlayerObject[] getOnlinePlayers() {
 		return new PlayerObject[] {};
 	}
-
+	
 	@SubscribeEvent
 	public void catchAll(final Event evt) throws IllegalArgumentException, IllegalAccessException {
-
+		
 	}
 }

@@ -14,7 +14,7 @@ public class Client implements ConquerorsApp {
 			Main.handleError(e);
 		}
 	}
-
+	
 	public PlayerObject[] getOnlinePlayers() {
 		return null;
 	}

@@ -36,8 +36,7 @@ import io.github.alivety.conquerors.server.events.WindowSlotSelectedEvent;
 import io.github.alivety.ppl.Packet;
 
 public class PacketResolver {
-	public Event resolve(@Nonnull final Packet p, final PlayerObject client)
-			throws IllegalArgumentException, IllegalAccessException {
+	public Event resolve(@Nonnull final Packet p, final PlayerObject client) throws IllegalArgumentException, IllegalAccessException {
 		final int id = p.getPacketID();
 		if (id == 0) {
 			final P0 p0 = (P0) p;
@@ -69,8 +68,7 @@ public class PacketResolver {
 		} else if (id == 12) {
 			final P12 p12 = (P12) p;
 			return new PlayerListUpdatedEvent(p12.list);
-		} else if (id == 13)
-			return new PlayerDisconnectEvent(client);
+		} else if (id == 13) return new PlayerDisconnectEvent(client);
 		else if (id == 14) {
 			final P14 p14 = (P14) p;
 			return new WindowRequestedEvent(client, p14.spatialID);
@@ -86,7 +84,6 @@ public class PacketResolver {
 		} else if (id == 18) {
 			final P18 p18 = (P18) p;
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
-		} else
-			throw new NullPointerException("No packet with id=" + id);
+		} else throw new NullPointerException("No packet with id=" + id);
 	}
 }

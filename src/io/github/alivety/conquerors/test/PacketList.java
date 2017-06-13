@@ -16,17 +16,21 @@ import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.ppl.Packet;
 
 public class PacketList extends JFrame {
-
+	
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -1638241863909262836L;
 	public JPanel contentPane;
 	public JTable table;
 	public TableModel model;
-
+	
 	public void addRow(final Object[] rowData) {
 		// Preconditions.checkArgument(rowData.length==2, "Expected rowData of 2
 		// elements, got %s", rowData.length);
 		((DefaultTableModel) this.model).addRow(rowData);
 	}
-
+	
 	/**
 	 * Create the frame.
 	 */
@@ -38,19 +42,29 @@ public class PacketList extends JFrame {
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
-
+		
 		final JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(0, 0, 1036, 261);
 		this.contentPane.add(scrollPane);
-
+		
 		this.model = new DefaultTableModel(new Object[][] {}, new String[] { "Origin", "Packet ID", "Packet" }) {
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = 9096671483734523652L;
+			
 			@Override
 			public boolean isCellEditable(final int row, final int column) {
 				return column == 2;
 			}
 		};
-
+		
 		final Action packet = new AbstractAction() {
+			/**
+			 *
+			 */
+			private static final long serialVersionUID = -2431380960329863102L;
+			
 			public void actionPerformed(final ActionEvent e) {
 				Main.out.info("hello");
 				final JTable table = (JTable) e.getSource();
@@ -60,18 +74,17 @@ public class PacketList extends JFrame {
 					new PacketBuilder(test, p, false).setVisible(true);
 				} catch (final IllegalAccessException e1) {
 					Main.handleError(e1);
-				}
-				;
+				} ;
 			}
 		};
-
+		
 		this.table = new JTable();
 		this.table.setFillsViewportHeight(true);
 		this.table.setModel(this.model);
 		scrollPane.setViewportView(this.table);
-
-		final ButtonColumn buc = new ButtonColumn(this.table, packet, 2);
-
+		
+		new ButtonColumn(this.table, packet, 2);
+		
 	}
-
+	
 }

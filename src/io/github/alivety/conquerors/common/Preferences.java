@@ -18,64 +18,82 @@ import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.conquerors.test.Test;
 
 public class Preferences extends JFrame {
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4729521272308604150L;
+	
 	private static class Mode extends JFrame {
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 4546426182193116949L;
+		
 		public Mode() {
-			setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			setTitle("GameMode");
-			JPanel pane=new JPanel();
-			JButton client=new JButton("Client");
-			client.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
+			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			this.setTitle("GameMode");
+			final JPanel pane = new JPanel();
+			final JButton client = new JButton("Client");
+			client.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
 					new Client().go();
-				}});
-			JButton server=new JButton("Server");
-			server.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
+				}
+			});
+			final JButton server = new JButton("Server");
+			server.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
 					new Server().go();
-				}});
-			JButton test=new JButton("Manual");
-			test.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
+				}
+			});
+			final JButton test = new JButton("Manual");
+			test.addActionListener(new ActionListener() {
+				public void actionPerformed(final ActionEvent e) {
 					new Test().go();
-				}});
-			pane.add(client);pane.add(server);pane.add(test);
-			add(pane);
-			pack();
-			setLocationRelativeTo(null);
+				}
+			});
+			pane.add(client);
+			pane.add(server);
+			pane.add(test);
+			this.add(pane);
+			this.pack();
+			this.setLocationRelativeTo(null);
 		}
 	}
+	
 	private final JSONObject prefs;
 	public String username;
-	public final JSONObject servers=null;
-	public Preferences(JSONObject prefs) throws IOException {
-		this.prefs=prefs;
-		JPanel pane=new JPanel();
+	public final JSONObject servers = null;
+	
+	public Preferences(final JSONObject prefs) throws IOException {
+		this.prefs = prefs;
+		final JPanel pane = new JPanel();
 		pane.add(new JLabel("Username: "));
-		final JTextField username=new JTextField((String) prefs.getOrDefault("name", ""));
+		@SuppressWarnings("unchecked") final JTextField username = new JTextField((String) prefs.getOrDefault("name", ""));
 		username.setColumns(20);
 		pane.add(username);
-		JButton btn=new JButton("Login");
-		btn.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				Preferences.this.username=username.getText();
+		final JButton btn = new JButton("Login");
+		btn.addActionListener(new ActionListener() {
+			public void actionPerformed(final ActionEvent e) {
+				Preferences.this.username = username.getText();
 				new Mode().setVisible(true);
 				Preferences.this.dispose();
-			}});
+			}
+		});
 		pane.add(btn);
-		add(pane);
+		this.add(pane);
 		
-		pack();
-		setLocationRelativeTo(null);
+		this.pack();
+		this.setLocationRelativeTo(null);
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("Login");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setTitle("Login");
 	}
 	
-	public void save() throws IOException {
-		prefs.put("name", username);
-		prefs.put("servers", servers);
-		PrintWriter pw=new PrintWriter(Main.USER_PREFS);
-		prefs.writeJSONString(pw);
+	@SuppressWarnings("unchecked") public void save() throws IOException {
+		this.prefs.put("name", this.username);
+		this.prefs.put("servers", this.servers);
+		final PrintWriter pw = new PrintWriter(Main.USER_PREFS);
+		this.prefs.writeJSONString(pw);
 		pw.flush();
 		pw.close();
 	}
