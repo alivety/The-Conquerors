@@ -15,6 +15,7 @@ public class Logger extends PrintStream {
 	private Logger(final String name) throws IOException {
 		super(System.out);
 		this.name = name;
+		new File("logs").mkdirs();
 		final File f = new File("logs/conquerors-" + Logger.df.format(new Date()).replace(":", ".") + ".log");
 		f.createNewFile();
 		this.fout = new PrintWriter(f);
