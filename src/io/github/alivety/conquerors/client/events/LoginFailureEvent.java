@@ -6,7 +6,7 @@ import io.github.alivety.conquerors.common.events.Clientside;
 @Clientside
 public class LoginFailureEvent extends Event {
 	public String reason;
-	
+
 	public LoginFailureEvent(final String reason) {
 		this.reason = reason;
 	}

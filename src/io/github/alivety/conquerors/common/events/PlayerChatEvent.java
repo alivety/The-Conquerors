@@ -8,12 +8,12 @@ import io.github.alivety.conquerors.common.event.Event;
 public class PlayerChatEvent extends Event implements Cancelable {
 	public PlayerObject client;
 	public String message;
-	
+
 	public PlayerChatEvent(final PlayerObject player, final String message) {
 		this.client = player;
 		this.message = message;
 	}
-	
+
 	public PlayerChatEvent(final String message) {
 		this.message = message;
 	}

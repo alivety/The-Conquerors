@@ -34,10 +34,9 @@ public class Main {
 	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 	public static final File USER_PREFS = new File("prefs.json");
-	
+
 	public static final PacketResolver resolver = new PacketResolver();
-	
-	@SuppressWarnings("deprecation")
+
 	public static Packet createPacket(final int id, final Object... fields) {
 		try {
 			return Packet.c(Main.PACKET_LOCATION + id, fields);
@@ -46,7 +45,7 @@ public class Main {
 			return null;
 		}
 	}
-	
+
 	public static Packet decode(final ByteBuffer buf) {
 		try {
 			return Packet.decode(Main.PACKET_LOCATION, buf);
@@ -55,7 +54,7 @@ public class Main {
 			return null;
 		}
 	}
-	
+
 	public static ByteBuffer encode(final Packet p) {
 		try {
 			return PPL.encapsulate(p.encode());
@@ -64,11 +63,11 @@ public class Main {
 			return null;
 		}
 	}
-	
+
 	public static String formatChatMessage(final String msg) {
 		return Main.formatChatMessage(null, msg);
 	}
-	
+
 	public static String formatChatMessage(final String sender, final String msg) {
 		final SimpleDateFormat df = new SimpleDateFormat("k:m");
 		final String date = df.format(new Date());
@@ -77,11 +76,11 @@ public class Main {
 		else
 			return sender + ": " + msg + " (" + date + ")";
 	}
-	
+
 	public static List<Class<?>> getSuperclassesOf(final Object target) {
 		return null;
 	}
-	
+
 	public static Packet getUnbuiltPacket(final int id) {
 		try {
 			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
@@ -90,7 +89,7 @@ public class Main {
 			return null;
 		}
 	}
-	
+
 	public static void handleError(final Throwable t) {
 		if (Main.out != null)
 			Main.out.error(Throwables.getStackTraceAsString(t));
@@ -99,14 +98,14 @@ public class Main {
 		final ErrorDialog ed = new ErrorDialog(t);
 		ed.setVisible(true);
 	}
-	
+
 	public static void handleError(final Throwable t, final boolean close) {
 		if (close)
 			Main.handleError(t);
 		else
 			Main.out.warn(Throwables.getStackTraceAsString(t));
 	}
-	
+
 	public static void main(final String[] arg) throws IOException {
 		JFrame.setDefaultLookAndFeelDecorated(false);
 		Main.out = Logger.getLogger("undefined");
@@ -123,22 +122,22 @@ public class Main {
 			Main.handleError(e);
 		}
 	}
-	
+
 	public static Vector nv(final float x, final float y, final float z) {
 		return new Vector(x, y, z);
 	}
-	
+
 	public static void setupLogger(final ConquerorsApp app) throws IOException {
 		Main.out = Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		Main.out.info("setup");
 		Main.out.info(System.getProperties());
 		Main.out.info(System.getenv());
 	}
-	
+
 	public static String uuid(final String object) {
 		return object + "[" + Main.random.nextInt() + "]";
 	}
-	
+
 	public static String vardump(@Nonnull final Object target) throws IllegalArgumentException, IllegalAccessException {
 		final Class<?> cls = target.getClass();
 		final Field[] fields = cls.getDeclaredFields();

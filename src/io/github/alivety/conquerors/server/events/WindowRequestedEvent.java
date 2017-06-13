@@ -9,7 +9,7 @@ import io.github.alivety.conquerors.common.events.Serverside;
 public class WindowRequestedEvent extends Event implements Cancelable {
 	public String spatialID;
 	public PlayerObject player;
-	
+
 	public WindowRequestedEvent(final PlayerObject player, final String spatialID) {
 		this.spatialID = spatialID;
 		this.player = player;

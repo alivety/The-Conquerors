@@ -10,7 +10,7 @@ public class LoginRequestEvent extends Event implements Cancelable {
 	public PlayerObject client;
 	public String username;
 	public int protocolVersion;
-	
+
 	public LoginRequestEvent(final PlayerObject client, final String username, final int protocolVersion) {
 		this.client = client;
 		this.username = username;

@@ -11,8 +11,8 @@ import io.github.alivety.conquerors.common.events.Common;
 @Target(ElementType.TYPE)
 public @interface PacketData {
 	String description() default "N/A";
-	
+
 	int id();
-	
+
 	Class<?> recv() default Common.class;
 }

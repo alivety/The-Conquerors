@@ -8,7 +8,7 @@ import io.github.alivety.conquerors.common.events.Clientside;
 public class EntityResizedEvent extends Event implements Cancelable {
 	public String spatialID;
 	public float x, y, z;
-	
+
 	public EntityResizedEvent(final String spatialID, final float x, final float y, final float z) {
 		this.spatialID = spatialID;
 		this.x = x;
