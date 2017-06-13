@@ -34,6 +34,7 @@ public class Test implements ConquerorsApp {
 	
 	public void go() {
 		try {
+		try {
 			Main.setupLogger(this);
 			Main.EVENT_BUS.subscribe(this);
 		} catch (final IOException e) {
@@ -83,5 +84,8 @@ public class Test implements ConquerorsApp {
 		
 		this.plc = new PacketListChooser(this);
 		this.plc.setVisible(true);
+		} catch (Exception e) {
+			Main.handleError(e);
+		}
 	}
 }

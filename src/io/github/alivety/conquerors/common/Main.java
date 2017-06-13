@@ -96,7 +96,7 @@ public class Main {
 			Main.out.error(Throwables.getStackTraceAsString(t));
 		else
 			t.printStackTrace(System.out);
-		final ErrorDialog ed = new ErrorDialog("Unexpected system error", "An uncaught error occured", t);
+		final ErrorDialog ed = new ErrorDialog(t);
 		ed.setVisible(true);
 	}
 	
