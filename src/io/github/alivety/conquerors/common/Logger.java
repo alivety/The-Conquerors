@@ -11,12 +11,13 @@ import java.util.HashMap;
 public class Logger extends PrintStream {
 	private final String name;
 	private final PrintWriter fout;
+	private final File f;
 
 	private Logger(final String name) throws IOException {
 		super(System.out);
 		this.name = name;
 		new File("logs").mkdirs();
-		final File f = new File("logs/conquerors-" + Logger.df.format(new Date()).replace(":", ".") + ".log");
+		f = new File("logs/conquerors-" + Logger.df.format(new Date()).replace(":", ".") + ".log");
 		f.createNewFile();
 		this.fout = new PrintWriter(f);
 	}
@@ -35,6 +36,10 @@ public class Logger extends PrintStream {
 	private String format(final Level level, final Object msg) {
 		return Logger.df.format(new Date()) + " [" + Thread.currentThread().getName() + "] " + level.name() + " "
 				+ this.name + " - " + msg;
+	}
+	
+	public File file() {
+		return f;
 	}
 
 	private synchronized void print(final Level level, final Object msg) {

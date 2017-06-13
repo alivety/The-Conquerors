@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -167,10 +168,14 @@ public class ErrorDialog extends JFrame {
 	}
 
 	private void doClose() {
-		this.setVisible(false);
 		if (Desktop.isDesktopSupported()) {
 			Main.out.debug("desktop is supported");
-			Desktop.getDesktop();
+			try {
+				Desktop.getDesktop().open(Main.out.file());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
 		}
 		System.exit(0);
 	}
