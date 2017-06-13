@@ -30,7 +30,7 @@ public class PacketBuilder extends JFrame {
 	private static final long serialVersionUID = 6091057864086680639L;
 	private final JPanel contentPane;
 	private final JTextField textField;
-	
+
 	private final int tf_bounds_1 = 427;
 	private int tf_bounds_2 = 8;
 	private final int tf_bounds_3 = 428;
@@ -40,13 +40,13 @@ public class PacketBuilder extends JFrame {
 	private final int l_bounds_3 = 417;
 	private final int l_bounds_4 = 14;
 	private final int incr = 25;
-	
+
 	// public PacketBuilder(Packet p) {
 	// this.p=p;
 	// setTitle("Packet Builder: "+p.getClass().getName());
 	// textField.setText(p.getClass().getName());
 	// }
-	
+
 	/**
 	 * Create the frame.
 	 *
@@ -59,18 +59,18 @@ public class PacketBuilder extends JFrame {
 		} else {
 			this.setTitle("Packet Info");
 		}
-		
+
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setBounds(100, 100, 891, 300);
 		this.contentPane = new JPanel();
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
-		
+
 		final JLabel lblPacketClass = new JLabel("Packet Class");
 		lblPacketClass.setBounds(this.l_bounds_1, this.l_bounds_2, this.l_bounds_3, this.l_bounds_4);
 		this.contentPane.add(lblPacketClass);
-		
+
 		final Class<?> packet = p.getClass();
 		String textfieldtext;
 		if (packet.isAnnotationPresent(PacketData.class)) {
@@ -84,7 +84,7 @@ public class PacketBuilder extends JFrame {
 		this.textField.setBounds(this.tf_bounds_1, this.tf_bounds_2, this.tf_bounds_3, this.tf_bounds_4);
 		this.contentPane.add(this.textField);
 		this.textField.setColumns(10);
-		
+
 		final Class<?> cls = p.getClass();
 		final HashMap<Entry<String, JTextField>, Class<?>> typeMap = new HashMap<Entry<String, JTextField>, Class<?>>();
 		for (final Field f : cls.getFields()) {
@@ -112,7 +112,7 @@ public class PacketBuilder extends JFrame {
 			typeMap.put(Maps.immutableEntry(f.getName(), tf), type);
 			this.contentPane.add(tf);
 		}
-		
+
 		if (builder) {
 			final JButton btnNewButton = new JButton("Build and Send");
 			btnNewButton.addActionListener(new ActionListener() {
@@ -139,5 +139,5 @@ public class PacketBuilder extends JFrame {
 			this.contentPane.add(btnNewButton);
 		}
 	}
-	
+
 }

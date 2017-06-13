@@ -31,7 +31,21 @@ public class Server implements ConquerorsApp {
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
-	
+
+	protected void broadcast(final Packet p) {
+		final Iterator<PlayerObject> iter = this.players.iterator();
+		while (iter.hasNext()) {
+			final PlayerObject pl = iter.next();
+			if (pl.username() != null) {
+				pl.write(p);
+			}
+		}
+	}
+
+	public PlayerObject[] getOnlinePlayers() {
+		return this.players.toArray(new PlayerObject[this.players.size()]);
+	}
+
 	public void go() {
 		try {
 			Main.setupLogger(this);
@@ -48,7 +62,13 @@ public class Server implements ConquerorsApp {
 					Server.this.players.add(p);
 					Server.this.lookup.put(ch, p);
 				}
-				
+
+				public void exception(final SocketChannel h, final Throwable t) {
+					final PlayerObject p = Server.this.lookup.get(h);
+					Server.this.players.remove(p);
+					Main.handleError(t);
+				}
+
 				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
 					final Packet p = Main.decode(msg);
 					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(ch), p));
@@ -63,12 +83,6 @@ public class Server implements ConquerorsApp {
 						}
 					});
 				}
-				
-				public void exception(final SocketChannel h, final Throwable t) {
-					final PlayerObject p = Server.this.lookup.get(h);
-					Server.this.players.remove(p);
-					Main.handleError(t);
-				}
 			});
 			final int port = Integer.parseInt(JOptionPane.showInputDialog("Enter port number:"));
 			server.bind(port);
@@ -76,7 +90,7 @@ public class Server implements ConquerorsApp {
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}
-		
+
 		Main.ses.scheduleWithFixedDelay(new Runnable() {
 			public void run() {
 				Server.this.tasks_push(new Runnable() {
@@ -88,24 +102,27 @@ public class Server implements ConquerorsApp {
 				});
 			}
 		}, 0, 1, TimeUnit.MINUTES);
-		
+
 		while (true) {
 			while (this.tasks_has()) {
 				this.tasks_pop().run();
 			}
 		}
 	}
-	
-	protected void broadcast(final Packet p) {
+
+	private synchronized void packets_push(final Entry<PlayerObject, Packet> e) {
+		this.packets.push(e);
+	}
+
+	public PlayerObject playerByUsername(final String username) {
 		final Iterator<PlayerObject> iter = this.players.iterator();
 		while (iter.hasNext()) {
-			final PlayerObject pl = iter.next();
-			if (pl.username() != null) {
-				pl.write(p);
-			}
+			final PlayerObject p = iter.next();
+			if (p.username() != null) if (p.username().equals(username)) return p;
 		}
+		return null;
 	}
-	
+
 	public String[] playerList() {
 		final List<String> names = new ArrayList<String>();
 		final Iterator<PlayerObject> iter = this.players.iterator();
@@ -117,53 +134,36 @@ public class Server implements ConquerorsApp {
 		}
 		return names.toArray(new String[names.size()]);
 	}
-	
-	public UnitObject unitBySpatialID(final String spatialID) {
-		return this.units.get(spatialID);
-	}
-	
-	public PlayerObject playerByUsername(final String username) {
-		final Iterator<PlayerObject> iter = this.players.iterator();
-		while (iter.hasNext()) {
-			final PlayerObject p = iter.next();
-			if (p.username() != null) if (p.username().equals(username)) return p;
-		}
-		return null;
-	}
-	
+
 	public void registerUnit(final Unit unit) {
 		this.units.put(unit.getSpatialID(), unit);
 	}
-	
-	public UnitObject unregister(final UnitObject u) {
-		return this.units.remove(u);
-	}
-	
-	private synchronized void tasks_push(final Runnable r) {
-		this.tasks.push(r);
-	}
-	
-	private synchronized Runnable tasks_pop() {
-		return this.tasks.pop();
-	}
-	
+
 	private synchronized boolean tasks_has() {
 		return !this.tasks.empty();
 	}
-	
-	private synchronized void packets_push(final Entry<PlayerObject, Packet> e) {
-		this.packets.push(e);
+
+	private synchronized Runnable tasks_pop() {
+		return this.tasks.pop();
 	}
-	
-//	private synchronized Entry<PlayerObject, Packet> packets_pop() {
-//		return this.packets.pop();
-//	}
-//	
-//	private synchronized boolean packets_has() {
-//		return !this.packets.empty();
-//	}
-	
-	public PlayerObject[] getOnlinePlayers() {
-		return this.players.toArray(new PlayerObject[this.players.size()]);
+
+	private synchronized void tasks_push(final Runnable r) {
+		this.tasks.push(r);
+	}
+
+	public UnitObject unitBySpatialID(final String spatialID) {
+		return this.units.get(spatialID);
+	}
+
+	// private synchronized Entry<PlayerObject, Packet> packets_pop() {
+	// return this.packets.pop();
+	// }
+	//
+	// private synchronized boolean packets_has() {
+	// return !this.packets.empty();
+	// }
+
+	public UnitObject unregister(final UnitObject u) {
+		return this.units.remove(u);
 	}
 }

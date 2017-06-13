@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 import io.github.alivety.conquerors.common.Main;
 
 public class PacketListChooser extends JFrame {
-	
+
 	/**
 	 *
 	 */
@@ -21,7 +21,7 @@ public class PacketListChooser extends JFrame {
 	private final JPanel contentPane;
 	private final JLabel lblEnterThePacket;
 	private final JTextField pid_tf;
-	
+
 	/**
 	 * Create the frame.
 	 */
@@ -33,16 +33,16 @@ public class PacketListChooser extends JFrame {
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
-		
+
 		this.lblEnterThePacket = new JLabel("Enter the Packet ID:");
 		this.lblEnterThePacket.setBounds(10, 11, 123, 14);
 		this.contentPane.add(this.lblEnterThePacket);
-		
+
 		this.pid_tf = new JTextField();
 		this.pid_tf.setBounds(128, 8, 86, 20);
 		this.contentPane.add(this.pid_tf);
 		this.pid_tf.setColumns(10);
-		
+
 		final JButton btnBuildPacket = new JButton("Build Packet");
 		btnBuildPacket.addActionListener(new ActionListener() {
 			public void actionPerformed(final ActionEvent arg0) {

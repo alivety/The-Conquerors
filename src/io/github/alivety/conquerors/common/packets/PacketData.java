@@ -7,10 +7,12 @@ import java.lang.annotation.Target;
 
 import io.github.alivety.conquerors.common.events.Common;
 
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface PacketData {
-	int id();
-	
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface PacketData {
 	String description() default "N/A";
-	
+
+	int id();
+
 	Class<?> recv() default Common.class;
 }

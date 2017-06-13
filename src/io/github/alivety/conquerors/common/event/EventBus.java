@@ -9,27 +9,21 @@ import com.google.common.reflect.TypeToken;
 import io.github.alivety.conquerors.common.Main;
 
 public class EventBus {
-	private final ListenerList listeners = new ListenerList();
-	
 	protected static class EventListener implements Comparable<EventListener> {
 		private final int priority;
 		private final Object context;
 		private final Method method;
 		private final Class<Event> evt;
-		
+
 		protected EventListener(final EventPriority priority, final Object ctx, final Method m, final Class<Event> evt) {
 			this.priority = priority.weight();
 			this.context = ctx;
 			this.method = m;
 			this.evt = evt;
-			
+
 			this.method.setAccessible(true);
 		}
-		
-		public int compareTo(final EventListener el) {
-			return (this.priority - el.priority) * -1;
-		}
-		
+
 		protected void call(final Event evt) {
 			if (this.evt.isInstance(evt)) {
 				try {
@@ -40,13 +34,30 @@ public class EventBus {
 				}
 			}
 		}
-		
+
+		public int compareTo(final EventListener el) {
+			return (this.priority - el.priority) * -1;
+		}
+
 		@Override
 		public String toString() {
 			return "EventListener[ctx=" + this.context.getClass().getSimpleName() + "#" + this.method.getName() + "; priority=" + this.priority + "]";
 		}
 	}
-	
+
+	private final ListenerList listeners = new ListenerList();
+
+	public void bus(final Event evt) {
+		this.listeners.rebuild();
+		while (this.listeners.hasMore()) {
+			final EventListener l = this.listeners.next();
+			if (l.priority == 5) if (evt.isCanceled()) {
+				continue;
+			}
+			l.call(evt);
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public void subscribe(final Object target) {
 		final Method[] methods = target.getClass().getDeclaredMethods();
@@ -64,16 +75,5 @@ public class EventBus {
 		this.listeners.expand(list);
 		Main.out.debug(this.listeners.size() + " listeners");
 		Main.out.debug(this.listeners);
-	}
-	
-	public void bus(final Event evt) {
-		this.listeners.rebuild();
-		while (this.listeners.hasMore()) {
-			final EventListener l = this.listeners.next();
-			if (l.priority == 5) if (evt.isCanceled()) {
-				continue;
-			}
-			l.call(evt);
-		}
 	}
 }

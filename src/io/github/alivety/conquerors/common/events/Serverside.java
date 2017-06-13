@@ -11,4 +11,6 @@ import java.lang.annotation.Target;
  * @author sn
  *
  */
-@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface Serverside {}
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface Serverside {}

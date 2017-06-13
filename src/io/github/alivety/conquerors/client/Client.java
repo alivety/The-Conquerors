@@ -7,15 +7,15 @@ import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
 
 public class Client implements ConquerorsApp {
+	public PlayerObject[] getOnlinePlayers() {
+		return null;
+	}
+
 	public void go() {
 		try {
 			Main.setupLogger(this);
 		} catch (final IOException e) {
 			Main.handleError(e);
 		}
-	}
-	
-	public PlayerObject[] getOnlinePlayers() {
-		return null;
 	}
 }

@@ -33,7 +33,79 @@ public class Main {
 	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 	public static final File USER_PREFS = new File("prefs.json");
-	
+
+	public static final PacketResolver resolver = new PacketResolver();
+
+	@SuppressWarnings("deprecation")
+	public static Packet createPacket(final int id, final Object... fields) {
+		try {
+			return Packet.c(Main.PACKET_LOCATION + id, fields);
+		} catch (final Exception e) {
+			Main.handleError(e);
+			return null;
+		}
+	}
+
+	public static Packet decode(final ByteBuffer buf) {
+		try {
+			return Packet.decode(Main.PACKET_LOCATION, buf);
+		} catch (final Exception e) {
+			Main.handleError(e);
+			return null;
+		}
+	}
+
+	public static ByteBuffer encode(final Packet p) {
+		try {
+			return PPL.encapsulate(p.encode());
+		} catch (final Exception e) {
+			Main.handleError(e);
+			return null;
+		}
+	}
+
+	public static String formatChatMessage(final String msg) {
+		return Main.formatChatMessage(null, msg);
+	}
+
+	public static String formatChatMessage(final String sender, final String msg) {
+		final SimpleDateFormat df = new SimpleDateFormat("k:m");
+		final String date = df.format(new Date());
+		if (sender == null) return msg + " (" + date + ")";
+		else return sender + ": " + msg + " (" + date + ")";
+	}
+
+	public static List<Class<?>> getSuperclassesOf(final Object target) {
+		return null;
+	}
+
+	public static Packet getUnbuiltPacket(final int id) {
+		try {
+			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
+		} catch (final Exception e) {
+			Main.handleError(e);
+			return null;
+		}
+	}
+
+	public static void handleError(final Throwable t) {
+		if (Main.out != null) {
+			Main.out.error(Throwables.getStackTraceAsString(t));
+		} else {
+			t.printStackTrace(System.out);
+		}
+		final ErrorDialog ed = new ErrorDialog("Unexpected system error", "An uncaught error occured", t);
+		ed.setVisible(true);
+	}
+
+	public static void handleError(final Throwable t, final boolean close) {
+		if (close) {
+			Main.handleError(t);
+		} else {
+			Main.out.warn(Throwables.getStackTraceAsString(t));
+		}
+	}
+
 	public static void main(final String[] arg) throws IOException {
 		Main.out = Logger.getLogger("undefined");
 		try {
@@ -49,92 +121,22 @@ public class Main {
 			Main.handleError(e);
 		}
 	}
-	
-	public static void handleError(final Throwable t) {
-		if (Main.out != null) {
-			Main.out.error(Throwables.getStackTraceAsString(t));
-		} else {
-			t.printStackTrace(System.out);
-		}
-		final ErrorDialog ed = new ErrorDialog("Unexpected system error", "An uncaught error occured", t);
-		ed.setVisible(true);
+
+	public static Vector nv(final float x, final float y, final float z) {
+		return new Vector(x, y, z);
 	}
-	
+
 	public static void setupLogger(final ConquerorsApp app) throws IOException {
 		Main.out = Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		Main.out.info("setup");
 		Main.out.info(System.getProperties());
 		Main.out.info(System.getenv());
 	}
-	
-	public static Packet decode(final ByteBuffer buf) {
-		try {
-			return Packet.decode(Main.PACKET_LOCATION, buf);
-		} catch (final Exception e) {
-			Main.handleError(e);
-			return null;
-		}
-	}
-	
-	public static ByteBuffer encode(final Packet p) {
-		try {
-			return PPL.encapsulate(p.encode());
-		} catch (final Exception e) {
-			Main.handleError(e);
-			return null;
-		}
-	}
-	
-	@SuppressWarnings("deprecation") 
-	public static Packet createPacket(final int id, final Object... fields) {
-		try {
-			return Packet.c(Main.PACKET_LOCATION + id, fields);
-		} catch (final Exception e) {
-			Main.handleError(e);
-			return null;
-		}
-	}
-	
-	public static Packet getUnbuiltPacket(final int id) {
-		try {
-			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
-		} catch (final Exception e) {
-			Main.handleError(e);
-			return null;
-		}
-	}
-	
+
 	public static String uuid(final String object) {
 		return object + "[" + Main.random.nextInt() + "]";
 	}
-	
-	public static String formatChatMessage(final String sender, final String msg) {
-		final SimpleDateFormat df = new SimpleDateFormat("k:m");
-		final String date = df.format(new Date());
-		if (sender == null) return msg + " (" + date + ")";
-		else return sender + ": " + msg + " (" + date + ")";
-	}
-	
-	public static void handleError(final Throwable t, final boolean close) {
-		if (close) {
-			Main.handleError(t);
-		} else {
-			Main.out.warn(Throwables.getStackTraceAsString(t));
-		}
-	}
-	
-	public static String formatChatMessage(final String msg) {
-		return Main.formatChatMessage(null, msg);
-	}
-	
-	public static Vector nv(final float x, final float y, final float z) {
-		return new Vector(x, y, z);
-	}
-	
-	public static List<Class<?>> getSuperclassesOf(final Object target) {
-		return null;
-	}
-	
+
 	public static String vardump(@Nonnull final Object target) throws IllegalArgumentException, IllegalAccessException {
 		final Class<?> cls = target.getClass();
 		final Field[] fields = cls.getDeclaredFields();
@@ -148,6 +150,4 @@ public class Main {
 		s = s.substring(0, s.lastIndexOf(";"));
 		return s + "}";
 	}
-	
-	public static final PacketResolver resolver = new PacketResolver();
 }

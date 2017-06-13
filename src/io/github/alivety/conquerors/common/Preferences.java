@@ -18,17 +18,12 @@ import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.conquerors.test.Test;
 
 public class Preferences extends JFrame {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = -4729521272308604150L;
-	
 	private static class Mode extends JFrame {
 		/**
 		 *
 		 */
 		private static final long serialVersionUID = 4546426182193116949L;
-		
+
 		public Mode() {
 			this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			this.setTitle("GameMode");
@@ -59,11 +54,16 @@ public class Preferences extends JFrame {
 			this.setLocationRelativeTo(null);
 		}
 	}
-	
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -4729521272308604150L;
+
 	private final JSONObject prefs;
 	public String username;
 	public final JSONObject servers = null;
-	
+
 	public Preferences(final JSONObject prefs) throws IOException {
 		this.prefs = prefs;
 		final JPanel pane = new JPanel();
@@ -81,15 +81,16 @@ public class Preferences extends JFrame {
 		});
 		pane.add(btn);
 		this.add(pane);
-		
+
 		this.pack();
 		this.setLocationRelativeTo(null);
-		
+
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setTitle("Login");
 	}
-	
-	@SuppressWarnings("unchecked") public void save() throws IOException {
+
+	@SuppressWarnings("unchecked")
+	public void save() throws IOException {
 		this.prefs.put("name", this.username);
 		this.prefs.put("servers", this.servers);
 		final PrintWriter pw = new PrintWriter(Main.USER_PREFS);

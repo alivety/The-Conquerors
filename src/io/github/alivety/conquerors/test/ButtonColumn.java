@@ -44,12 +44,12 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 	private int mnemonic;
 	private final Border originalBorder;
 	private Border focusBorder;
-	
+
 	private final JButton renderButton;
 	private final JButton editButton;
 	private Object editorValue;
 	private boolean isButtonColumnEditor;
-	
+
 	/**
 	 * Create the ButtonColumn to be used as a renderer and editor. The renderer
 	 * and editor will automatically be installed on the TableColumn of the
@@ -65,20 +65,40 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 	public ButtonColumn(final JTable table, final Action action, final int column) {
 		this.table = table;
 		this.action = action;
-		
+
 		this.renderButton = new JButton();
 		this.editButton = new JButton();
 		this.editButton.setFocusPainted(false);
 		this.editButton.addActionListener(this);
 		this.originalBorder = this.editButton.getBorder();
 		this.setFocusBorder(new LineBorder(Color.BLUE));
-		
+
 		final TableColumnModel columnModel = table.getColumnModel();
 		columnModel.getColumn(column).setCellRenderer(this);
 		columnModel.getColumn(column).setCellEditor(this);
 		table.addMouseListener(this);
 	}
-	
+
+	//
+	// Implement ActionListener interface
+	//
+	/*
+	 * The button has been pressed. Stop editing and invoke the custom Action
+	 */
+	public void actionPerformed(final ActionEvent e) {
+		final int row = this.table.convertRowIndexToModel(this.table.getEditingRow());
+		this.fireEditingStopped();
+
+		// Invoke the Action
+
+		final ActionEvent event = new ActionEvent(this.table, ActionEvent.ACTION_PERFORMED, "" + row);
+		this.action.actionPerformed(event);
+	}
+
+	public Object getCellEditorValue() {
+		return this.editorValue;
+	}
+
 	/**
 	 * Get foreground color of the button when the cell has focus
 	 *
@@ -87,34 +107,11 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 	public Border getFocusBorder() {
 		return this.focusBorder;
 	}
-	
-	/**
-	 * The foreground color of the button when the cell has focus
-	 *
-	 * @param focusBorder
-	 *            the foreground color
-	 */
-	public void setFocusBorder(final Border focusBorder) {
-		this.focusBorder = focusBorder;
-		this.editButton.setBorder(focusBorder);
-	}
-	
+
 	public int getMnemonic() {
 		return this.mnemonic;
 	}
-	
-	/**
-	 * The mnemonic to activate the button when the cell has focus
-	 *
-	 * @param mnemonic
-	 *            the mnemonic
-	 */
-	public void setMnemonic(final int mnemonic) {
-		this.mnemonic = mnemonic;
-		this.renderButton.setMnemonic(mnemonic);
-		this.editButton.setMnemonic(mnemonic);
-	}
-	
+
 	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected, final int row, final int column) {
 		if (value == null) {
 			this.editButton.setText("");
@@ -129,15 +126,11 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 			this.editButton.setText(value.toString());
 			this.editButton.setIcon(null);
 		}
-		
+
 		this.editorValue = value;
 		return this.editButton;
 	}
-	
-	public Object getCellEditorValue() {
-		return this.editorValue;
-	}
-	
+
 	//
 	// Implement TableCellRenderer interface
 	//
@@ -149,13 +142,13 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 			this.renderButton.setForeground(table.getForeground());
 			this.renderButton.setBackground(UIManager.getColor("Button.background"));
 		}
-		
+
 		if (hasFocus) {
 			this.renderButton.setBorder(this.focusBorder);
 		} else {
 			this.renderButton.setBorder(this.originalBorder);
 		}
-		
+
 		// renderButton.setText( (value == null) ? "" : value.toString() );
 		if (value == null) {
 			this.renderButton.setText("");
@@ -170,26 +163,16 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 			this.renderButton.setText(value.toString());
 			this.renderButton.setIcon(null);
 		}
-		
+
 		return this.renderButton;
 	}
-	
-	//
-	// Implement ActionListener interface
-	//
-	/*
-	 * The button has been pressed. Stop editing and invoke the custom Action
-	 */
-	public void actionPerformed(final ActionEvent e) {
-		final int row = this.table.convertRowIndexToModel(this.table.getEditingRow());
-		this.fireEditingStopped();
-		
-		// Invoke the Action
-		
-		final ActionEvent event = new ActionEvent(this.table, ActionEvent.ACTION_PERFORMED, "" + row);
-		this.action.actionPerformed(event);
-	}
-	
+
+	public void mouseClicked(final MouseEvent e) {}
+
+	public void mouseEntered(final MouseEvent e) {}
+
+	public void mouseExited(final MouseEvent e) {}
+
 	//
 	// Implement MouseListener interface
 	//
@@ -203,18 +186,35 @@ public class ButtonColumn extends AbstractCellEditor implements TableCellRendere
 			this.isButtonColumnEditor = true;
 		}
 	}
-	
+
 	public void mouseReleased(final MouseEvent e) {
 		if (this.isButtonColumnEditor && this.table.isEditing()) {
 			this.table.getCellEditor().stopCellEditing();
 		}
-		
+
 		this.isButtonColumnEditor = false;
 	}
-	
-	public void mouseClicked(final MouseEvent e) {}
-	
-	public void mouseEntered(final MouseEvent e) {}
-	
-	public void mouseExited(final MouseEvent e) {}
+
+	/**
+	 * The foreground color of the button when the cell has focus
+	 *
+	 * @param focusBorder
+	 *            the foreground color
+	 */
+	public void setFocusBorder(final Border focusBorder) {
+		this.focusBorder = focusBorder;
+		this.editButton.setBorder(focusBorder);
+	}
+
+	/**
+	 * The mnemonic to activate the button when the cell has focus
+	 *
+	 * @param mnemonic
+	 *            the mnemonic
+	 */
+	public void setMnemonic(final int mnemonic) {
+		this.mnemonic = mnemonic;
+		this.renderButton.setMnemonic(mnemonic);
+		this.editButton.setMnemonic(mnemonic);
+	}
 }
