@@ -33,7 +33,8 @@ public class PlayerObject extends UnitObject {
 	}
 
 	private void write(final ByteBuffer buff) throws IOException {
-		if (!isReady) return;
+		if (!this.isReady)
+			return;
 		this.ch.write(buff);
 	}
 

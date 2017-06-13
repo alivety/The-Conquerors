@@ -2,12 +2,10 @@ package io.github.alivety.conquerors.common;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -57,25 +55,24 @@ public class Main {
 	public static void main(final String[] args) throws IOException {
 		Main.out = Logger.getLogger("undefined");
 		try {
-			final Map<String, Object> arg = Main.asMap(args);
+			final Map<String, Object> arg = Main.asMap((Object[])args);
 			System.setProperty("log4j.configurationFile", "configuration.xml");
 			int c = /*
 					 * JOptionPane.showOptionDialog(null,
 					 * "Are you hosting a server or playing the game?",
 					 * "Choose", 0, 0, null, new Object[]{"Server","Client"}, 0)
 					 */1;
-			if (arg.containsKey("app")) {
-				c=ObjectConverter.convert(arg.get("app"), Integer.class);
-			}
+			if (arg.containsKey("app"))
+				c = ObjectConverter.convert(arg.get("app"), Integer.class);
 			if (c == 0) {// Server
 				final Server server = new Server();
 				server.go();
 			} else if (c == 1) {// Client
 				final Client client = new Client();
 				client.go();
-			} else if (c==2) {
+			} else if (c == 2)
 				new Test().go();
-			} else
+			else
 				throw new IllegalStateException("c-value must be either 0 or 1");
 		} catch (final Exception e) {
 			Main.handleError(e);
@@ -124,11 +121,11 @@ public class Main {
 			return null;
 		}
 	}
-	
-	public static Packet getUnbuiltPacket(int id) {
+
+	public static Packet getUnbuiltPacket(final int id) {
 		try {
-			return (Packet) Class.forName(PACKET_LOCATION+id).getConstructor().newInstance();
-		} catch (Exception e) {
+			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
+		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
 		}
@@ -146,10 +143,12 @@ public class Main {
 		else
 			return sender + ": " + msg + " (" + date + ")";
 	}
-	
-	public static void handleError(Throwable t,boolean close) {
-		if (close) Main.handleError(t);
-		else out.warn(Throwables.getStackTraceAsString(t));
+
+	public static void handleError(final Throwable t, final boolean close) {
+		if (close)
+			Main.handleError(t);
+		else
+			Main.out.warn(Throwables.getStackTraceAsString(t));
 	}
 
 	public static String formatChatMessage(final String msg) {
@@ -163,19 +162,19 @@ public class Main {
 	public static List<Class<?>> getSuperclassesOf(final Object target) {
 		return null;
 	}
-	
-	public static String vardump(@Nonnull Object target) throws IllegalArgumentException, IllegalAccessException {
-		Class<?> cls=target.getClass();
-		Field[] fields=cls.getDeclaredFields();
-		StringBuilder sb=new StringBuilder();
+
+	public static String vardump(@Nonnull final Object target) throws IllegalArgumentException, IllegalAccessException {
+		final Class<?> cls = target.getClass();
+		final Field[] fields = cls.getDeclaredFields();
+		final StringBuilder sb = new StringBuilder();
 		sb.append(cls.getSimpleName()).append("{");
-		for (Field f : fields) {
+		for (final Field f : fields) {
 			f.setAccessible(true);
 			sb.append(f.getName()).append("=").append(f.get(target)).append(";");
 		}
 		String s = sb.toString();
-		s=s.substring(0,s.lastIndexOf(";"));
-		return s+"}";
+		s = s.substring(0, s.lastIndexOf(";"));
+		return s + "}";
 	}
 
 	public static final PacketResolver resolver = new PacketResolver();

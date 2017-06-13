@@ -1,231 +1,219 @@
 package io.github.alivety.conquerors.test;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.table.*;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import io.github.alivety.ppl.Packet;
 
 /**
- *  The ButtonColumn class provides a renderer and an editor that looks like a
- *  JButton. The renderer and editor will then be used for a specified column
- *  in the table. The TableModel will contain the String to be displayed on
- *  the button.
+ * The ButtonColumn class provides a renderer and an editor that looks like a
+ * JButton. The renderer and editor will then be used for a specified column in
+ * the table. The TableModel will contain the String to be displayed on the
+ * button.
  *
- *  The button can be invoked by a mouse click or by pressing the space bar
- *  when the cell has focus. Optionally a mnemonic can be set to invoke the
- *  button. When the button is invoked the provided Action is invoked. The
- *  source of the Action will be the table. The action command will contain
- *  the model row number of the button that was clicked.
+ * The button can be invoked by a mouse click or by pressing the space bar when
+ * the cell has focus. Optionally a mnemonic can be set to invoke the button.
+ * When the button is invoked the provided Action is invoked. The source of the
+ * Action will be the table. The action command will contain the model row
+ * number of the button that was clicked.
  *
  */
 public class ButtonColumn extends AbstractCellEditor
-	implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener
-{
-	private JTable table;
-	private Action action;
+		implements TableCellRenderer, TableCellEditor, ActionListener, MouseListener {
+	private final JTable table;
+	private final Action action;
 	private int mnemonic;
-	private Border originalBorder;
+	private final Border originalBorder;
 	private Border focusBorder;
 
-	private JButton renderButton;
-	private JButton editButton;
+	private final JButton renderButton;
+	private final JButton editButton;
 	private Object editorValue;
 	private boolean isButtonColumnEditor;
 
 	/**
-	 *  Create the ButtonColumn to be used as a renderer and editor. The
-	 *  renderer and editor will automatically be installed on the TableColumn
-	 *  of the specified column.
+	 * Create the ButtonColumn to be used as a renderer and editor. The renderer
+	 * and editor will automatically be installed on the TableColumn of the
+	 * specified column.
 	 *
-	 *  @param table the table containing the button renderer/editor
-	 *  @param action the Action to be invoked when the button is invoked
-	 *  @param column the column to which the button renderer/editor is added
+	 * @param table
+	 *            the table containing the button renderer/editor
+	 * @param action
+	 *            the Action to be invoked when the button is invoked
+	 * @param column
+	 *            the column to which the button renderer/editor is added
 	 */
-	public ButtonColumn(JTable table, Action action, int column)
-	{
+	public ButtonColumn(final JTable table, final Action action, final int column) {
 		this.table = table;
 		this.action = action;
 
-		renderButton = new JButton();
-		editButton = new JButton();
-		editButton.setFocusPainted( false );
-		editButton.addActionListener( this );
-		originalBorder = editButton.getBorder();
-		setFocusBorder( new LineBorder(Color.BLUE) );
+		this.renderButton = new JButton();
+		this.editButton = new JButton();
+		this.editButton.setFocusPainted(false);
+		this.editButton.addActionListener(this);
+		this.originalBorder = this.editButton.getBorder();
+		this.setFocusBorder(new LineBorder(Color.BLUE));
 
-		TableColumnModel columnModel = table.getColumnModel();
-		columnModel.getColumn(column).setCellRenderer( this );
-		columnModel.getColumn(column).setCellEditor( this );
-		table.addMouseListener( this );
-	}
-
-
-	/**
-	 *  Get foreground color of the button when the cell has focus
-	 *
-	 *  @return the foreground color
-	 */
-	public Border getFocusBorder()
-	{
-		return focusBorder;
+		final TableColumnModel columnModel = table.getColumnModel();
+		columnModel.getColumn(column).setCellRenderer(this);
+		columnModel.getColumn(column).setCellEditor(this);
+		table.addMouseListener(this);
 	}
 
 	/**
-	 *  The foreground color of the button when the cell has focus
+	 * Get foreground color of the button when the cell has focus
 	 *
-	 *  @param focusBorder the foreground color
+	 * @return the foreground color
 	 */
-	public void setFocusBorder(Border focusBorder)
-	{
+	public Border getFocusBorder() {
+		return this.focusBorder;
+	}
+
+	/**
+	 * The foreground color of the button when the cell has focus
+	 *
+	 * @param focusBorder
+	 *            the foreground color
+	 */
+	public void setFocusBorder(final Border focusBorder) {
 		this.focusBorder = focusBorder;
-		editButton.setBorder( focusBorder );
+		this.editButton.setBorder(focusBorder);
 	}
 
-	public int getMnemonic()
-	{
-		return mnemonic;
+	public int getMnemonic() {
+		return this.mnemonic;
 	}
 
 	/**
-	 *  The mnemonic to activate the button when the cell has focus
+	 * The mnemonic to activate the button when the cell has focus
 	 *
-	 *  @param mnemonic the mnemonic
+	 * @param mnemonic
+	 *            the mnemonic
 	 */
-	public void setMnemonic(int mnemonic)
-	{
+	public void setMnemonic(final int mnemonic) {
 		this.mnemonic = mnemonic;
-		renderButton.setMnemonic(mnemonic);
-		editButton.setMnemonic(mnemonic);
+		this.renderButton.setMnemonic(mnemonic);
+		this.editButton.setMnemonic(mnemonic);
 	}
 
-	public Component getTableCellEditorComponent(
-		JTable table, Object value, boolean isSelected, int row, int column)
-	{
-		if (value == null)
-		{
-			editButton.setText( "" );
-			editButton.setIcon( null );
-		}
-		else if (value instanceof Icon)
-		{
-			editButton.setText( "" );
-			editButton.setIcon( (Icon)value );
+	public Component getTableCellEditorComponent(final JTable table, final Object value, final boolean isSelected,
+			final int row, final int column) {
+		if (value == null) {
+			this.editButton.setText("");
+			this.editButton.setIcon(null);
+		} else if (value instanceof Icon) {
+			this.editButton.setText("");
+			this.editButton.setIcon((Icon) value);
 		} else if (value instanceof Packet) {
-			editButton.setText("View Packet Data");
-			editButton.setIcon(null);
-		}
-		else
-		{
-			editButton.setText( value.toString() );
-			editButton.setIcon( null );
+			this.editButton.setText("View Packet Data");
+			this.editButton.setIcon(null);
+		} else {
+			this.editButton.setText(value.toString());
+			this.editButton.setIcon(null);
 		}
 
 		this.editorValue = value;
-		return editButton;
+		return this.editButton;
 	}
 
-	public Object getCellEditorValue()
-	{
-		return editorValue;
+	public Object getCellEditorValue() {
+		return this.editorValue;
 	}
 
-//
-//  Implement TableCellRenderer interface
-//
-	public Component getTableCellRendererComponent(
-		JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column)
-	{
-		if (isSelected)
-		{
-			renderButton.setForeground(table.getSelectionForeground());
-	 		renderButton.setBackground(table.getSelectionBackground());
-		}
-		else
-		{
-			renderButton.setForeground(table.getForeground());
-			renderButton.setBackground(UIManager.getColor("Button.background"));
+	//
+	// Implement TableCellRenderer interface
+	//
+	public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+			final boolean hasFocus, final int row, final int column) {
+		if (isSelected) {
+			this.renderButton.setForeground(table.getSelectionForeground());
+			this.renderButton.setBackground(table.getSelectionBackground());
+		} else {
+			this.renderButton.setForeground(table.getForeground());
+			this.renderButton.setBackground(UIManager.getColor("Button.background"));
 		}
 
 		if (hasFocus)
-		{
-			renderButton.setBorder( focusBorder );
-		}
+			this.renderButton.setBorder(this.focusBorder);
 		else
-		{
-			renderButton.setBorder( originalBorder );
-		}
+			this.renderButton.setBorder(this.originalBorder);
 
-//		renderButton.setText( (value == null) ? "" : value.toString() );
-		if (value == null)
-		{
-			renderButton.setText( "" );
-			renderButton.setIcon( null );
-		}
-		else if (value instanceof Icon)
-		{
-			renderButton.setText( "" );
-			renderButton.setIcon( (Icon)value );
+		// renderButton.setText( (value == null) ? "" : value.toString() );
+		if (value == null) {
+			this.renderButton.setText("");
+			this.renderButton.setIcon(null);
+		} else if (value instanceof Icon) {
+			this.renderButton.setText("");
+			this.renderButton.setIcon((Icon) value);
 		} else if (value instanceof Packet) {
-			renderButton.setText( "View Packet Data" );
-			renderButton.setIcon( null );
-		}
-		else
-		{
-			renderButton.setText( value.toString() );
-			renderButton.setIcon( null );
+			this.renderButton.setText("View Packet Data");
+			this.renderButton.setIcon(null);
+		} else {
+			this.renderButton.setText(value.toString());
+			this.renderButton.setIcon(null);
 		}
 
-		return renderButton;
+		return this.renderButton;
 	}
 
-//
-//  Implement ActionListener interface
-//
+	//
+	// Implement ActionListener interface
+	//
 	/*
-	 *	The button has been pressed. Stop editing and invoke the custom Action
+	 * The button has been pressed. Stop editing and invoke the custom Action
 	 */
-	public void actionPerformed(ActionEvent e)
-	{
-		int row = table.convertRowIndexToModel( table.getEditingRow() );
-		fireEditingStopped();
+	public void actionPerformed(final ActionEvent e) {
+		final int row = this.table.convertRowIndexToModel(this.table.getEditingRow());
+		this.fireEditingStopped();
 
-		//  Invoke the Action
+		// Invoke the Action
 
-		ActionEvent event = new ActionEvent(
-			table,
-			ActionEvent.ACTION_PERFORMED,
-			"" + row);
-		action.actionPerformed(event);
+		final ActionEvent event = new ActionEvent(this.table, ActionEvent.ACTION_PERFORMED, "" + row);
+		this.action.actionPerformed(event);
 	}
 
-//
-//  Implement MouseListener interface
-//
+	//
+	// Implement MouseListener interface
+	//
 	/*
-	 *  When the mouse is pressed the editor is invoked. If you then then drag
-	 *  the mouse to another cell before releasing it, the editor is still
-	 *  active. Make sure editing is stopped when the mouse is released.
+	 * When the mouse is pressed the editor is invoked. If you then then drag
+	 * the mouse to another cell before releasing it, the editor is still
+	 * active. Make sure editing is stopped when the mouse is released.
 	 */
-    public void mousePressed(MouseEvent e)
-    {
-    	if (table.isEditing()
-		&&  table.getCellEditor() == this)
-			isButtonColumnEditor = true;
-    }
+	public void mousePressed(final MouseEvent e) {
+		if (this.table.isEditing() && (this.table.getCellEditor() == this))
+			this.isButtonColumnEditor = true;
+	}
 
-    public void mouseReleased(MouseEvent e)
-    {
-    	if (isButtonColumnEditor
-    	&&  table.isEditing())
-    		table.getCellEditor().stopCellEditing();
+	public void mouseReleased(final MouseEvent e) {
+		if (this.isButtonColumnEditor && this.table.isEditing())
+			this.table.getCellEditor().stopCellEditing();
 
-		isButtonColumnEditor = false;
-    }
+		this.isButtonColumnEditor = false;
+	}
 
-    public void mouseClicked(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-    public void mouseExited(MouseEvent e) {}
+	public void mouseClicked(final MouseEvent e) {
+	}
+
+	public void mouseEntered(final MouseEvent e) {
+	}
+
+	public void mouseExited(final MouseEvent e) {
+	}
 }

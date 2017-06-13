@@ -41,7 +41,7 @@ public class ErrorDialog extends JFrame {
 
 	private final JButton okButton = new JButton("OK");
 	private final JButton viewButton = new JButton("View Error");
-	//private final JButton emailButton = new JButton("Email Error");
+	// private final JButton emailButton = new JButton("Email Error");
 
 	private final JPanel topPanel = new JPanel(new BorderLayout());
 
@@ -49,9 +49,8 @@ public class ErrorDialog extends JFrame {
 
 		final StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors));
-		if (e.getCause()!=null) {
+		if (e.getCause() != null)
 			e.getCause().printStackTrace(new PrintWriter(errors));
-		}
 
 		this.setSize(this.dialogWidth, this.dialogHeight);
 
