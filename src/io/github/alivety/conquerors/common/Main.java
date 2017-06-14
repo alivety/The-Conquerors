@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
@@ -126,6 +127,25 @@ public class Main {
 				fw.flush();
 				fw.close();
 			}
+			
+			// print thread information
+			ses.scheduleWithFixedDelay(new Runnable(){
+				public void run() {
+					ThreadGroup rootGroup = Thread.currentThread( ).getThreadGroup( );
+					ThreadGroup parentGroup;
+					while ( ( parentGroup = rootGroup.getParent() ) != null ) {
+					    rootGroup = parentGroup;
+					}
+					Thread[] threads = new Thread[ rootGroup.activeCount() ];
+					while ( rootGroup.enumerate( threads, true ) == threads.length ) {
+					    threads = new Thread[ threads.length * 2 ];
+					}
+					for (Thread t : threads) {
+						if (t==null) break;
+						Main.out.debug(t);
+					}
+				}}, 0, 1, TimeUnit.MINUTES);
+			
 			final JSONParser parser = new JSONParser();
 			new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS))).setVisible(true);
 		} catch (final Exception e) {
