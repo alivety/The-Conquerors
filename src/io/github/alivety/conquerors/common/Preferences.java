@@ -102,4 +102,8 @@ public class Preferences extends JFrame {
 		pw.flush();
 		pw.close();
 	}
+	
+	public String getUsername() {
+		return username;
+	}
 }

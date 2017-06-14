@@ -1,9 +1,13 @@
 package io.github.alivety.conquerors.client;
 
+import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
 
 import static io.github.alivety.conquerors.common.event.EventPriority.*;
 
+import java.io.IOException;
+
+import io.github.alivety.conquerors.client.events.ConnectEvent;
 import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
@@ -69,5 +73,10 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onWindow(WindowOpenedEvent evt) {
 		
+	}
+	
+	@SubscribeEvent(SYS)
+	public void onConnect(ConnectEvent evt) throws IOException {
+		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
 	}
 }

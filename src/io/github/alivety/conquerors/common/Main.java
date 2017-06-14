@@ -35,6 +35,7 @@ public class Main {
 	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 	public static final File USER_PREFS = new File("prefs.json");
+	public static Preferences PREFS;
 
 	public static final PacketResolver resolver = new PacketResolver();
 
@@ -143,7 +144,8 @@ public class Main {
 				}}, 0, 1, TimeUnit.MINUTES);
 			
 			final JSONParser parser = new JSONParser();
-			new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS))).setVisible(true);
+			PREFS=new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS)));
+			PREFS.setVisible(true);
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}

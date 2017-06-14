@@ -7,6 +7,7 @@ import javax.swing.JOptionPane;
 
 import com.google.common.net.HostAndPort;
 
+import io.github.alivety.conquerors.client.events.ConnectEvent;
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
@@ -31,6 +32,7 @@ public class Client implements ConquerorsApp {
 					Client.this.server=ch;
 					Client.this.app=new GameApp(Client.this);
 					Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
+					Main.EVENT_BUS.bus(new ConnectEvent());
 					app.start();
 				}
 
@@ -45,7 +47,7 @@ public class Client implements ConquerorsApp {
 				public void exception(SocketChannel h, Throwable t) {
 					Main.handleError(t);
 				}});
-			client.connect(hap.getHost(), hap.getPort());
+			client.connect(hap.getHost(), hap.getPortOrDefault(22));
 		} catch (final Exception e) {
 			Main.handleError(e);
 		} catch (Error e) {

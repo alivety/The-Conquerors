@@ -15,7 +15,7 @@ public class GameApp extends SimpleApplication {
 	
 	@Override
 	public void simpleInitApp() {
-		throw new RuntimeException("oh no");
+		
 	}
 	
 	public void simpleUpdate(float tfs) {

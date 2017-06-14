@@ -42,7 +42,7 @@ public class PlayerObject extends UnitObject {
 
 	@Override
 	public String toString() {
-		return this.username() + " - " + this.spatialID;
+		return this.username() + "{" + this.spatialID+"}";
 	}
 
 	public String username() {
