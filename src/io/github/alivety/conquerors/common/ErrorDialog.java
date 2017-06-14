@@ -37,10 +37,10 @@ public class ErrorDialog extends JDialog {
 
 		final JTextArea txtrHi = new JTextArea();
 		txtrHi.setEditable(false);
-		txtrHi.setText(Throwables.getStackTraceAsString(e));
+		txtrHi.setText(Throwables.getStackTraceAsString(e.getCause())+"\r\n\r\n--- FULL LOGTRACE ---\r\n"+Throwables.getStackTraceAsString(e));
 		scrollPane.setViewportView(txtrHi);
 
-		final JLabel lblErrorMessage = new JLabel(e.getMessage() == null ? "A fatal error occured" : e.getClass().getSimpleName() + ": " + e.getMessage());
+		final JLabel lblErrorMessage = new JLabel(e.getCause().getMessage() == null ? "A fatal error occured" : e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
 		lblErrorMessage.setBounds(10, 13, 641, 14);
 		this.contentPane.add(lblErrorMessage);
 

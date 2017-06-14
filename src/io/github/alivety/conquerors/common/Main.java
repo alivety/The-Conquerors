@@ -93,20 +93,23 @@ public class Main {
 
 	public static void handleError(final Throwable t) {
 		try {
-			throw new LogTraceException();
+			throw new LogTraceException(t);
 		} catch (final LogTraceException e) {
 			if (Main.out != null)
-				Main.out.error(Throwables.getStackTraceAsString(t));
+				Main.out.error(Throwables.getStackTraceAsString(e));
 			else
 				t.printStackTrace(System.out);
 
-			Main.out.error(Throwables.getStackTraceAsString(e));
-			final ErrorDialog ed = new ErrorDialog(t);
+			final ErrorDialog ed = new ErrorDialog(e);
 			ed.setVisible(true);
 		}
 	}
 
 	private static class LogTraceException extends Exception {
+		public LogTraceException(Throwable t) {
+			super(t.getMessage(),t);
+		}
+
 		private static final long serialVersionUID = 1304222821855174255L;
 	}
 
