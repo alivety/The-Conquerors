@@ -9,6 +9,7 @@ import io.github.alivety.conquerors.client.events.EntityResizedEvent;
 import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
 import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
+import io.github.alivety.conquerors.client.events.UpdatedPlayerVariablesEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
@@ -22,6 +23,7 @@ import io.github.alivety.conquerors.common.packets.P15;
 import io.github.alivety.conquerors.common.packets.P16;
 import io.github.alivety.conquerors.common.packets.P17;
 import io.github.alivety.conquerors.common.packets.P18;
+import io.github.alivety.conquerors.common.packets.P19;
 import io.github.alivety.conquerors.common.packets.P4;
 import io.github.alivety.conquerors.common.packets.P5;
 import io.github.alivety.conquerors.common.packets.P6;
@@ -85,7 +87,11 @@ public class PacketResolver {
 		} else if (id == 18) {
 			final P18 p18 = (P18) p;
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
-		} else
+		} else if (id==19) {
+			P19 p19=(P19)p;
+			return new UpdatedPlayerVariablesEvent(p19.money, p19.mpm, p19.unitSpatialID);
+		}
+		else
 			throw new NullPointerException("No packet with id=" + id);
 	}
 }

@@ -255,6 +255,10 @@ public final class ObjectConverter {
 	public static float stringToPrimitiveFloat(String value) {
 		return stringToFloat(value).floatValue();
 	}
+	
+	public static String[] stringToStringArray(String value) {
+		return value.split(";");
+	}
 
 	public static int stringToInt(final String s) {
 		return Integer.parseInt(s);
