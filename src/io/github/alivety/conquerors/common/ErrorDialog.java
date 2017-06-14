@@ -19,9 +19,6 @@ public class ErrorDialog extends JDialog {
 	private static final long serialVersionUID = -4420240235644032632L;
 	private final JPanel contentPane;
 
-	/**
-	 * Create the frame.
-	 */
 	public ErrorDialog(final Throwable e) {
 		this.setTitle("Error");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -37,8 +34,7 @@ public class ErrorDialog extends JDialog {
 
 		final JTextArea txtrHi = new JTextArea();
 		txtrHi.setEditable(false);
-		txtrHi.setText(Throwables.getStackTraceAsString(e.getCause())+"\r\n\r\n--- FULL LOGTRACE ---\r\n"+Throwables.getStackTraceAsString(e));
-		scrollPane.setViewportView(txtrHi);
+		txtrHi.setText("Please include all of this information if you wish to submit a bug report.\r\n\r\n"+Throwables.getStackTraceAsString(e.getCause())+"\r\n\r\n--- FULL LOGTRACE ---\r\n"+Throwables.getStackTraceAsString(e));
 
 		final JLabel lblErrorMessage = new JLabel(e.getCause().getMessage() == null ? "A fatal error occured" : e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
 		lblErrorMessage.setBounds(10, 13, 641, 14);

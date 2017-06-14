@@ -100,7 +100,7 @@ public class Main {
 			else
 				t.printStackTrace(System.out);
 
-			final ErrorDialog ed = new ErrorDialog(e);
+			ErrorDialog ed=new ErrorDialog(e);
 			ed.setVisible(true);
 		}
 	}
