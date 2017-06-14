@@ -2,6 +2,7 @@ package io.github.alivety.conquerors.client;
 
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
+import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 
 import static io.github.alivety.conquerors.common.event.EventPriority.*;
 
@@ -78,5 +79,10 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onConnect(ConnectEvent evt) throws IOException {
 		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
+	}
+	
+	@SubscribeEvent(SYS)
+	public void onChat(PlayerChatEvent evt) {
+		Main.out.info(evt.message);
 	}
 }

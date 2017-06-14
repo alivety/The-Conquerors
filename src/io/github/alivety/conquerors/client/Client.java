@@ -2,9 +2,12 @@ package io.github.alivety.conquerors.client;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
+import com.google.common.base.Preconditions;
 import com.google.common.net.HostAndPort;
 
 import io.github.alivety.conquerors.client.events.ConnectEvent;
@@ -53,5 +56,10 @@ public class Client implements ConquerorsApp {
 		} catch (Error e) {
 			Main.handleError(e);
 		}
+	}
+	
+	public GameApp getApp() {
+		Preconditions.checkNotNull(app,"App has not been initialized");
+		return app;
 	}
 }
