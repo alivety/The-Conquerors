@@ -32,7 +32,13 @@ public class GameApp extends SimpleApplication {
 		
 		addKeyMapping("Exit",KeyInput.KEY_ESCAPE);
 		
+		addKeyMapping("Clear",KeyInput.KEY_C);// TODO clear all selected units
+		addKeyMapping("Chat",KeyInput.KEY_SLASH);// TODO open chat
+		addKeyMapping("SelN",KeyInput.KEY_G);// TODO select nearby units
+		addKeyMapping("Win",KeyInput.KEY_E);// TODO open window on selected unit
+		
 		inputManager.addListener(KeyEvents.MovementControl, "Up","Left","Right","Down");
+		inputManager.addListener(KeyEvents.ExitControl, "Exit");
 	}
 	
 	private void addKeyMapping(String name,int key) {

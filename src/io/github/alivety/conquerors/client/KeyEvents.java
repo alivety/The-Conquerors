@@ -9,7 +9,8 @@ import io.github.alivety.conquerors.common.Main;
 public abstract class KeyEvents implements ActionListener {
 	public static GameApp app;
 	
-	public static MovementControl MovementControl=new MovementControl();
+	public static final MovementControl MovementControl=new MovementControl();
+	public static final ExitControl ExitControl=new ExitControl();
 	
 	private static class MovementControl extends KeyEvents {
 		public void onAction(String name, boolean keyPressed, float tpf) {
