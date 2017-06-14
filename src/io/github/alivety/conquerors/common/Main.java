@@ -93,18 +93,18 @@ public class Main {
 	public static void handleError(final Throwable t) {
 		try {
 			throw new LogTraceException();
-		} catch (LogTraceException e) {
+		} catch (final LogTraceException e) {
 			if (Main.out != null)
 				Main.out.error(Throwables.getStackTraceAsString(t));
 			else
 				t.printStackTrace(System.out);
-			
+
 			Main.out.error(Throwables.getStackTraceAsString(e));
 			final ErrorDialog ed = new ErrorDialog(t);
 			ed.setVisible(true);
 		}
 	}
-	
+
 	private static class LogTraceException extends Exception {
 		private static final long serialVersionUID = 1304222821855174255L;
 	}

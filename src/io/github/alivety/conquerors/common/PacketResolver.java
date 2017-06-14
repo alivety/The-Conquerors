@@ -87,11 +87,10 @@ public class PacketResolver {
 		} else if (id == 18) {
 			final P18 p18 = (P18) p;
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
-		} else if (id==19) {
-			P19 p19=(P19)p;
+		} else if (id == 19) {
+			final P19 p19 = (P19) p;
 			return new UpdatedPlayerVariablesEvent(p19.money, p19.mpm, p19.unitSpatialID);
-		}
-		else
+		} else
 			throw new NullPointerException("No packet with id=" + id);
 	}
 }

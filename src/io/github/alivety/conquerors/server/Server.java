@@ -65,8 +65,9 @@ public class Server implements ConquerorsApp {
 				public void exception(final SocketChannel h, final Throwable t) {
 					final PlayerObject p = Server.this.lookup.get(h);
 					Server.this.players.remove(p);
-					
-					if (t instanceof IOException) return;//disconnect
+
+					if (t instanceof IOException)
+						return;// disconnect
 					Main.handleError(t);
 				}
 

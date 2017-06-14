@@ -251,12 +251,12 @@ public final class ObjectConverter {
 	public static Float stringToFloat(final String value) {
 		return new Float(value);
 	}
-	
-	public static float stringToPrimitiveFloat(String value) {
-		return stringToFloat(value).floatValue();
+
+	public static float stringToPrimitiveFloat(final String value) {
+		return ObjectConverter.stringToFloat(value).floatValue();
 	}
-	
-	public static String[] stringToStringArray(String value) {
+
+	public static String[] stringToStringArray(final String value) {
 		return value.split(";");
 	}
 
