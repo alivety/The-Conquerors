@@ -16,6 +16,7 @@ public class Logger extends PrintStream {
 
 	private static final SimpleDateFormat df = new SimpleDateFormat("kk:mm:ss.SSS");
 	private static final HashMap<String, Logger> loggers = new HashMap<String, Logger>();
+	private boolean debug=true;
 
 	public static Logger getLogger(final String name) throws IOException {
 		if (Logger.loggers.containsKey(name))
@@ -40,6 +41,7 @@ public class Logger extends PrintStream {
 	}
 
 	public void debug(final Object o) {
+		if (!debug) return;
 		this.print(Level.DEBUG, o);
 	}
 
@@ -67,5 +69,13 @@ public class Logger extends PrintStream {
 
 	public void warn(final Object o) {
 		this.print(Level.WARNING, o);
+	}
+	
+	public boolean isDebugEnabled() {
+		return debug;
+	}
+	
+	public void setDebugEnabled(boolean debug) {
+		this.debug=debug;
 	}
 }

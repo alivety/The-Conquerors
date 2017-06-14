@@ -113,13 +113,6 @@ public class Main {
 		private static final long serialVersionUID = 1304222821855174255L;
 	}
 
-	public static void handleError(final Throwable t, final boolean close) {
-		if (close)
-			Main.handleError(t);
-		else
-			Main.out.warn(Throwables.getStackTraceAsString(t));
-	}
-
 	public static void main(final String[] arg) throws IOException {
 		JFrame.setDefaultLookAndFeelDecorated(false);
 		Main.out = Logger.getLogger("undefined");
@@ -163,8 +156,8 @@ public class Main {
 	public static void setupLogger(final ConquerorsApp app) throws IOException {
 		Main.out = Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		Main.out.info("setup");
-		Main.out.info(System.getProperties());
-		Main.out.info(System.getenv());
+		Main.out.debug(System.getProperties());
+		Main.out.debug(System.getenv());
 	}
 
 	public static String uuid(final String object) {

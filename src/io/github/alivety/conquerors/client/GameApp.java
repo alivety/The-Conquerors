@@ -4,6 +4,8 @@ import java.util.Stack;
 
 import com.jme3.app.SimpleApplication;
 
+import io.github.alivety.conquerors.common.Main;
+
 public class GameApp extends SimpleApplication {
 	private Stack<Runnable> tasks=new Stack<Runnable>();
 	private Client client;
@@ -13,7 +15,7 @@ public class GameApp extends SimpleApplication {
 	
 	@Override
 	public void simpleInitApp() {
-		
+		throw new RuntimeException("oh no");
 	}
 	
 	public void simpleUpdate(float tfs) {
@@ -33,5 +35,9 @@ public class GameApp extends SimpleApplication {
 	
 	private synchronized boolean hasMoreTasks() {
 		return !tasks.empty();
+	}
+	
+	public void handleError(String errMsg,Throwable t) {
+		Main.handleError(new RuntimeException(errMsg,t));
 	}
 }

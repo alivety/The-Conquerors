@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -14,6 +15,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 
 import com.google.common.base.Throwables;
+import com.google.common.io.Files;
 
 public class ErrorDialog extends JDialog {
 	private static final long serialVersionUID = -4420240235644032632L;
@@ -34,7 +36,18 @@ public class ErrorDialog extends JDialog {
 
 		final JTextArea txtrHi = new JTextArea();
 		txtrHi.setEditable(false);
-		txtrHi.setText("Please include all of this information if you wish to submit a bug report.\r\n\r\n"+Throwables.getStackTraceAsString(e.getCause())+"\r\n\r\n--- FULL LOGTRACE ---\r\n"+Throwables.getStackTraceAsString(e));
+		StringBuilder sb=new StringBuilder();
+		sb.append("Please include all the following information in a bug report.\n");
+		sb.append("You can report issues here: https://github.com/alivety/The-Conquerors/issues\n\n");
+		sb.append("--- Error ---\n\n").append(Throwables.getStackTraceAsString(e.getCause())).append("\n\n");
+		sb.append("--- Logtrace ---\n\n").append(Throwables.getStackTraceAsString(e)).append("\n\n");
+		try {
+			sb.append("--- Full Log ---\n\n").append(Files.asCharSource(Main.out.file(), Charset.defaultCharset()).read());
+		} catch (IOException e1) {
+			sb.append("An error occured while gathering the full log:\n\n").append(Throwables.getStackTraceAsString(e1));
+		}
+		txtrHi.setText(sb.toString());
+		scrollPane.setViewportView(txtrHi);
 
 		final JLabel lblErrorMessage = new JLabel(e.getCause().getMessage() == null ? "A fatal error occured" : e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
 		lblErrorMessage.setBounds(10, 13, 641, 14);

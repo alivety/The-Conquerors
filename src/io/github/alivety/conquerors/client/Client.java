@@ -10,6 +10,7 @@ import com.google.common.net.HostAndPort;
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
+import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.ppl.PPLClient;
 import io.github.alivety.ppl.SocketListener;
 
@@ -30,10 +31,15 @@ public class Client implements ConquerorsApp {
 					Client.this.server=ch;
 					Client.this.app=new GameApp(Client.this);
 					Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
+					app.start();
 				}
 
 				public void read(SocketChannel ch, ByteBuffer msg) throws Exception {
-					
+					final Event evt=Main.resolver.resolve(Main.decode(msg), null);
+					app.scheduleTask(new Runnable(){
+						public void run() {
+							Main.EVENT_BUS.bus(evt);
+						}});
 				}
 
 				public void exception(SocketChannel h, Throwable t) {
