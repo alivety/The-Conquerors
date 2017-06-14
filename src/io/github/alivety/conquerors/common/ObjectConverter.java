@@ -129,8 +129,6 @@ public final class ObjectConverter {
 	 *             InvocationTargetException.
 	 */
 	public static <T> Object convert(final Object from, final Class<T> to) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-		Main.out.debug(from);
-		Main.out.debug(to);
 		// Null is just null.
 		if (from == null)
 			return null;

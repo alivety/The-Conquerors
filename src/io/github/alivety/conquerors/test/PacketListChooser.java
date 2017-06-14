@@ -49,6 +49,7 @@ public class PacketListChooser extends JFrame {
 				PacketBuilder pb = null;
 				try {
 					pb = new PacketBuilder(test, Main.getUnbuiltPacket(Integer.parseInt(PacketListChooser.this.pid_tf.getText())), true);
+					pid_tf.setText("");
 				} catch (final Exception e) {
 					Main.handleError(e);
 				}

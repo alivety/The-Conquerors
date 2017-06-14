@@ -60,7 +60,6 @@ public class PacketList extends JFrame {
 			private static final long serialVersionUID = -2431380960329863102L;
 
 			public void actionPerformed(final ActionEvent e) {
-				Main.out.info("hello");
 				final JTable table = (JTable) e.getSource();
 				final int modelRow = Integer.valueOf(e.getActionCommand());
 				final Packet p = (Packet) ((DefaultTableModel) table.getModel()).getValueAt(modelRow, 2);

@@ -20,6 +20,7 @@ import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
+import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
 import io.github.alivety.conquerors.test.events.DummyEvent;
 import io.github.alivety.ppl.PPLServer;
 import io.github.alivety.ppl.Packet;
@@ -66,8 +67,13 @@ public class Server implements ConquerorsApp {
 					final PlayerObject p = Server.this.lookup.get(h);
 					Server.this.players.remove(p);
 
-					if (t instanceof IOException)
-						return;// disconnect
+					if (t instanceof IOException) {
+						Server.this.tasks_push(new Runnable(){
+							public void run() {
+								Main.EVENT_BUS.bus(new PlayerDisconnectEvent(Server.this.lookup.get(h)));
+							}});
+						return;
+					}
 					Main.handleError(t);
 				}
 
@@ -97,8 +103,11 @@ public class Server implements ConquerorsApp {
 			public void run() {
 				Server.this.tasks_push(new Runnable() {
 					public void run() {
-						for (final PlayerObject p : Server.this.getOnlinePlayers())
+						Main.out.debug("Updating player info");
+						for (final PlayerObject p : Server.this.getOnlinePlayers()) {
 							p.money += p.mpm;
+							Main.out.debug(p+" money raised to "+p.money);
+						}
 					}
 				});
 			}
