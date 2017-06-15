@@ -24,6 +24,7 @@ public class KeyEvents {
 			if (!keyPressed) {
 				try {
 					app.getClient().server.write(Main.encode(Main.createPacket(13)));
+					app.destroy();
 					System.exit(0);
 				} catch (IOException e) {
 					Main.handleError(e);
