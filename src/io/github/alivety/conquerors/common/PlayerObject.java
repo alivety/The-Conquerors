@@ -70,6 +70,7 @@ public class PlayerObject extends UnitObject {
 
 	public void write(final Packet p) {
 		try {
+			Main.out.debug(p+".write("+p+")");
 			this.write(Main.encode(p));
 		} catch (final IOException e) {
 			Main.handleError(e);
