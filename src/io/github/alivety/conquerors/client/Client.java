@@ -33,7 +33,7 @@ public class Client implements ConquerorsApp {
 			Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
 			PPLClient client=new PPLClient().addListener(new SocketListener(){
 				public void connect(SocketChannel ch) throws Exception {
-					Main.EVENT_BUS.bus(new ConnectEvent());
+					Main.EVENT_BUS.bus(new ConnectEvent(ch));
 				}
 
 				public void read(SocketChannel ch, ByteBuffer msg) throws Exception {
