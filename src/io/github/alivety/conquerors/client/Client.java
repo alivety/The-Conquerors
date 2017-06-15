@@ -2,8 +2,6 @@ package io.github.alivety.conquerors.client;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
@@ -21,6 +19,7 @@ import io.github.alivety.ppl.SocketListener;
 public class Client implements ConquerorsApp {
 	private GameApp app;
 	protected SocketChannel server;
+
 	public PlayerObject[] getOnlinePlayers() {
 		return null;
 	}
@@ -28,40 +27,42 @@ public class Client implements ConquerorsApp {
 	public void go() {
 		try {
 			Main.setupLogger(this);
-			String hostandport=JOptionPane.showInputDialog("host:port");
-			HostAndPort hap=HostAndPort.fromString(hostandport);
+			final String hostandport = JOptionPane.showInputDialog("host:port");
+			final HostAndPort hap = HostAndPort.fromString(hostandport);
 			Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
-			PPLClient client=new PPLClient().addListener(new SocketListener(){
-				public void connect(SocketChannel ch) throws Exception {
+			final PPLClient client = new PPLClient().addListener(new SocketListener() {
+				public void connect(final SocketChannel ch) throws Exception {
 					Main.EVENT_BUS.bus(new ConnectEvent(ch));
 				}
 
-				public void read(SocketChannel ch, ByteBuffer msg) throws Exception {
-					final Event evt=Main.resolver.resolve(Main.decode(msg), null);
-					app.scheduleTask(new Runnable(){
+				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
+					final Event evt = Main.resolver.resolve(Main.decode(msg), null);
+					Client.this.app.scheduleTask(new Runnable() {
 						public void run() {
 							Main.EVENT_BUS.bus(evt);
-						}});
+						}
+					});
 				}
 
-				public void exception(SocketChannel h, Throwable t) {
+				public void exception(final SocketChannel h, final Throwable t) {
 					Main.handleError(t);
-				}});
+				}
+			});
 			client.connect(hap.getHost(), hap.getPortOrDefault(22));
 		} catch (final Exception e) {
 			Main.handleError(e);
-		} catch (Error e) {
+		} catch (final Error e) {
 			Main.handleError(e);
 		}
 	}
-	
+
 	public GameApp getApp() {
-		Preconditions.checkNotNull(app,"App has not been initialized");
-		return app;
+		Preconditions.checkNotNull(this.app, "App has not been initialized");
+		return this.app;
 	}
-	
+
 	public void initApp() {
-		Preconditions.checkArgument(app==null,"App has already initialized");
-		app=new GameApp(this);
+		Preconditions.checkArgument(this.app == null, "App has already initialized");
+		this.app = new GameApp(this);
 	}
 }

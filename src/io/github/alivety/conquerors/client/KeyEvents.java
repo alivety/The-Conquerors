@@ -9,27 +9,26 @@ import io.github.alivety.conquerors.common.Main;
 
 public class KeyEvents {
 	public static GameApp app;
-	
-	public static final MovementControl MovementControl=new MovementControl();
-	public static final ExitControl ExitControl=new ExitControl();
-	
+
+	public static final MovementControl MovementControl = new MovementControl();
+	public static final ExitControl ExitControl = new ExitControl();
+
 	private static class MovementControl implements AnalogListener {
-		public void onAnalog(String name, float value, float tpf) {
-			//TODO mvement
+		public void onAnalog(final String name, final float value, final float tpf) {
+			// TODO mvement
 		}
 	}
-	
+
 	private static class ExitControl implements ActionListener {
-		public void onAction(String name, boolean keyPressed, float tpf) {
-			if (!keyPressed) {
+		public void onAction(final String name, final boolean keyPressed, final float tpf) {
+			if (!keyPressed)
 				try {
-					app.getClient().server.write(Main.encode(Main.createPacket(13)));
-					app.destroy();
+					KeyEvents.app.getClient().server.write(Main.encode(Main.createPacket(13)));
+					KeyEvents.app.destroy();
 					System.exit(0);
-				} catch (IOException e) {
+				} catch (final IOException e) {
 					Main.handleError(e);
 				}
-			}
 		}
 	}
 }

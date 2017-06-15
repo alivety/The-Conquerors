@@ -36,14 +36,14 @@ public class ErrorDialog extends JDialog {
 
 		final JTextArea txtrHi = new JTextArea();
 		txtrHi.setEditable(false);
-		StringBuilder sb=new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Please include all the following information in a bug report.\n");
 		sb.append("You can report issues here: https://github.com/alivety/The-Conquerors/issues\n\n");
 		sb.append("--- Error ---\n\n").append(Throwables.getStackTraceAsString(e.getCause())).append("\n\n");
 		sb.append("--- Logtrace ---\n\n").append(Throwables.getStackTraceAsString(e)).append("\n\n");
 		try {
 			sb.append("--- Full Log ---\n\n").append(Files.asCharSource(Main.out.file(), Charset.defaultCharset()).read());
-		} catch (IOException e1) {
+		} catch (final IOException e1) {
 			sb.append("An error occured while gathering the full log:\n\n").append(Throwables.getStackTraceAsString(e1));
 		}
 		txtrHi.setText(sb.toString());

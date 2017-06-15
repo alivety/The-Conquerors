@@ -68,10 +68,11 @@ public class Server implements ConquerorsApp {
 					Server.this.players.remove(p);
 
 					if (t instanceof IOException) {
-						Server.this.tasks_push(new Runnable(){
+						Server.this.tasks_push(new Runnable() {
 							public void run() {
 								Main.EVENT_BUS.bus(new PlayerDisconnectEvent(Server.this.lookup.get(h)));
-							}});
+							}
+						});
 						return;
 					}
 					Main.handleError(t);
@@ -106,7 +107,7 @@ public class Server implements ConquerorsApp {
 						Main.out.debug("Updating player info");
 						for (final PlayerObject p : Server.this.getOnlinePlayers()) {
 							p.money += p.mpm;
-							Main.out.debug(p+" money raised to "+p.money);
+							Main.out.debug(p + " money raised to " + p.money);
 							p.write(Main.createPacket(19, p.money, p.mpm, p.getUnitSpatialIDs()));
 						}
 					}

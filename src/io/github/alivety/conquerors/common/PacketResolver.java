@@ -45,8 +45,8 @@ public class PacketResolver {
 		if (id == 0) {
 			final P0 p0 = (P0) p;
 			return new LoginRequestEvent(client, p0.username, p0.protocolVersion);
-		} else if (id==2) {
-			P2 p2=(P2)p;
+		} else if (id == 2) {
+			final P2 p2 = (P2) p;
 			return new LoginFailureEvent(p2.reason);
 		} else if (id == 1) {
 			final P1 p1 = (P1) p;

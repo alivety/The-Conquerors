@@ -2,7 +2,6 @@ package io.github.alivety.conquerors.client;
 
 import java.util.Stack;
 
-import com.google.common.base.Preconditions;
 import com.jme3.app.SimpleApplication;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
@@ -12,88 +11,93 @@ import com.jme3.input.controls.KeyTrigger;
 import io.github.alivety.conquerors.common.Main;
 
 public class GameApp extends SimpleApplication {
-	private Stack<Runnable> tasks=new Stack<Runnable>();
-	private Client client;
-	
-	private boolean dragToRotate=false;
-	
-	public GameApp(Client client) {
-		this.client=client;
+	private final Stack<Runnable> tasks = new Stack<Runnable>();
+	private final Client client;
+
+	private boolean dragToRotate = false;
+
+	public GameApp(final Client client) {
+		this.client = client;
 	}
-	
+
 	@Override
 	public void simpleInitApp() {
-		KeyEvents.app=this;
+		KeyEvents.app = this;
 		this.initKeyBindings();
-		
-		setDisplayFps(false);
-    	setDisplayStatView(false);
-    	
-    	guiFont = assetManager.loadFont("Interface/Fonts/Default.fnt");
-        BitmapText ch = new BitmapText(guiFont, false);
-        ch.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-        ch.setText("+");
-        ch.setLocalTranslation(settings.getWidth() / 2 - ch.getLineWidth()/2, settings.getHeight() / 2 + ch.getLineHeight()/2, 0);
-        guiNode.attachChild(ch);
+
+		this.setDisplayFps(false);
+		this.setDisplayStatView(false);
+
+		this.guiFont = this.assetManager.loadFont("Interface/Fonts/Default.fnt");
+		final BitmapText ch = new BitmapText(this.guiFont, false);
+		ch.setSize(this.guiFont.getCharSet().getRenderedSize() * 2);
+		ch.setText("+");
+		ch.setLocalTranslation((this.settings.getWidth() / 2) - (ch.getLineWidth() / 2), (this.settings.getHeight() / 2) + (ch.getLineHeight() / 2), 0);
+		this.guiNode.attachChild(ch);
 	}
-	
+
 	private void initKeyBindings() {
-		inputManager.clearMappings();
-		
-		addKeyMapping("Up",KeyInput.KEY_W);
-		addKeyMapping("Left",KeyInput.KEY_A);
-		addKeyMapping("Right",KeyInput.KEY_D);
-		addKeyMapping("Down",KeyInput.KEY_S);
-		
-		addKeyMapping("Exit",KeyInput.KEY_ESCAPE);
-		
-		addKeyMapping("Clear",KeyInput.KEY_C);// TODO clear all selected units
-		addKeyMapping("Chat",KeyInput.KEY_SLASH);// TODO open chat
-		addKeyMapping("SelN",KeyInput.KEY_G);// TODO select nearby units
-		addKeyMapping("Win",KeyInput.KEY_E);// TODO open window on selected unit
-		
-		addKeyMapping("Drag",KeyInput.KEY_G);
-		
-		inputManager.addListener(KeyEvents.MovementControl, "Up","Left","Right","Down");
-		inputManager.addListener(KeyEvents.ExitControl, "Exit");
-		
-		inputManager.addListener(new ActionListener(){
-			public void onAction(String name, boolean keyPressed, float tpf) {
+		this.inputManager.clearMappings();
+
+		this.addKeyMapping("Up", KeyInput.KEY_W);
+		this.addKeyMapping("Left", KeyInput.KEY_A);
+		this.addKeyMapping("Right", KeyInput.KEY_D);
+		this.addKeyMapping("Down", KeyInput.KEY_S);
+
+		this.addKeyMapping("Exit", KeyInput.KEY_ESCAPE);
+
+		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected
+													// units
+		this.addKeyMapping("Chat", KeyInput.KEY_SLASH);// TODO open chat
+		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
+		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on
+													// selected
+													// unit
+
+		this.addKeyMapping("Drag", KeyInput.KEY_G);
+
+		this.inputManager.addListener(KeyEvents.MovementControl, "Up", "Left", "Right", "Down");
+		this.inputManager.addListener(KeyEvents.ExitControl, "Exit");
+
+		this.inputManager.addListener(new ActionListener() {
+			public void onAction(final String name, final boolean keyPressed, final float tpf) {
 				if (!keyPressed) {
-					dragToRotate=!dragToRotate;
-					GameApp.this.flyCam.setDragToRotate(dragToRotate);
-					Main.out.debug(GameApp.this.flyCam.isDragToRotate()+"=dragToRotate");
+					GameApp.this.dragToRotate = !GameApp.this.dragToRotate;
+					GameApp.this.flyCam.setDragToRotate(GameApp.this.dragToRotate);
+					Main.out.debug(GameApp.this.flyCam.isDragToRotate() + "=dragToRotate");
 				}
-			}}, "Drag");
+			}
+		}, "Drag");
 	}
-	
-	private void addKeyMapping(String name,int key) {
-		inputManager.addMapping(name, new KeyTrigger(key));
+
+	private void addKeyMapping(final String name, final int key) {
+		this.inputManager.addMapping(name, new KeyTrigger(key));
 	}
-	
-	public void simpleUpdate(float tpf) {
-		while (hasMoreTasks()) {
-			getNextTask().run();
-		}
+
+	@Override
+	public void simpleUpdate(final float tpf) {
+		while (this.hasMoreTasks())
+			this.getNextTask().run();
 	}
-	
+
 	public Client getClient() {
-		return client;
+		return this.client;
 	}
-	
-	protected synchronized void scheduleTask(Runnable r) {
-		tasks.push(r);
+
+	protected synchronized void scheduleTask(final Runnable r) {
+		this.tasks.push(r);
 	}
-	
+
 	private synchronized Runnable getNextTask() {
-		return tasks.pop();
+		return this.tasks.pop();
 	}
-	
+
 	private synchronized boolean hasMoreTasks() {
-		return !tasks.empty();
+		return !this.tasks.empty();
 	}
-	
-	public void handleError(String errMsg,Throwable t) {
-		Main.handleError(new RuntimeException(errMsg,t));
+
+	@Override
+	public void handleError(final String errMsg, final Throwable t) {
+		Main.handleError(new RuntimeException(errMsg, t));
 	}
 }

@@ -30,13 +30,12 @@ public class PlayerObject extends UnitObject {
 	public UnitObject[] getUnits() {
 		return this.units.toArray(new UnitObject[this.units.size()]);
 	}
-	
+
 	public String[] getUnitSpatialIDs() {
-		UnitObject[] units=this.getUnits();
-		String[] rsp=new String[units.length];
-		for (int i=0;i<rsp.length;i++) {
-			rsp[i]=units[i].spatialID;
-		}
+		final UnitObject[] units = this.getUnits();
+		final String[] rsp = new String[units.length];
+		for (int i = 0; i < rsp.length; i++)
+			rsp[i] = units[i].spatialID;
 		return rsp;
 	}
 
@@ -51,7 +50,7 @@ public class PlayerObject extends UnitObject {
 
 	@Override
 	public String toString() {
-		return this.username() + "{" + this.spatialID+"}";
+		return this.username() + "{" + this.spatialID + "}";
 	}
 
 	public String username() {
@@ -70,7 +69,7 @@ public class PlayerObject extends UnitObject {
 
 	public void write(final Packet p) {
 		try {
-			Main.out.debug(this+".write("+p+")");
+			Main.out.debug(this + ".write(" + p + ")");
 			this.write(Main.encode(p));
 		} catch (final IOException e) {
 			Main.handleError(e);

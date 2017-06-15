@@ -101,14 +101,14 @@ public class Main {
 			else
 				t.printStackTrace(System.out);
 
-			ErrorDialog ed=new ErrorDialog(e);
+			final ErrorDialog ed = new ErrorDialog(e);
 			ed.setVisible(true);
 		}
 	}
 
 	private static class LogTraceException extends Exception {
-		public LogTraceException(Throwable t) {
-			super(t.getMessage(),t);
+		public LogTraceException(final Throwable t) {
+			super(t.getMessage(), t);
 		}
 
 		private static final long serialVersionUID = 1304222821855174255L;
@@ -124,28 +124,28 @@ public class Main {
 				fw.flush();
 				fw.close();
 			}
-			
+
 			// print thread information
-			ses.scheduleWithFixedDelay(new Runnable(){
+			Main.ses.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
-					ThreadGroup rootGroup = Thread.currentThread( ).getThreadGroup( );
+					ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
 					ThreadGroup parentGroup;
-					while ( ( parentGroup = rootGroup.getParent() ) != null ) {
-					    rootGroup = parentGroup;
-					}
-					Thread[] threads = new Thread[ rootGroup.activeCount() ];
-					while ( rootGroup.enumerate( threads, true ) == threads.length ) {
-					    threads = new Thread[ threads.length * 2 ];
-					}
-					for (Thread t : threads) {
-						if (t==null) break;
+					while ((parentGroup = rootGroup.getParent()) != null)
+						rootGroup = parentGroup;
+					Thread[] threads = new Thread[rootGroup.activeCount()];
+					while (rootGroup.enumerate(threads, true) == threads.length)
+						threads = new Thread[threads.length * 2];
+					for (final Thread t : threads) {
+						if (t == null)
+							break;
 						Main.out.debug(t);
 					}
-				}}, 0, 1, TimeUnit.MINUTES);
-			
+				}
+			}, 0, 1, TimeUnit.MINUTES);
+
 			final JSONParser parser = new JSONParser();
-			PREFS=new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS)));
-			PREFS.setVisible(true);
+			Main.PREFS = new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS)));
+			Main.PREFS.setVisible(true);
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}
