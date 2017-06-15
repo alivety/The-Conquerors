@@ -60,7 +60,6 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(LoginSuccessEvent evt) {
-		client.initApp();
 		client.getApp().start();
 	}
 	
@@ -83,6 +82,7 @@ public class ClientEventSubscriber {
 	public void onConnect(ConnectEvent evt) throws IOException {
 		client.server=evt.ch;
 		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER+1)));
+		client.initApp();
 	}
 	
 	@SubscribeEvent(SYS)
