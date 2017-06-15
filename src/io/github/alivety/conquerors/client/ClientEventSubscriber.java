@@ -75,7 +75,7 @@ public class ClientEventSubscriber {
 	}
 	
 	@SubscribeEvent(SYS)
-	public void onWindow(WindowOpenedEvent evt) {
+	public void onWindowOpen(WindowOpenedEvent evt) {
 		
 	}
 	
