@@ -56,6 +56,7 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onLoginFailure(LoginFailureEvent evt) {
 		JOptionPane.showMessageDialog(null, "Your login was not accepted: "+evt.reason);
+		System.exit(0);
 	}
 	
 	@SubscribeEvent(SYS)
