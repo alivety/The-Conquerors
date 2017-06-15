@@ -30,6 +30,15 @@ public class PlayerObject extends UnitObject {
 	public UnitObject[] getUnits() {
 		return this.units.toArray(new UnitObject[this.units.size()]);
 	}
+	
+	public String[] getUnitSpatialIDs() {
+		UnitObject[] units=this.getUnits();
+		String[] rsp=new String[units.length];
+		for (int i=0;i<rsp.length;i++) {
+			rsp[i]=units[i].spatialID;
+		}
+		return rsp;
+	}
 
 	@Override
 	public String getUnitType() {

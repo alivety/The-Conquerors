@@ -107,6 +107,7 @@ public class Server implements ConquerorsApp {
 						for (final PlayerObject p : Server.this.getOnlinePlayers()) {
 							p.money += p.mpm;
 							Main.out.debug(p+" money raised to "+p.money);
+							p.write(Main.createPacket(19, p.money, p.mpm, p.getUnitSpatialIDs()));
 						}
 					}
 				});
