@@ -54,7 +54,7 @@ public class GameApp extends SimpleApplication {
 													// selected
 													// unit
 
-		this.addKeyMapping("Drag", KeyInput.KEY_G);
+		this.addKeyMapping("Drag", KeyInput.KEY_P);
 
 		this.inputManager.addListener(KeyEvents.MovementControl, "Up", "Left", "Right", "Down");
 		this.inputManager.addListener(KeyEvents.ExitControl, "Exit");
@@ -64,7 +64,6 @@ public class GameApp extends SimpleApplication {
 				if (!keyPressed) {
 					GameApp.this.dragToRotate = !GameApp.this.dragToRotate;
 					GameApp.this.flyCam.setDragToRotate(GameApp.this.dragToRotate);
-					Main.out.debug(GameApp.this.flyCam.isDragToRotate() + "=dragToRotate");
 				}
 			}
 		}, "Drag");
