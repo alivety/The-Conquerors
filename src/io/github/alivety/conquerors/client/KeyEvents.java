@@ -1,7 +1,10 @@
 package io.github.alivety.conquerors.client;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.HashMap;
 
+import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
 
@@ -30,5 +33,19 @@ public class KeyEvents {
 					Main.handleError(e);
 				}
 		}
+	}
+	
+	private static HashMap<Integer,String> keyCache=new HashMap<Integer,String>();
+	public static String getKey(int keyInput) throws IllegalArgumentException, IllegalAccessException {
+		if (keyCache.containsKey(keyInput)) {
+			return keyCache.get(keyInput);
+		}
+		Field[] fields=KeyInput.class.getDeclaredFields();
+		for (Field f : fields) {
+			if ((Integer)f.get(null)==keyInput) {
+				return f.getName().substring(4).toLowerCase();
+			}
+		}
+		throw new IllegalArgumentException("No such key with value="+keyInput);
 	}
 }

@@ -46,7 +46,6 @@ public class GameApp extends SimpleApplication {
 		this.addKeyMapping(KeyInput.KEY_S, KeyEvents.MovementControl);
 
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
-		
 
 		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
 		this.addKeyMapping("Chat", KeyInput.KEY_SLASH);// TODO open chat
@@ -68,9 +67,19 @@ public class GameApp extends SimpleApplication {
 	}
 	
 	private void addKeyMapping(int key,InputListener listener) {
-		String id=Main.uuid("key_map_"+key);
+		String id="key_map_"+key;
 		inputManager.addMapping(id, new KeyTrigger(key));
 		inputManager.addListener(listener, id);
+		inputManager.addListener(new ActionListener(){
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				if (!keyPressed) {
+					try {
+						Main.out.debug(name+": "+KeyEvents.getKey(Integer.parseInt(name.replace("key_map_", ""))));
+					} catch (Exception e) {
+						Main.handleError(e);
+					}
+				}
+			}}, id);
 		Main.out.debug("Added input mapping for "+id);
 	}
 
