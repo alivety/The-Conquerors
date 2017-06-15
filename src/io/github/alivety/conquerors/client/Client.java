@@ -30,13 +30,10 @@ public class Client implements ConquerorsApp {
 			Main.setupLogger(this);
 			String hostandport=JOptionPane.showInputDialog("host:port");
 			HostAndPort hap=HostAndPort.fromString(hostandport);
+			Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
 			PPLClient client=new PPLClient().addListener(new SocketListener(){
 				public void connect(SocketChannel ch) throws Exception {
-					Client.this.server=ch;
-					Client.this.app=new GameApp(Client.this);
-					Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
 					Main.EVENT_BUS.bus(new ConnectEvent());
-					app.start();
 				}
 
 				public void read(SocketChannel ch, ByteBuffer msg) throws Exception {
@@ -61,5 +58,10 @@ public class Client implements ConquerorsApp {
 	public GameApp getApp() {
 		Preconditions.checkNotNull(app,"App has not been initialized");
 		return app;
+	}
+	
+	public void initApp() {
+		Preconditions.checkArgument(app==null,"App has already initialized");
+		app=new GameApp(this);
 	}
 }

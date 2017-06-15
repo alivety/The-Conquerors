@@ -79,6 +79,8 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onConnect(ConnectEvent evt) throws IOException {
 		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
+		client.initApp();
+		client.getApp().start();
 	}
 	
 	@SubscribeEvent(SYS)
