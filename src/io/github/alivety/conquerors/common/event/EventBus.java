@@ -27,7 +27,7 @@ public class EventBus {
 		protected void call(final Event evt) {
 			if (this.evt.isInstance(evt))
 				try {
-					Main.out.debug(this + " invoked on " + evt);
+					Main.out.debug(this + " invoked on " + Main.vardump(evt));
 					this.method.invoke(this.context, evt);
 				} catch (final Exception e) {
 					Main.handleError(e);
