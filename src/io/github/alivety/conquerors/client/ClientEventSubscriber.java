@@ -8,6 +8,8 @@ import static io.github.alivety.conquerors.common.event.EventPriority.*;
 
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import io.github.alivety.conquerors.client.events.ConnectEvent;
 import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
@@ -53,12 +55,13 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onLoginFailure(LoginFailureEvent evt) {
-		
+		JOptionPane.showMessageDialog(null, "Your login was not accepted: "+evt.reason);
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(LoginSuccessEvent evt) {
-		
+		client.initApp();
+		client.getApp().start();
 	}
 	
 	@SubscribeEvent(SYS)
@@ -79,9 +82,7 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onConnect(ConnectEvent evt) throws IOException {
 		client.server=evt.ch;
-		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
-		client.initApp();
-		client.getApp().start();
+		client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER+1)));
 	}
 	
 	@SubscribeEvent(SYS)

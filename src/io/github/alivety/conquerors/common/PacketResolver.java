@@ -7,6 +7,7 @@ import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
 import io.github.alivety.conquerors.client.events.EntityResizedEvent;
 import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
+import io.github.alivety.conquerors.client.events.LoginFailureEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
 import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.UpdatedPlayerVariablesEvent;
@@ -24,6 +25,7 @@ import io.github.alivety.conquerors.common.packets.P16;
 import io.github.alivety.conquerors.common.packets.P17;
 import io.github.alivety.conquerors.common.packets.P18;
 import io.github.alivety.conquerors.common.packets.P19;
+import io.github.alivety.conquerors.common.packets.P2;
 import io.github.alivety.conquerors.common.packets.P4;
 import io.github.alivety.conquerors.common.packets.P5;
 import io.github.alivety.conquerors.common.packets.P6;
@@ -43,6 +45,9 @@ public class PacketResolver {
 		if (id == 0) {
 			final P0 p0 = (P0) p;
 			return new LoginRequestEvent(client, p0.username, p0.protocolVersion);
+		} else if (id==2) {
+			P2 p2=(P2)p;
+			return new LoginFailureEvent(p2.reason);
 		} else if (id == 1) {
 			final P1 p1 = (P1) p;
 			return new LoginSuccessEvent(p1.spatialID);
