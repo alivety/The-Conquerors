@@ -14,23 +14,24 @@ import io.github.alivety.conquerors.common.Main;
 
 public abstract class Model {
 	public static AssetManager assetManager;
-	protected Spatial makeCube(Vector3f size) {
-		Box box=new Box(size.x,size.y,size.z);
-		return new Geometry(Main.uuid("cube"),box);
+	
+	protected Spatial makeCube(final Vector3f size) {
+		final Box box = new Box(size.x, size.y, size.z);
+		return new Geometry(Main.uuid("cube"), box);
 	}
 	
-	protected Spatial makeSphere(int zSamples,int radialSamples,float radius) {
-		Sphere sphere=new Sphere(zSamples,radialSamples,radius);
-		return new Geometry(Main.uuid("sphere"),sphere);
+	protected Spatial makeSphere(final int zSamples, final int radialSamples, final float radius) {
+		final Sphere sphere = new Sphere(zSamples, radialSamples, radius);
+		return new Geometry(Main.uuid("sphere"), sphere);
 	}
 	
-	protected void positionSpatial(Spatial spat,Vector3f location) {
+	protected void positionSpatial(final Spatial spat, final Vector3f location) {
 		spat.setLocalTranslation(location);
 	}
 	
-	protected void colorSpatial(Spatial spat,ColorRGBA color) {
-		Preconditions.checkNotNull(assetManager,"assetManager is not initialized");
-		Material mat=new Material(assetManager,"Common/MatDefs/Misc/Unshaded.j3md");
+	protected void colorSpatial(final Spatial spat, final ColorRGBA color) {
+		Preconditions.checkNotNull(Model.assetManager, "assetManager is not initialized");
+		final Material mat = new Material(Model.assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
 		mat.setColor("Color", color);
 		spat.setMaterial(mat);
 	}

@@ -5,20 +5,21 @@ import com.jme3.scene.Spatial;
 import io.github.alivety.conquerors.common.UnitObject;
 
 public class Entity extends UnitObject {
-	private Spatial spat;
-	public Entity(Spatial spat) {
+	private final Spatial spat;
+	
+	public Entity(final Spatial spat) {
 		super(spat.getName());
-		this.spat=spat;
+		this.spat = spat;
 	}
 	
 	@Override
 	public String getUnitType() {
 		return "Entity";
 	}
-
+	
 	@Override
 	public String getOwnerSpatialID() {
-		return spat.getUserData("owner");
+		return this.spat.getUserData("owner");
 	}
 	
 }

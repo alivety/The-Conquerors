@@ -30,29 +30,33 @@ public class GameApp extends SimpleApplication {
 	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
 		this.scheduleTask(new Runnable() {
 			public void run() {
-				final Spatial spat=GameApp.newSpatial(assetManager, model, material, spatialID);
-				spat.setUserData("unit",new Entity(spat));
-				entities.attachChild(spat);
+				final Spatial spat = GameApp.newSpatial(GameApp.this.assetManager, model, material, spatialID);
+				spat.setUserData("unit", new Entity(spat));
+				GameApp.this.entities.attachChild(spat);
 			}
 		});
 	}
 	
-	public void scheduleChangeEntityOwnership(final String spatialID,final String ownerSpatialID) {
-		this.scheduleTask(new Runnable(){
+	public void scheduleChangeEntityOwnership(final String spatialID, final String ownerSpatialID) {
+		this.scheduleTask(new Runnable() {
 			public void run() {
-				Spatial spat=getSpatial(spatialID);
+				final Spatial spat = GameApp.this.getSpatial(spatialID);
 				spat.setUserData("owner", ownerSpatialID);
-			}});
+			}
+		});
 	}
 	
-	public Spatial getSpatial(String spatialID) {
-		Spatial spat=entities.getChild(spatialID);
-		if (spat==null) throw new NullPointerException("No entity with spatialID="+spatialID);
+	public Spatial getSpatial(final String spatialID) {
+		final Spatial spat = this.entities.getChild(spatialID);
+		if (spat == null)
+			throw new NullPointerException("No entity with spatialID=" + spatialID);
 		return spat;
 	}
 	
 	@Override
 	public void simpleInitApp() {
+		Model.assetManager = this.assetManager;
+		
 		KeyEvents.app = this;
 		this.initKeyBindings();
 		
@@ -66,9 +70,7 @@ public class GameApp extends SimpleApplication {
 		ch.setLocalTranslation((this.settings.getWidth() / 2) - (ch.getLineWidth() / 2), (this.settings.getHeight() / 2) + (ch.getLineHeight() / 2), 0);
 		this.guiNode.attachChild(ch);
 		
-		rootNode.attachChild(entities);
-		
-		Model.assetManager=assetManager;
+		this.rootNode.attachChild(this.entities);
 	}
 	
 	private void initKeyBindings() {
@@ -145,11 +147,11 @@ public class GameApp extends SimpleApplication {
 	public void handleError(final String errMsg, final Throwable t) {
 		Main.handleError(new RuntimeException(errMsg, t));
 	}
-
+	
 	/* Shorthand method */
-	public static Spatial newSpatial(AssetManager assetManager,String model,String material,String spatialID) {
-		Spatial spat=assetManager.loadModel(model);
-		Material mat=new Material(assetManager,material);
+	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) {
+		final Spatial spat = assetManager.loadModel(model);
+		final Material mat = new Material(assetManager, material);
 		spat.setMaterial(mat);
 		spat.setName(spatialID);
 		return spat;
