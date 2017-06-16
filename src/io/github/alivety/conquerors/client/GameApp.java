@@ -8,9 +8,7 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
-import com.jme3.material.Material;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 
 import io.github.alivety.conquerors.common.Main;
 
@@ -29,11 +27,7 @@ public class GameApp extends SimpleApplication {
 	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
 		this.scheduleTask(new Runnable() {
 			public void run() {
-				final Material mat = new Material(GameApp.this.assetManager, material);
-				final Spatial spat = GameApp.this.assetManager.loadModel(model);
-				spat.setName(spatialID);
-				spat.setMaterial(mat);
-				GameApp.this.entities.attachChild(spat);
+				GameApp.this.entities.attachChild(ConquerorsSpatial.newSpatial(assetManager, model, material, spatialID));
 			}
 		});
 	}

@@ -30,22 +30,22 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityMove(final EntityMovedEvent evt) {
-		
+		//TODO entity movement
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onEntityOwnershipUpdate(final EntityOwnershipChangedEvent evt) {
-		
+		//TODO entity ownership
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onEntityDespawn(final EntityRemovedEvent evt) {
-		
+		//TODO entity despawn
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onEntityScale(final EntityResizedEvent evt) {
-		
+		//TODO entity resize
 	}
 	
 	@SubscribeEvent(SYS)
@@ -61,12 +61,12 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(final LoginSuccessEvent evt) {
-		
+		Main.out.info("Login Successful: "+evt.spatialID);
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onPlayerListUpdate(final PlayerListUpdatedEvent evt) {
-		
+		//TODO player list
 	}
 	
 	@SubscribeEvent(SYS)
@@ -78,7 +78,7 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onWindowOpen(final WindowOpenedEvent evt) {
-		
+		//TODO window open
 	}
 	
 	@SubscribeEvent(SYS)
@@ -91,6 +91,6 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onChat(final PlayerChatEvent evt) {
-		Main.out.info(evt.message);
+		//TODO chat
 	}
 }
