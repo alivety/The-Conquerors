@@ -65,6 +65,10 @@ public class GameApp extends SimpleApplication {
 		ch.setText("+");
 		ch.setLocalTranslation((this.settings.getWidth() / 2) - (ch.getLineWidth() / 2), (this.settings.getHeight() / 2) + (ch.getLineHeight() / 2), 0);
 		this.guiNode.attachChild(ch);
+		
+		rootNode.attachChild(entities);
+		
+		Model.assetManager=assetManager;
 	}
 	
 	private void initKeyBindings() {
