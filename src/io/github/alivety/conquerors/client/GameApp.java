@@ -8,17 +8,33 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.material.Material;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 import io.github.alivety.conquerors.common.Main;
 
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	private final Client client;
+	
+	private Node entities=new Node("entities");
 
 	private boolean dragToRotate = false;
 
 	public GameApp(final Client client) {
 		this.client = client;
+	}
+	
+	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
+		this.scheduleTask(new Runnable(){
+			public void run() {
+				Material mat=new Material(assetManager,material);
+				Spatial spat=assetManager.loadModel(model);
+				spat.setName(spatialID);
+				spat.setMaterial(mat);
+				entities.attachChild(spat);
+			}});
 	}
 
 	@Override

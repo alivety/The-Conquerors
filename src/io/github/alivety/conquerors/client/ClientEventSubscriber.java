@@ -50,7 +50,7 @@ public class ClientEventSubscriber {
 
 	@SubscribeEvent(SYS)
 	public void onEntitySpawn(final EntitySpawnEvent evt) {
-
+		client.getApp().scheduleAddEntity(evt.spatialID, evt.material, evt.model);
 	}
 
 	@SubscribeEvent(SYS)
