@@ -3,6 +3,7 @@ package io.github.alivety.conquerors.common;
 public abstract class UnitObject {
 	protected final String spatialID;
 	private Vector position;
+	private int health=20;
 	
 	protected UnitObject() {
 		this.spatialID = Main.uuid(this.getUnitType());
@@ -32,5 +33,13 @@ public abstract class UnitObject {
 	public Vector teleport(final Vector loc) {
 		this.position = loc;
 		return this.position;
+	}
+	
+	public int getHealth() {
+		return health;
+	}
+	
+	public void attackHealth(int value) {
+		health-=value;
 	}
 }

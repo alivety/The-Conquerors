@@ -2,7 +2,6 @@ package io.github.alivety.conquerors.client;
 
 import java.util.Stack;
 
-import com.google.common.base.Preconditions;
 import com.jme3.app.SimpleApplication;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
@@ -15,7 +14,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import io.github.alivety.conquerors.common.Main;
-import io.github.alivety.conquerors.common.UnitObject;
 
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
@@ -33,16 +31,7 @@ public class GameApp extends SimpleApplication {
 		this.scheduleTask(new Runnable() {
 			public void run() {
 				final Spatial spat=GameApp.newSpatial(assetManager, model, material, spatialID);
-				spat.setUserData("unit", new UnitObject(){
-					@Override
-					public String getOwnerSpatialID() {
-						return spat.getUserData("owner");
-					}
-
-					@Override
-					public String getUnitType() {
-						return "GenericEntity";
-					}});
+				spat.setUserData("unit",new Entity(spat));
 				entities.attachChild(spat);
 			}
 		});
