@@ -10,7 +10,7 @@ import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
 import io.github.alivety.conquerors.client.events.LoginFailureEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
 import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
-import io.github.alivety.conquerors.client.events.UpdatedPlayerVariablesEvent;
+import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
@@ -94,7 +94,7 @@ public class PacketResolver {
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
 		} else if (id == 19) {
 			final P19 p19 = (P19) p;
-			return new UpdatedPlayerVariablesEvent(p19.money, p19.mpm, p19.unitSpatialID);
+			return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
 		} else
 			throw new NullPointerException("No packet with id=" + id);
 	}

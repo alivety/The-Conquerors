@@ -32,7 +32,7 @@ public class Preferences extends JFrame {
 			client.addActionListener(new ActionListener() {
 				public void actionPerformed(final ActionEvent e) {
 					Mode.this.dispose();
-					new Client().go();
+					new Client(null).go();
 				}
 			});
 			final JButton server = new JButton("Server");

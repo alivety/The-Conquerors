@@ -15,7 +15,7 @@ import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
 import io.github.alivety.conquerors.client.events.LoginFailureEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
 import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
-import io.github.alivety.conquerors.client.events.UpdatedPlayerVariablesEvent;
+import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
@@ -70,8 +70,10 @@ public class ClientEventSubscriber {
 	}
 
 	@SubscribeEvent(SYS)
-	public void onPlayerVariablesUpdate(final UpdatedPlayerVariablesEvent evt) {
-
+	public void onPlayerVariablesUpdate(final PlayerVariablesUpdateEvent evt) {
+		client.money=evt.money;
+		client.mpm=evt.mpm;
+		//TODO units
 	}
 
 	@SubscribeEvent(SYS)

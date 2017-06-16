@@ -16,7 +16,11 @@ import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.ppl.PPLClient;
 import io.github.alivety.ppl.SocketListener;
 
-public class Client implements ConquerorsApp {
+public class Client extends PlayerObject implements ConquerorsApp {
+	public Client(SocketChannel ch) {
+		super(ch);
+	}
+
 	private GameApp app;
 	protected SocketChannel server;
 

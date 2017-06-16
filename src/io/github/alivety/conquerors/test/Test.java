@@ -38,8 +38,7 @@ public class Test implements ConquerorsApp {
 				Main.setupLogger(this);
 				Main.EVENT_BUS.subscribe(this);
 			} catch (final IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Main.handleError(e);
 			}
 			final String host = JOptionPane.showInputDialog("Host");
 			final int port = Integer.parseInt(JOptionPane.showInputDialog("Port"));
