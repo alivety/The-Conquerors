@@ -7,7 +7,7 @@ import io.github.alivety.conquerors.common.events.Clientside;
 @Clientside
 public class WindowOpenedEvent extends Event implements Cancelable {
 	public String[] slots;
-
+	
 	public WindowOpenedEvent(final String[] slots) {
 		this.slots = slots;
 	}

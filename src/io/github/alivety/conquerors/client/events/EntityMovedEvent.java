@@ -10,7 +10,7 @@ import io.github.alivety.conquerors.common.events.Clientside;
 public class EntityMovedEvent extends Event implements Cancelable {
 	public @Nonnull String spatialID;
 	public @Nonnull float x, y, z;
-
+	
 	public EntityMovedEvent(final String spatialID, final float x, final float y, final float z) {
 		this.spatialID = spatialID;
 		this.x = x;

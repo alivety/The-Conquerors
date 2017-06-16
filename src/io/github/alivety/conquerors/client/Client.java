@@ -17,17 +17,17 @@ import io.github.alivety.ppl.PPLClient;
 import io.github.alivety.ppl.SocketListener;
 
 public class Client extends PlayerObject implements ConquerorsApp {
-	public Client(SocketChannel ch) {
+	public Client(final SocketChannel ch) {
 		super(ch);
 	}
-
+	
 	private GameApp app;
 	protected SocketChannel server;
-
+	
 	public PlayerObject[] getOnlinePlayers() {
 		return null;
 	}
-
+	
 	public void go() {
 		try {
 			Main.setupLogger(this);
@@ -38,7 +38,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 				public void connect(final SocketChannel ch) throws Exception {
 					Main.EVENT_BUS.bus(new ConnectEvent(ch));
 				}
-
+				
 				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
 					final Event evt = Main.resolver.resolve(Main.decode(msg), null);
 					Client.this.app.scheduleTask(new Runnable() {
@@ -47,7 +47,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 						}
 					});
 				}
-
+				
 				public void exception(final SocketChannel h, final Throwable t) {
 					Main.handleError(t);
 				}
@@ -59,12 +59,12 @@ public class Client extends PlayerObject implements ConquerorsApp {
 			Main.handleError(e);
 		}
 	}
-
+	
 	public GameApp getApp() {
 		Preconditions.checkNotNull(this.app, "App has not been initialized");
 		return this.app;
 	}
-
+	
 	public void initApp() {
 		Preconditions.checkArgument(this.app == null, "App has already initialized");
 		this.app = new GameApp(this);

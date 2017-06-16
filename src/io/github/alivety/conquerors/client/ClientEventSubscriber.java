@@ -23,64 +23,64 @@ import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 
 public class ClientEventSubscriber {
 	private final Client client;
-
+	
 	public ClientEventSubscriber(final Client client) {
 		this.client = client;
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onEntityMove(final EntityMovedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onEntityOwnershipUpdate(final EntityOwnershipChangedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onEntityDespawn(final EntityRemovedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onEntityScale(final EntityResizedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onEntitySpawn(final EntitySpawnEvent evt) {
-		client.getApp().scheduleAddEntity(evt.spatialID, evt.material, evt.model);
+		this.client.getApp().scheduleAddEntity(evt.spatialID, evt.material, evt.model);
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onLoginFailure(final LoginFailureEvent evt) {
 		JOptionPane.showMessageDialog(null, "Your login was not accepted: " + evt.reason);
 		System.exit(0);
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(final LoginSuccessEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onPlayerListUpdate(final PlayerListUpdatedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onPlayerVariablesUpdate(final PlayerVariablesUpdateEvent evt) {
-		client.money=evt.money;
-		client.mpm=evt.mpm;
-		//TODO units
+		this.client.money = evt.money;
+		this.client.mpm = evt.mpm;
+		// TODO units
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onWindowOpen(final WindowOpenedEvent evt) {
-
+		
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onConnect(final ConnectEvent evt) throws IOException {
 		this.client.server = evt.ch;
@@ -88,7 +88,7 @@ public class ClientEventSubscriber {
 		this.client.initApp();
 		this.client.getApp().start();
 	}
-
+	
 	@SubscribeEvent(SYS)
 	public void onChat(final PlayerChatEvent evt) {
 		Main.out.info(evt.message);

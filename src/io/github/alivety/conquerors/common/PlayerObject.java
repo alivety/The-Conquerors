@@ -17,20 +17,20 @@ public class PlayerObject extends UnitObject {
 	private final List<UnitObject> units = new ArrayList<UnitObject>();
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
-
+	
 	public PlayerObject(final SocketChannel ch) {
 		this.ch = ch;
 	}
-
+	
 	@Override
 	public String getOwnerSpatialID() {
 		return null;
 	}
-
+	
 	public UnitObject[] getUnits() {
 		return this.units.toArray(new UnitObject[this.units.size()]);
 	}
-
+	
 	public String[] getUnitSpatialIDs() {
 		final UnitObject[] units = this.getUnits();
 		final String[] rsp = new String[units.length];
@@ -38,35 +38,35 @@ public class PlayerObject extends UnitObject {
 			rsp[i] = units[i].spatialID;
 		return rsp;
 	}
-
+	
 	@Override
 	public String getUnitType() {
 		return "Player";
 	}
-
+	
 	public void packet(final int pid, final Object... fields) {
 		this.write(Main.createPacket(pid, fields));
 	}
-
+	
 	@Override
 	public String toString() {
 		return this.username() + "{" + this.spatialID + "}";
 	}
-
+	
 	public String username() {
 		return this.username;
 	}
-
+	
 	public void username(final String username) {
 		this.username = username;
 	}
-
+	
 	private void write(final ByteBuffer buff) throws IOException {
 		if (!this.isReady)
 			return;
 		this.ch.write(buff);
 	}
-
+	
 	public void write(final Packet p) {
 		try {
 			Main.out.debug(this + ".write(" + p + ")");

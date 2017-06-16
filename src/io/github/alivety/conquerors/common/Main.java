@@ -36,9 +36,9 @@ public class Main {
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 	public static final File USER_PREFS = new File("prefs.json");
 	public static Preferences PREFS;
-
+	
 	public static final PacketResolver resolver = new PacketResolver();
-
+	
 	public static Packet createPacket(final int id, final Object... fields) {
 		try {
 			return Packet.c(Main.PACKET_LOCATION + id, fields);
@@ -47,7 +47,7 @@ public class Main {
 			return null;
 		}
 	}
-
+	
 	public static Packet decode(final ByteBuffer buf) {
 		try {
 			return Packet.decode(Main.PACKET_LOCATION, buf);
@@ -56,7 +56,7 @@ public class Main {
 			return null;
 		}
 	}
-
+	
 	public static ByteBuffer encode(final Packet p) {
 		try {
 			return PPL.encapsulate(p.encode());
@@ -65,11 +65,11 @@ public class Main {
 			return null;
 		}
 	}
-
+	
 	public static String formatChatMessage(final String msg) {
 		return Main.formatChatMessage(null, msg);
 	}
-
+	
 	public static String formatChatMessage(final String sender, final String msg) {
 		final SimpleDateFormat df = new SimpleDateFormat("k:m");
 		final String date = df.format(new Date());
@@ -78,11 +78,11 @@ public class Main {
 		else
 			return sender + ": " + msg + " (" + date + ")";
 	}
-
+	
 	public static List<Class<?>> getSuperclassesOf(final Object target) {
 		return null;
 	}
-
+	
 	public static Packet getUnbuiltPacket(final int id) {
 		try {
 			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
@@ -91,7 +91,7 @@ public class Main {
 			return null;
 		}
 	}
-
+	
 	public static void handleError(final Throwable t) {
 		try {
 			throw new LogTraceException(t);
@@ -100,20 +100,20 @@ public class Main {
 				Main.out.error(Throwables.getStackTraceAsString(e));
 			else
 				t.printStackTrace(System.out);
-
+			
 			final ErrorDialog ed = new ErrorDialog(e);
 			ed.setVisible(true);
 		}
 	}
-
+	
 	private static class LogTraceException extends Exception {
 		public LogTraceException(final Throwable t) {
 			super(t.getMessage(), t);
 		}
-
+		
 		private static final long serialVersionUID = 1304222821855174255L;
 	}
-
+	
 	public static void main(final String[] arg) throws IOException {
 		JFrame.setDefaultLookAndFeelDecorated(false);
 		Main.out = Logger.getLogger("undefined");
@@ -124,7 +124,7 @@ public class Main {
 				fw.flush();
 				fw.close();
 			}
-
+			
 			// print thread information
 			Main.ses.scheduleWithFixedDelay(new Runnable() {
 				public void run() {
@@ -142,7 +142,7 @@ public class Main {
 					}
 				}
 			}, 0, 1, TimeUnit.MINUTES);
-
+			
 			final JSONParser parser = new JSONParser();
 			Main.PREFS = new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS)));
 			Main.PREFS.setVisible(true);
@@ -150,22 +150,22 @@ public class Main {
 			Main.handleError(e);
 		}
 	}
-
+	
 	public static Vector nv(final float x, final float y, final float z) {
 		return new Vector(x, y, z);
 	}
-
+	
 	public static void setupLogger(final ConquerorsApp app) throws IOException {
 		Main.out = Logger.getLogger(app.getClass().getSimpleName().toLowerCase());
 		Main.out.info("setup");
 		Main.out.debug(System.getProperties());
 		Main.out.debug(System.getenv());
 	}
-
+	
 	public static String uuid(final String object) {
 		return object + "[" + Main.random.nextInt() + "]";
 	}
-
+	
 	public static String vardump(@Nonnull final Object target) throws IllegalArgumentException, IllegalAccessException {
 		final Class<?> cls = target.getClass();
 		final Field[] fields = cls.getDeclaredFields();

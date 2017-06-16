@@ -20,7 +20,7 @@ import com.google.common.io.Files;
 public class ErrorDialog extends JDialog {
 	private static final long serialVersionUID = -4420240235644032632L;
 	private final JPanel contentPane;
-
+	
 	public ErrorDialog(final Throwable e) {
 		this.setTitle("Error");
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -29,11 +29,11 @@ public class ErrorDialog extends JDialog {
 		this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.setContentPane(this.contentPane);
 		this.contentPane.setLayout(null);
-
+		
 		final JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(5, 38, 769, 312); // -31, -88
 		this.contentPane.add(scrollPane);
-
+		
 		final JTextArea txtrHi = new JTextArea();
 		txtrHi.setEditable(false);
 		final StringBuilder sb = new StringBuilder();
@@ -48,26 +48,26 @@ public class ErrorDialog extends JDialog {
 		}
 		txtrHi.setText(sb.toString());
 		scrollPane.setViewportView(txtrHi);
-
+		
 		final JLabel lblErrorMessage = new JLabel(e.getCause().getMessage() == null ? "A fatal error occured" : e.getCause().getClass().getSimpleName() + ": " + e.getCause().getMessage());
 		lblErrorMessage.setBounds(10, 13, 641, 14);
 		this.contentPane.add(lblErrorMessage);
-
+		
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosed(final WindowEvent e) {
 				ErrorDialog.this.doClose();
 			}
-
+			
 			@Override
 			public void windowClosing(final WindowEvent e) {
 				ErrorDialog.this.doClose();
 			}
 		});
-
+		
 		this.setModalityType(ModalityType.APPLICATION_MODAL);
 	}
-
+	
 	private void doClose() {
 		if (Desktop.isDesktopSupported()) {
 			Main.out.debug("desktop is supported");
