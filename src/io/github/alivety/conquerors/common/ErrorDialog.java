@@ -69,15 +69,6 @@ public class ErrorDialog extends JDialog {
 	}
 	
 	private void doClose() {
-		if (Desktop.isDesktopSupported()) {
-			Main.out.debug("desktop is supported");
-			try {
-				Desktop.getDesktop().open(Main.out.file());
-			} catch (final IOException e) {
-				e.printStackTrace();
-			}
-			;
-		}
 		System.exit(0);
 	}
 }
