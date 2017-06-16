@@ -3,7 +3,6 @@ package io.github.alivety.conquerors.install;
 import java.awt.Dialog.ModalityType;
 import java.awt.Frame;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,14 +17,12 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.filechooser.FileSystemView;
 
 public class Installer {
 	public static void main(String[]args) throws IOException, InterruptedException {
 		Path directory=Paths.get(System.getProperty("user.home"), "conquerors");
 		Path lib_dir=Paths.get(directory.toString(),"lib");
 		
-		Path lib_rar=Paths.get(directory.toString(),"lib.rar");
 		Path jar=Paths.get(directory.toString(),"conquerors.jar");
 		
 		if (!Files.exists(directory))

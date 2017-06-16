@@ -1,6 +1,5 @@
 package io.github.alivety.conquerors.common;
 
-import java.awt.Desktop;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
