@@ -35,7 +35,7 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityOwnershipUpdate(final EntityOwnershipChangedEvent evt) {
-		//TODO entity ownership
+		client.getApp().scheduleChangeEntityOwnership(evt.spatialID, evt.ownerSpatialID);
 	}
 	
 	@SubscribeEvent(SYS)

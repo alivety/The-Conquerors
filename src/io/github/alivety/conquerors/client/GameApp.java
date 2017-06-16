@@ -2,15 +2,20 @@ package io.github.alivety.conquerors.client;
 
 import java.util.Stack;
 
+import com.google.common.base.Preconditions;
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.material.Material;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.UnitObject;
 
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
@@ -27,9 +32,34 @@ public class GameApp extends SimpleApplication {
 	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
 		this.scheduleTask(new Runnable() {
 			public void run() {
-				GameApp.this.entities.attachChild(ConquerorsSpatial.newSpatial(assetManager, model, material, spatialID));
+				final Spatial spat=GameApp.newSpatial(assetManager, model, material, spatialID);
+				spat.setUserData("unit", new UnitObject(){
+					@Override
+					public String getOwnerSpatialID() {
+						return spat.getUserData("owner");
+					}
+
+					@Override
+					public String getUnitType() {
+						return "GenericEntity";
+					}});
+				entities.attachChild(spat);
 			}
 		});
+	}
+	
+	public void scheduleChangeEntityOwnership(final String spatialID,final String ownerSpatialID) {
+		this.scheduleTask(new Runnable(){
+			public void run() {
+				Spatial spat=getSpatial(spatialID);
+				spat.setUserData("owner", ownerSpatialID);
+			}});
+	}
+	
+	public Spatial getSpatial(String spatialID) {
+		Spatial spat=entities.getChild(spatialID);
+		if (spat==null) throw new NullPointerException("No entity with spatialID="+spatialID);
+		return spat;
 	}
 	
 	@Override
@@ -121,5 +151,14 @@ public class GameApp extends SimpleApplication {
 	@Override
 	public void handleError(final String errMsg, final Throwable t) {
 		Main.handleError(new RuntimeException(errMsg, t));
+	}
+
+	/* Shorthand method */
+	public static Spatial newSpatial(AssetManager assetManager,String model,String material,String spatialID) {
+		Spatial spat=assetManager.loadModel(model);
+		Material mat=new Material(assetManager,material);
+		spat.setMaterial(mat);
+		spat.setName(spatialID);
+		return spat;
 	}
 }
