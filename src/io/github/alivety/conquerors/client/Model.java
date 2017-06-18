@@ -6,6 +6,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
@@ -37,4 +38,32 @@ public abstract class Model {
 	}
 	
 	public abstract Spatial build();
+	
+	private static abstract class TeamModel extends Model {
+		protected ColorRGBA color;
+		public TeamModel(ColorRGBA color) {
+			this.color=color;
+			Main.out.debug(this.getClass().getName()+":"+color);
+		}
+	}
+	
+	
+	/**
+	 * MODELS
+	 */
+	
+	public static class CommandCenter extends TeamModel {
+		public CommandCenter(ColorRGBA color) {
+			super(color);
+		}
+
+		@Override
+		public Spatial build() {
+			Node node=new Node(Main.uuid("CommandCenter:"+color));
+			Spatial cube=makeCube(new Vector3f(1,1,1));
+			colorSpatial(cube, color);
+			node.attachChild(cube);
+			return node;
+		}
+	}
 }

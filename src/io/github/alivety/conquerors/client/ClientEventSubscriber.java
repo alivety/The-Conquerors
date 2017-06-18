@@ -87,6 +87,8 @@ public class ClientEventSubscriber {
 		this.client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
 		this.client.initApp();
 		this.client.getApp().start();
+		
+		this.client.getApp().scheduleAddEntity(Main.uuid("test"), "conquerors_model", "CommandCenter_Red");
 	}
 	
 	@SubscribeEvent(SYS)

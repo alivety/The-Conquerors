@@ -1,5 +1,11 @@
 package io.github.alivety.conquerors.client;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import com.jme3.app.SimpleApplication;
@@ -10,8 +16,12 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 
 import io.github.alivety.conquerors.common.Main;
 
@@ -30,8 +40,13 @@ public class GameApp extends SimpleApplication {
 	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
 		this.scheduleTask(new Runnable() {
 			public void run() {
-				final Spatial spat = GameApp.newSpatial(GameApp.this.assetManager, model, material, spatialID);
-				spat.setUserData("unit", new Entity(spat));
+				Spatial spat=null;
+				try {
+					spat = GameApp.newSpatial(GameApp.this.assetManager, model, material, spatialID);
+				} catch (Exception e) {
+					Main.handleError(e);
+				}
+				spat.setLocalTranslation(1, -1, 1);
 				GameApp.this.entities.attachChild(spat);
 			}
 		});
@@ -149,7 +164,37 @@ public class GameApp extends SimpleApplication {
 	}
 	
 	/* Shorthand method */
-	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) {
+	private static Map<String,ColorRGBA> colormap=new HashMap<String,ColorRGBA>();
+	public static ColorRGBA lookupColor(String color) {
+		Main.out.debug(Arrays.asList(ColorRGBA.class.getDeclaredFields()));
+		return ColorRGBA.Red;
+	}
+	
+	private static Map<String,Class<?>> classmap=new HashMap<String,Class<?>>();
+	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+		if (material.equals("conquerors_model")) {
+			String[] modeldata=model.split("_");
+			String modelname=modeldata[0];
+			
+			Class<?> modelclass=null;
+			if (classmap.containsKey(modelname)) {
+				modelclass=classmap.get(modelname);
+			} else {
+			List<Class<?>> classlist=Arrays.asList(Model.class.getDeclaredClasses());
+			Iterator<Class<?>> iter=classlist.iterator();
+			while (iter.hasNext()) {
+				Class<?> cls=iter.next();
+				if (cls.getSimpleName().toLowerCase().equals(modelname.toLowerCase())) {
+					modelclass=cls;
+				}
+			}
+			}
+			if (modeldata.length==1) {
+				return ((Model) modelclass.newInstance()).build();
+			} else {
+				return ((Model) modelclass.getConstructor(ColorRGBA.class).newInstance(lookupColor(modeldata[1]))).build();
+			}
+		}
 		final Spatial spat = assetManager.loadModel(model);
 		final Material mat = new Material(assetManager, material);
 		spat.setMaterial(mat);

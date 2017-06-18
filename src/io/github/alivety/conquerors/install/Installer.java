@@ -79,7 +79,7 @@ public class Installer {
 		fos.close();
 	}
 	
-	private static JDialog mkmsg(String msg) {
+	private static JDialog mkmsg(final String msg) {
 		final JDialog dialog=new JDialog((Frame)null, "Downloading");
 		new Thread(){
 		@Override
