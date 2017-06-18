@@ -160,9 +160,6 @@ public class GameApp extends SimpleApplication {
 		Main.handleError(new RuntimeException(errMsg, t));
 	}
 	
-	/* Shorthand method */
-	private static Map<String, ColorRGBA> colormap = new HashMap<String, ColorRGBA>();
-	
 	public static ColorRGBA lookupColor(final String color) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		return (ColorRGBA) ColorRGBA.class.getDeclaredField(color).get(null);
 	}
