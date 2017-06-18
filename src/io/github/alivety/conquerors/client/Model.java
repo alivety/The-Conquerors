@@ -41,27 +41,27 @@ public abstract class Model {
 	
 	private static abstract class TeamModel extends Model {
 		protected ColorRGBA color;
-		public TeamModel(ColorRGBA color) {
-			this.color=color;
-			Main.out.debug(this.getClass().getName()+":"+color);
+		
+		public TeamModel(final ColorRGBA color) {
+			this.color = color;
+			Main.out.debug(this.getClass().getName() + ":" + color);
 		}
 	}
-	
 	
 	/**
 	 * MODELS
 	 */
 	
 	public static class CommandCenter extends TeamModel {
-		public CommandCenter(ColorRGBA color) {
+		public CommandCenter(final ColorRGBA color) {
 			super(color);
 		}
-
+		
 		@Override
 		public Spatial build() {
-			Node node=new Node(Main.uuid("CommandCenter:"+color));
-			Spatial cube=makeCube(new Vector3f(1,1,1));
-			colorSpatial(cube, color);
+			final Node node = new Node(Main.uuid("CommandCenter:" + this.color));
+			final Spatial cube = this.makeCube(new Vector3f(1, 1, 1));
+			this.colorSpatial(cube, this.color);
 			node.attachChild(cube);
 			return node;
 		}
