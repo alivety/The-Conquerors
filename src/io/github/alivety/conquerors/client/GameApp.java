@@ -165,13 +165,12 @@ public class GameApp extends SimpleApplication {
 	
 	/* Shorthand method */
 	private static Map<String,ColorRGBA> colormap=new HashMap<String,ColorRGBA>();
-	public static ColorRGBA lookupColor(String color) {
-		Main.out.debug(Arrays.asList(ColorRGBA.class.getDeclaredFields()));
-		return ColorRGBA.Red;
+	public static ColorRGBA lookupColor(String color) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		return (ColorRGBA) ColorRGBA.class.getDeclaredField(color).get(null);
 	}
 	
 	private static Map<String,Class<?>> classmap=new HashMap<String,Class<?>>();
-	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
 		if (material.equals("conquerors_model")) {
 			String[] modeldata=model.split("_");
 			String modelname=modeldata[0];
