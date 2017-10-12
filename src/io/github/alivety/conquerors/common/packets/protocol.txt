@@ -1,0 +1,69 @@
+Packet 0 Login Request (Client to Server)
+String username
+int protocolVersion
+
+Packet 1 Login Success (Server to Client)
+String spatialID
+
+Packet 2 Login Failure (Server to Client)
+String reason
+
+Packet 3 Check Model (Server to Client)
+String model
+
+Packet 4 Spawn Entity (Server to Client)
+String model
+String material
+String spatialID
+
+Packet 5 Translate Entity (Server to Client)
+String spatialID
+Vector vector3f
+
+Packet 6 Scale Entity (Clientbound)
+String spatialID
+Vector
+
+Packet 7 Rotate Entity (Client)
+String spatialID
+Vector
+
+Packet 8 Send Chat (Server)
+String message
+
+Packet 9 Chat (Client)
+String raw_msg
+
+Packet 10 Player (Server)
+Vector
+
+Packet 11 Remove Entity (client)
+String spatialID
+
+Packet 12 Player List
+String[] list
+
+Packet 13 Disconnect
+
+Packet 14 Request Window
+String spatialID
+
+Packet 15 Open Window
+String[] slots
+
+Packet 16 Select Slot
+String spatialId
+int slot
+
+Packet 17 Set Ownership
+String spatialID
+String ownerSpatialID
+
+Packet 18 Move Units
+String[] spatialID
+Vector
+
+Packet 19 Update Player
+int money
+int mpm
+String[] unitSpatialID
