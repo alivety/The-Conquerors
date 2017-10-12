@@ -21,4 +21,5 @@ public class Entity extends UnitObject {
 	public String getOwnerSpatialID() {
 		return this.spat.getUserData("owner");
 	}
+	
 }
