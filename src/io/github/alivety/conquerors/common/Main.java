@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,10 +76,6 @@ public class Main {
 			return msg + " (" + date + ")";
 		else
 			return sender + ": " + msg + " (" + date + ")";
-	}
-	
-	public static List<Class<?>> getSuperclassesOf(final Object target) {
-		return null;
 	}
 	
 	public static Packet getUnbuiltPacket(final int id) {
