@@ -100,10 +100,10 @@ public class ClientEventSubscriber {
 	
 	@Deprecated
 	@SubscribeEvent(SYS)
-	public void onCreateModelSpatial(CreateModelSpatialEvent evt) {}
+	public void onCreateModelSpatial(final CreateModelSpatialEvent evt) {}
 	
 	@SubscribeEvent(SYS)
-	public void onCreateModel(CreateModelEvent evt) {
+	public void onCreateModel(final CreateModelEvent evt) {
 		this.client.getApp().addModel(new Model.NetworkModel(evt));
 	}
 }

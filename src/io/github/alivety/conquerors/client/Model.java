@@ -45,35 +45,34 @@ public abstract class Model {
 	 */
 	
 	public static class NetworkModel extends Model {
-		private CreateModelEvent evt;
-		public NetworkModel(CreateModelEvent evt) {
-			this.evt=evt;
+		private final CreateModelEvent evt;
+		
+		public NetworkModel(final CreateModelEvent evt) {
+			this.evt = evt;
 		}
 		
 		@Override
 		public Spatial build() {
-			Node node=new Node(Main.uuid(evt.name));
-			for (int[] shape : evt.form) {
+			final Node node = new Node(Main.uuid(this.evt.name));
+			for (final int[] shape : this.evt.form) {
 				/*
-				 * shape[0] = type (0=cube,1=sphere)
-				 * shape[1-4] = RGBA color
-				 * shape[5-7] = position
-				 * shape[8-*] = shape-specific constructors
+				 * shape[0] = type (0=cube,1=sphere) shape[1-4] = RGBA color
+				 * shape[5-7] = position shape[8-*] = shape-specific
+				 * constructors
 				 */
-				boolean cube=shape[0]==0;
-				ColorRGBA color=new ColorRGBA(shape[1],shape[2],shape[3],shape[4]);
-				Vector3f pos=new Vector3f(shape[5], shape[6], shape[7]);
+				final boolean cube = shape[0] == 0;
+				final ColorRGBA color = new ColorRGBA(shape[1], shape[2], shape[3], shape[4]);
+				final Vector3f pos = new Vector3f(shape[5], shape[6], shape[7]);
 				Spatial spat;
-				if (cube) {
-					spat=this.makeCube(new Vector3f(shape[8],shape[9],shape[10]));
-				} else {
-					spat=this.makeSphere(32, 32, shape[8]);
-				}
+				if (cube)
+					spat = this.makeCube(new Vector3f(shape[8], shape[9], shape[10]));
+				else
+					spat = this.makeSphere(32, 32, shape[8]);
 				this.colorSpatial(spat, color);
 				this.positionSpatial(spat, pos);
 				node.attachChild(spat);
 			}
-			node.setLocalTranslation(new Vector3f(evt.position[0],evt.position[1],evt.position[2]));
+			node.setLocalTranslation(new Vector3f(this.evt.position[0], this.evt.position[1], this.evt.position[2]));
 			return node;
 		}
 		
@@ -88,7 +87,7 @@ public abstract class Model {
 			Main.out.debug(this.getClass().getName() + ":" + color);
 		}
 	}
-
+	
 	@Deprecated
 	public static class CommandCenter extends TeamModel {
 		public CommandCenter(final ColorRGBA color) {

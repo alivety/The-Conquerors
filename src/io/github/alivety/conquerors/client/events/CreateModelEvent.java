@@ -6,9 +6,10 @@ public class CreateModelEvent extends Event {
 	public String name;
 	public int[] position;
 	public int[][] form;
-	public CreateModelEvent(String name,int[]position,int[][]form) {
-		this.name=name;
-		this.position=position;
-		this.form=form;
+	
+	public CreateModelEvent(final String name, final int[] position, final int[][] form) {
+		this.name = name;
+		this.position = position;
+		this.form = form;
 	}
 }

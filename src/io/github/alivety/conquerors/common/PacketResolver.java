@@ -99,14 +99,13 @@ public class PacketResolver {
 		} else if (id == 19) {
 			final P19 p19 = (P19) p;
 			return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
-		} else if (id==20) {
-			P20 p20=(P20)p;
-			return new CreateModelSpatialEvent(p20.shape,p20.vectors);
-		} else if (id==21) {
-			P21 p21=(P21)p;
-			return new CreateModelEvent(p21.name,p21.position,p21.form);
-		}
-		else
+		} else if (id == 20) {
+			final P20 p20 = (P20) p;
+			return new CreateModelSpatialEvent(p20.shape, p20.vectors);
+		} else if (id == 21) {
+			final P21 p21 = (P21) p;
+			return new CreateModelEvent(p21.name, p21.position, p21.form);
+		} else
 			throw new NullPointerException("No packet with id=" + id);
 	}
 }

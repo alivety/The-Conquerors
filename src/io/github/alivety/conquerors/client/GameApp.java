@@ -166,7 +166,7 @@ public class GameApp extends SimpleApplication {
 	
 	private static Map<String, Class<?>> classmap = new HashMap<String, Class<?>>();
 	
-	public void addModel(Model m) {
+	public void addModel(final Model m) {
 		this.entities.attachChild(m.build());
 	}
 	
