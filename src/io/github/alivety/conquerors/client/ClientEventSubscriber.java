@@ -7,6 +7,8 @@ import java.io.IOException;
 import javax.swing.JOptionPane;
 
 import io.github.alivety.conquerors.client.events.ConnectEvent;
+import io.github.alivety.conquerors.client.events.CreateModelEvent;
+import io.github.alivety.conquerors.client.events.CreateModelSpatialEvent;
 import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
@@ -94,5 +96,14 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onChat(final PlayerChatEvent evt) {
 		// TODO chat
+	}
+	
+	@Deprecated
+	@SubscribeEvent(SYS)
+	public void onCreateModelSpatial(CreateModelSpatialEvent evt) {}
+	
+	@SubscribeEvent(SYS)
+	public void onCreateModel(CreateModelEvent evt) {
+		this.client.getApp().addModel(new Model.NetworkModel(evt));
 	}
 }

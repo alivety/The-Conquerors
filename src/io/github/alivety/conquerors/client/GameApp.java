@@ -166,6 +166,10 @@ public class GameApp extends SimpleApplication {
 	
 	private static Map<String, Class<?>> classmap = new HashMap<String, Class<?>>();
 	
+	public void addModel(Model m) {
+		this.entities.attachChild(m.build());
+	}
+	
 	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
 		if (material.equals("conquerors_model")) {
 			final String[] modeldata = model.split("_");

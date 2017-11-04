@@ -2,6 +2,8 @@ package io.github.alivety.conquerors.common;
 
 import javax.annotation.Nonnull;
 
+import io.github.alivety.conquerors.client.events.CreateModelEvent;
+import io.github.alivety.conquerors.client.events.CreateModelSpatialEvent;
 import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
@@ -26,6 +28,8 @@ import io.github.alivety.conquerors.common.packets.P17;
 import io.github.alivety.conquerors.common.packets.P18;
 import io.github.alivety.conquerors.common.packets.P19;
 import io.github.alivety.conquerors.common.packets.P2;
+import io.github.alivety.conquerors.common.packets.P20;
+import io.github.alivety.conquerors.common.packets.P21;
 import io.github.alivety.conquerors.common.packets.P4;
 import io.github.alivety.conquerors.common.packets.P5;
 import io.github.alivety.conquerors.common.packets.P6;
@@ -95,7 +99,14 @@ public class PacketResolver {
 		} else if (id == 19) {
 			final P19 p19 = (P19) p;
 			return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
-		} else
+		} else if (id==20) {
+			P20 p20=(P20)p;
+			return new CreateModelSpatialEvent(p20.shape,p20.vectors);
+		} else if (id==21) {
+			P21 p21=(P21)p;
+			return new CreateModelEvent(p21.name,p21.position,p21.form);
+		}
+		else
 			throw new NullPointerException("No packet with id=" + id);
 	}
 }
