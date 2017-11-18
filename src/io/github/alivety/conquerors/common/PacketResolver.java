@@ -14,19 +14,19 @@ import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
 import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
-import io.github.alivety.conquerors.client.packets.P1;
-import io.github.alivety.conquerors.client.packets.P11;
-import io.github.alivety.conquerors.client.packets.P12;
-import io.github.alivety.conquerors.client.packets.P15;
-import io.github.alivety.conquerors.client.packets.P17;
-import io.github.alivety.conquerors.client.packets.P19;
-import io.github.alivety.conquerors.client.packets.P2;
-import io.github.alivety.conquerors.client.packets.P20;
-import io.github.alivety.conquerors.client.packets.P21;
-import io.github.alivety.conquerors.client.packets.P4;
-import io.github.alivety.conquerors.client.packets.P5;
-import io.github.alivety.conquerors.client.packets.P6;
-import io.github.alivety.conquerors.client.packets.P9;
+import io.github.alivety.conquerors.client.packets.PacketLoginSuccess;
+import io.github.alivety.conquerors.client.packets.PacketRemoveEntity;
+import io.github.alivety.conquerors.client.packets.PacketPlayerList;
+import io.github.alivety.conquerors.client.packets.PacketOpenWindow;
+import io.github.alivety.conquerors.client.packets.PacketUpdateEntityOwnership;
+import io.github.alivety.conquerors.client.packets.PacketUpdatePlayer;
+import io.github.alivety.conquerors.client.packets.PacketLoginFailure;
+import io.github.alivety.conquerors.client.packets.PacketCreateModelSpatial;
+import io.github.alivety.conquerors.client.packets.PacketCreateModel;
+import io.github.alivety.conquerors.client.packets.PacketSpawnEntity;
+import io.github.alivety.conquerors.client.packets.PacketTranslateEntity;
+import io.github.alivety.conquerors.client.packets.PacketScaleEntity;
+import io.github.alivety.conquerors.client.packets.PacketChatMessage;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 import io.github.alivety.conquerors.server.events.LoginRequestEvent;
@@ -35,75 +35,75 @@ import io.github.alivety.conquerors.server.events.PlayerMoveUnitsEvent;
 import io.github.alivety.conquerors.server.events.PlayerMovedEvent;
 import io.github.alivety.conquerors.server.events.WindowRequestedEvent;
 import io.github.alivety.conquerors.server.events.WindowSlotSelectedEvent;
-import io.github.alivety.conquerors.server.packets.P0;
-import io.github.alivety.conquerors.server.packets.P10;
-import io.github.alivety.conquerors.server.packets.P14;
-import io.github.alivety.conquerors.server.packets.P16;
-import io.github.alivety.conquerors.server.packets.P18;
-import io.github.alivety.conquerors.server.packets.P8;
+import io.github.alivety.conquerors.server.packets.PacketLoginRequest;
+import io.github.alivety.conquerors.server.packets.PacketPlayerMovement;
+import io.github.alivety.conquerors.server.packets.PacketRequestWindow;
+import io.github.alivety.conquerors.server.packets.PacketSelectWindowSlot;
+import io.github.alivety.conquerors.server.packets.PacketMoveUnits;
+import io.github.alivety.conquerors.server.packets.PacketSendChat;
 import io.github.alivety.ppl.packet.Packet;
 
 public class PacketResolver {
 	public Event resolve(@Nonnull final Packet p, final PlayerObject client) throws IllegalArgumentException, IllegalAccessException {
 		final int id = p.getId();
 		if (id == 0) {
-			final P0 p0 = (P0) p;
+			final PacketLoginRequest p0 = (PacketLoginRequest) p;
 			return new LoginRequestEvent(client, p0.username, p0.protocolVersion);
 		} else if (id == 2) {
-			final P2 p2 = (P2) p;
+			final PacketLoginFailure p2 = (PacketLoginFailure) p;
 			return new LoginFailureEvent(p2.reason);
 		} else if (id == 1) {
-			final P1 p1 = (P1) p;
+			final PacketLoginSuccess p1 = (PacketLoginSuccess) p;
 			return new LoginSuccessEvent(p1.spatialID);
 		} else if (id == 4) {
-			final P4 p4 = (P4) p;
+			final PacketSpawnEntity p4 = (PacketSpawnEntity) p;
 			return new EntitySpawnEvent(p4.model, p4.material, p4.spatialId);
 		} else if (id == 5) {
-			final P5 p5 = (P5) p;
+			final PacketTranslateEntity p5 = (PacketTranslateEntity) p;
 			return new EntityMovedEvent(p5.spatialID, p5.x, p5.y, p5.z);
 		} else if (id == 6) {
-			final P6 p6 = (P6) p;
+			final PacketScaleEntity p6 = (PacketScaleEntity) p;
 			return new EntityResizedEvent(p6.spatialID, p6.x, p6.y, p6.z);
 		} else if (id == 8) {
-			final P8 p8 = (P8) p;
+			final PacketSendChat p8 = (PacketSendChat) p;
 			return new PlayerChatEvent(client, p8.message);
 		} else if (id == 9) {
-			final P9 p9 = (P9) p;
+			final PacketChatMessage p9 = (PacketChatMessage) p;
 			return new PlayerChatEvent(null, p9.raw_msg);
 		} else if (id == 10) {
-			final P10 p10 = (P10) p;
+			final PacketPlayerMovement p10 = (PacketPlayerMovement) p;
 			return new PlayerMovedEvent(client, p10.x, p10.y, p10.z);
 		} else if (id == 11) {
-			final P11 p11 = (P11) p;
+			final PacketRemoveEntity p11 = (PacketRemoveEntity) p;
 			return new EntityRemovedEvent(p11.spatialId);
 		} else if (id == 12) {
-			final P12 p12 = (P12) p;
+			final PacketPlayerList p12 = (PacketPlayerList) p;
 			return new PlayerListUpdatedEvent(p12.list);
 		} else if (id == 13)
 			return new PlayerDisconnectEvent(client);
 		else if (id == 14) {
-			final P14 p14 = (P14) p;
+			final PacketRequestWindow p14 = (PacketRequestWindow) p;
 			return new WindowRequestedEvent(client, p14.spatialID);
 		} else if (id == 15) {
-			final P15 p15 = (P15) p;
+			final PacketOpenWindow p15 = (PacketOpenWindow) p;
 			return new WindowOpenedEvent(p15.slots);
 		} else if (id == 16) {
-			final P16 p16 = (P16) p;
+			final PacketSelectWindowSlot p16 = (PacketSelectWindowSlot) p;
 			return new WindowSlotSelectedEvent(client, p16.spatialID, p16.slot);
 		} else if (id == 17) {
-			final P17 p17 = (P17) p;
+			final PacketUpdateEntityOwnership p17 = (PacketUpdateEntityOwnership) p;
 			return new EntityOwnershipChangedEvent(p17.spatialID, p17.ownerSpatialID);
 		} else if (id == 18) {
-			final P18 p18 = (P18) p;
+			final PacketMoveUnits p18 = (PacketMoveUnits) p;
 			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
 		} else if (id == 19) {
-			final P19 p19 = (P19) p;
+			final PacketUpdatePlayer p19 = (PacketUpdatePlayer) p;
 			return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
 		} else if (id == 20) {
-			final P20 p20 = (P20) p;
+			final PacketCreateModelSpatial p20 = (PacketCreateModelSpatial) p;
 			return new CreateModelSpatialEvent(p20.shape, p20.vectors);
 		} else if (id == 21) {
-			final P21 p21 = (P21) p;
+			final PacketCreateModel p21 = (PacketCreateModel) p;
 			return new CreateModelEvent(p21.name, p21.position, p21.form);
 		} else
 			throw new NullPointerException("No packet with id=" + id);

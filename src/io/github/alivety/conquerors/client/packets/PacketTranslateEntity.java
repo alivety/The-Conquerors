@@ -5,8 +5,8 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 20, desc = "Create Model Spatial", bound = Clientside.class)
-public class P20 extends Packet {
-	@PacketField public byte shape;
-	@PacketField public int[] vectors;
+@PacketData(id = 5, desc = "Translate Entity", bound = Clientside.class)
+public class PacketTranslateEntity extends Packet {
+	@PacketField public String spatialID;
+	@PacketField public float x, y, z;
 }

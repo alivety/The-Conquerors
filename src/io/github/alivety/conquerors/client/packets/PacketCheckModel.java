@@ -5,7 +5,8 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 15, desc = "Open Window", bound = Clientside.class)
-public class P15 extends Packet {
-	@PacketField public String[] slots;
+@Deprecated
+@PacketData(id = 3, desc = "Check Model", bound = Clientside.class)
+public class PacketCheckModel extends Packet {
+	@PacketField public String model;
 }

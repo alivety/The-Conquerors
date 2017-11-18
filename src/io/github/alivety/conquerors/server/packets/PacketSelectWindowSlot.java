@@ -5,8 +5,8 @@ import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 import io.github.alivety.ppl.packet.Serverside;
 
-@PacketData(id = 0, desc = "Login Request", bound = Serverside.class)
-public class P0 extends Packet {
-	@PacketField public String username;
-	@PacketField public int protocolVersion;
+@PacketData(id = 16, desc = "Select Window Slot", bound = Serverside.class)
+public class PacketSelectWindowSlot extends Packet {
+	@PacketField public String spatialID;
+	@PacketField public int slot;
 }

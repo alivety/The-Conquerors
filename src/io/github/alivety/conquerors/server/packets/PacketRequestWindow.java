@@ -6,6 +6,6 @@ import io.github.alivety.ppl.packet.PacketField;
 import io.github.alivety.ppl.packet.Serverside;
 
 @PacketData(id = 14, desc = "Request Window", bound = Serverside.class)
-public class P14 extends Packet {
+public class PacketRequestWindow extends Packet {
 	@PacketField public String spatialID;
 }

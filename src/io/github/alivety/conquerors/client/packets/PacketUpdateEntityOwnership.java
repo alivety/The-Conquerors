@@ -5,8 +5,7 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 6, desc = "Scale Entity", bound = Clientside.class)
-public class P6 extends Packet {
-	@PacketField public String spatialID;
-	@PacketField public float x, y, z;
+@PacketData(id = 17, desc = "Updated Entity Ownership", bound = Clientside.class)
+public class PacketUpdateEntityOwnership extends Packet {
+	@PacketField public String spatialID, ownerSpatialID;
 }

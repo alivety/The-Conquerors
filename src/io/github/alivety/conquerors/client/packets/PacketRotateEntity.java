@@ -5,8 +5,8 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 19, desc = "Update Player", bound = Clientside.class)
-public class P19 extends Packet {
-	@PacketField public int money, mpm;
-	@PacketField public String[] unitSpatialID;
+@Deprecated
+@PacketData(id = 7, desc = "Rotate Entity", bound = Clientside.class)
+public class PacketRotateEntity extends Packet {
+	@PacketField public float x, y, z;
 }

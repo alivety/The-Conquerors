@@ -5,7 +5,7 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 2, desc = "Login Failure", bound = Clientside.class)
-public class P2 extends Packet {
-	@PacketField public String reason;
+@PacketData(id = 4, desc = "Spawn Entity", bound = Clientside.class)
+public class PacketSpawnEntity extends Packet {
+	@PacketField public String model, material, spatialId;
 }
