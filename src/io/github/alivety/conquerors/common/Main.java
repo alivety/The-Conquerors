@@ -23,6 +23,7 @@ import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.ppl.PPL;
+import io.github.alivety.ppl.packet.Clientside;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Main {
@@ -80,7 +81,7 @@ public class Main {
 	
 	public static Packet getUnbuiltPacket(final int id) {
 		try {
-			return (Packet) Class.forName(Main.PACKET_LOCATION + id).getConstructor().newInstance();
+			return PPL.getUnbuiltPacket(id).newInstance();
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
@@ -137,6 +138,8 @@ public class Main {
 					}
 				}
 			}, 0, 1, TimeUnit.MINUTES);
+			
+			PPL.loadPackets();
 			
 			final JSONParser parser = new JSONParser();
 			Main.PREFS = new Preferences((JSONObject) parser.parse(new FileReader(Main.USER_PREFS)));

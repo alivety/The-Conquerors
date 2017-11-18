@@ -56,7 +56,7 @@ public class PacketBuilder extends JFrame {
 	 */
 	public PacketBuilder(final Test test, final Packet p, final boolean builder) throws IllegalArgumentException, IllegalAccessException {
 		if (builder)
-			this.setTitle("Packet Builder");
+			this.setTitle("Packet Builder "+test);
 		else
 			this.setTitle("Packet Info");
 		
@@ -125,8 +125,8 @@ public class PacketBuilder extends JFrame {
 							final Class<?> type = typeMap.get(vals);
 							p.setPacketField(name, ObjectConverter.convert(val, type));
 						}
-						test.server.write(Main.encode(p));
-						test.pl.addRow(new Object[] { "Client", p.getId(), p });
+						test.SOCKET.write(Main.encode(p));
+						test.pl.addRow(new Object[] {test.who, p.getId(), p });
 					} catch (final Exception e) {
 						Main.handleError(e);
 					}

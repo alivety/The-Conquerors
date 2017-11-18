@@ -19,10 +19,10 @@ import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Test implements ConquerorsApp {
-	public SocketChannel server;
-	protected PacketList pl;
-	private PacketListChooser plc;
-	
+	public SocketChannel SOCKET;
+	public PacketList pl;
+	public PacketListChooser plc;
+	public String who="?";
 	@SubscribeEvent
 	public void catchAll(final Event evt) throws IllegalArgumentException, IllegalAccessException {
 		
@@ -33,6 +33,7 @@ public class Test implements ConquerorsApp {
 	}
 	
 	public void go() {
+		
 		try {
 			try {
 				Main.setupLogger(this);
@@ -40,49 +41,13 @@ public class Test implements ConquerorsApp {
 			} catch (final IOException e) {
 				Main.handleError(e);
 			}
-			final String host = JOptionPane.showInputDialog("Host");
-			final int port = Integer.parseInt(JOptionPane.showInputDialog("Port"));
-			Main.out.info(host + ":" + port);
 			
-			final PPLClient client = new PPLClient().addListener(new SocketListener() {
-				public void connect(final SocketChannel ch) throws Exception {
-					Main.out.info("connected");
-					// ch.write(Main.encode(Main.createPacket(0,
-					// "alivety",Main.PRO_VER)));
-					Test.this.server = ch;
-				}
-				
-				public void exception(final SocketChannel h, final Throwable t) {
-					Main.handleError(t);
-				}
-				
-				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
-					final Packet p = Main.decode(msg);
-					final JButton btn = new JButton("View Packet Data");
-					btn.addActionListener(new ActionListener() {
-						public void actionPerformed(final ActionEvent arg0) {
-							try {
-								new PacketBuilder(Test.this, p, false).setVisible(true);
-							} catch (final IllegalAccessException e) {
-								Main.handleError(e);
-							}
-							;
-						}
-					});
-					Test.this.pl.addRow(new Object[] { "Server", p.getId(), p });
-				}
-			});
-			try {
-				client.connect(host, port);
-			} catch (final InterruptedException e) {
-				Main.handleError(e);
+			int o=JOptionPane.showOptionDialog(null, "Server/Client Test", "Test", 0, 0, null, new String[]{"Client","Server"}, "Client");
+			if (o==0) {
+				new TestAsClient().test();
+			} else {
+				new TestAsServer().test();
 			}
-			
-			this.pl = new PacketList(this);
-			this.pl.setVisible(true);
-			
-			this.plc = new PacketListChooser(this);
-			this.plc.setVisible(true);
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}

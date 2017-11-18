@@ -26,7 +26,7 @@ public class PacketListChooser extends JFrame {
 	 * Create the frame.
 	 */
 	public PacketListChooser(final Test test) {
-		this.setTitle("Packet Builder");
+		this.setTitle("Packet Builder "+test);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(100, 100, 450, 300);
 		this.contentPane = new JPanel();
