@@ -13,9 +13,9 @@ import io.github.alivety.ppl.PPLClient;
 import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
-public class TestAsClient extends Test {	
+public class TestAsClient extends Test {
 	public void test() {
-		this.who="Client";
+		this.who = "Client";
 		final String host = JOptionPane.showInputDialog("Host");
 		final int port = Integer.parseInt(JOptionPane.showInputDialog("Port"));
 		Main.out.info(host + ":" + port);

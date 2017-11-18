@@ -15,7 +15,7 @@ import io.github.alivety.ppl.packet.Packet;
 
 public class TestAsServer extends Test {
 	public void test() {
-		this.who="Server";
+		this.who = "Server";
 		final int port = Integer.parseInt(JOptionPane.showInputDialog("Port"));
 		final PPLServer server = new PPLServer().addListener(new SocketListener() {
 			public void connect(final SocketChannel ch) throws Exception {
@@ -40,7 +40,7 @@ public class TestAsServer extends Test {
 						;
 					}
 				});
-				TestAsServer.this.pl.addRow(new Object[] { "Client - "+TestAsServer.this.SOCKET.getRemoteAddress(), p.getId(), p });
+				TestAsServer.this.pl.addRow(new Object[] { "Client - " + TestAsServer.this.SOCKET.getRemoteAddress(), p.getId(), p });
 			}
 		});
 		TestAsServer.this.pl = new PacketList(this);
@@ -50,7 +50,7 @@ public class TestAsServer extends Test {
 		TestAsServer.this.plc.setVisible(true);
 		try {
 			server.bind(port);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			Main.handleError(e);
 		}
 	}

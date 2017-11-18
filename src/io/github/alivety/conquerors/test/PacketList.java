@@ -29,7 +29,7 @@ public class PacketList extends JFrame {
 	 * Create the frame.
 	 */
 	public PacketList(final Test test) {
-		this.setTitle("Packets "+test);
+		this.setTitle("Packets " + test);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setBounds(100, 100, 1052, 300);
 		this.contentPane = new JPanel();

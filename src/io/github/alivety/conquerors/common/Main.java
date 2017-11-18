@@ -23,7 +23,6 @@ import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.ppl.PPL;
-import io.github.alivety.ppl.packet.Clientside;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Main {
