@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 import io.github.alivety.conquerors.common.Main;
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
 
 public class PacketList extends JFrame {
 	

@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 
 import io.github.alivety.conquerors.common.event.Cancelable;
 import io.github.alivety.conquerors.common.event.Event;
-import io.github.alivety.conquerors.common.events.Clientside;
+import io.github.alivety.ppl.packet.Clientside;
 
 @Clientside
 public class EntityMovedEvent extends Event implements Cancelable {

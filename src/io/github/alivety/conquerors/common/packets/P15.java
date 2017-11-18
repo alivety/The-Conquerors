@@ -1,11 +1,11 @@
 package io.github.alivety.conquerors.common.packets;
 
-import io.github.alivety.conquerors.common.events.Clientside;
-import io.github.alivety.ppl.Packet;
-import io.github.alivety.ppl.PacketField;
+import io.github.alivety.ppl.packet.Clientside;
+import io.github.alivety.ppl.packet.Packet;
+import io.github.alivety.ppl.packet.PacketData;
+import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 15, description = "Open Window", recv = Clientside.class)
+@PacketData(id = 15, desc = "Open Window", bound = Clientside.class)
 public class P15 extends Packet {
-	@PacketField private final int id = 15;
 	@PacketField public String[] slots;
 }

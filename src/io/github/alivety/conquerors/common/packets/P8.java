@@ -1,11 +1,11 @@
 package io.github.alivety.conquerors.common.packets;
 
-import io.github.alivety.conquerors.common.events.Serverside;
-import io.github.alivety.ppl.Packet;
-import io.github.alivety.ppl.PacketField;
+import io.github.alivety.ppl.packet.Packet;
+import io.github.alivety.ppl.packet.PacketData;
+import io.github.alivety.ppl.packet.PacketField;
+import io.github.alivety.ppl.packet.Serverside;
 
-@PacketData(id = 8, description = "Send Chat", recv = Serverside.class)
+@PacketData(id = 8, desc = "Send Chat", bound = Serverside.class)
 public class P8 extends Packet {
-	@PacketField private final int id = 8;
 	@PacketField public String message;
 }

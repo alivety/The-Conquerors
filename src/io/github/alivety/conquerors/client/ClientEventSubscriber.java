@@ -90,7 +90,7 @@ public class ClientEventSubscriber {
 		this.client.initApp();
 		this.client.getApp().start();
 		
-		this.client.getApp().scheduleAddEntity(Main.uuid("test"), "conquerors_model", "CommandCenter_Magenta");
+		//this.client.getApp().scheduleAddEntity(Main.uuid("test"), "conquerors_model", "CommandCenter_Magenta");
 	}
 	
 	@SubscribeEvent(SYS)

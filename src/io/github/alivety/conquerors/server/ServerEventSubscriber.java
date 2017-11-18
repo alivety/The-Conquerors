@@ -40,6 +40,7 @@ public class ServerEventSubscriber {
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));
 		
 		// spawn starter items
+		
 	}
 	
 	@SubscribeEvent(SYS)

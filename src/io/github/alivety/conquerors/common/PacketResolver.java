@@ -41,11 +41,11 @@ import io.github.alivety.conquerors.server.events.PlayerMoveUnitsEvent;
 import io.github.alivety.conquerors.server.events.PlayerMovedEvent;
 import io.github.alivety.conquerors.server.events.WindowRequestedEvent;
 import io.github.alivety.conquerors.server.events.WindowSlotSelectedEvent;
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
 
 public class PacketResolver {
 	public Event resolve(@Nonnull final Packet p, final PlayerObject client) throws IllegalArgumentException, IllegalAccessException {
-		final int id = p.getPacketID();
+		final int id = p.getId();
 		if (id == 0) {
 			final P0 p0 = (P0) p;
 			return new LoginRequestEvent(client, p0.username, p0.protocolVersion);

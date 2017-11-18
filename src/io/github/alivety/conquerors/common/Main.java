@@ -23,7 +23,7 @@ import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.ppl.PPL;
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
 
 public class Main {
 	public static final int PRO_VER = 0;
@@ -40,7 +40,7 @@ public class Main {
 	
 	public static Packet createPacket(final int id, final Object... fields) {
 		try {
-			return Packet.c(Main.PACKET_LOCATION + id, fields);
+			return PPL.newInstance(id, fields);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
@@ -49,7 +49,7 @@ public class Main {
 	
 	public static Packet decode(final ByteBuffer buf) {
 		try {
-			return Packet.decode(Main.PACKET_LOCATION, buf);
+			return PPL.decode(buf);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;
@@ -58,7 +58,7 @@ public class Main {
 	
 	public static ByteBuffer encode(final Packet p) {
 		try {
-			return PPL.encapsulate(p.encode());
+			return PPL.encode(p);
 		} catch (final Exception e) {
 			Main.handleError(e);
 			return null;

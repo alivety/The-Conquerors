@@ -6,7 +6,7 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
 
 public class PlayerObject extends UnitObject {
 	private final SocketChannel ch;

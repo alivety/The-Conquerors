@@ -19,7 +19,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
 
 /**
  * The ButtonColumn class provides a renderer and an editor that looks like a

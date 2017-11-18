@@ -2,7 +2,7 @@ package io.github.alivety.conquerors.server.events;
 
 import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.event.Event;
-import io.github.alivety.conquerors.common.events.Serverside;
+import io.github.alivety.ppl.packet.Serverside;
 
 @Serverside
 public class PlayerDisconnectEvent extends Event {

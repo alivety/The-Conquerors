@@ -2,7 +2,7 @@ package io.github.alivety.conquerors.client.events;
 
 import io.github.alivety.conquerors.common.event.Cancelable;
 import io.github.alivety.conquerors.common.event.Event;
-import io.github.alivety.conquerors.common.events.Clientside;
+import io.github.alivety.ppl.packet.Clientside;
 
 @Clientside
 public class EntityOwnershipChangedEvent extends Event implements Cancelable {

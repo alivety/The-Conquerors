@@ -21,8 +21,8 @@ import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.ObjectConverter;
-import io.github.alivety.conquerors.common.packets.PacketData;
-import io.github.alivety.ppl.Packet;
+import io.github.alivety.ppl.packet.Packet;
+import io.github.alivety.ppl.packet.PacketData;
 
 public class PacketBuilder extends JFrame {
 	/**
@@ -75,7 +75,7 @@ public class PacketBuilder extends JFrame {
 		String textfieldtext;
 		if (packet.isAnnotationPresent(PacketData.class)) {
 			final PacketData data = packet.getAnnotation(PacketData.class);
-			textfieldtext = data.description();
+			textfieldtext = data.desc();
 		} else
 			textfieldtext = packet.getName();
 		this.textField = new JTextField(textfieldtext);
@@ -123,10 +123,10 @@ public class PacketBuilder extends JFrame {
 							final String name = vals.getKey();
 							final String val = vals.getValue().getText();
 							final Class<?> type = typeMap.get(vals);
-							p.set(name, ObjectConverter.convert(val, type));
+							p.setPacketField(name, ObjectConverter.convert(val, type));
 						}
 						test.server.write(Main.encode(p));
-						test.pl.addRow(new Object[] { "Client", p.getPacketID(), p });
+						test.pl.addRow(new Object[] { "Client", p.getId(), p });
 					} catch (final Exception e) {
 						Main.handleError(e);
 					}

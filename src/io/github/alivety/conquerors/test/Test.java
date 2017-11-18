@@ -15,8 +15,8 @@ import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
 import io.github.alivety.ppl.PPLClient;
-import io.github.alivety.ppl.Packet;
 import io.github.alivety.ppl.SocketListener;
+import io.github.alivety.ppl.packet.Packet;
 
 public class Test implements ConquerorsApp {
 	public SocketChannel server;
@@ -69,7 +69,7 @@ public class Test implements ConquerorsApp {
 							;
 						}
 					});
-					Test.this.pl.addRow(new Object[] { "Server", p.getPacketID(), p });
+					Test.this.pl.addRow(new Object[] { "Server", p.getId(), p });
 				}
 			});
 			try {

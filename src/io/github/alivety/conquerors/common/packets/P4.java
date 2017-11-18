@@ -1,11 +1,11 @@
 package io.github.alivety.conquerors.common.packets;
 
-import io.github.alivety.conquerors.common.events.Clientside;
-import io.github.alivety.ppl.Packet;
-import io.github.alivety.ppl.PacketField;
+import io.github.alivety.ppl.packet.Clientside;
+import io.github.alivety.ppl.packet.Packet;
+import io.github.alivety.ppl.packet.PacketData;
+import io.github.alivety.ppl.packet.PacketField;
 
-@PacketData(id = 4, description = "Spawn Entity", recv = Clientside.class)
+@PacketData(id = 4, desc = "Spawn Entity", bound = Clientside.class)
 public class P4 extends Packet {
-	@PacketField private final int id = 4;
 	@PacketField public String model, material, spatialId;
 }
