@@ -1,4 +1,4 @@
-package io.github.alivety.conquerors.common.packets;
+package io.github.alivety.conquerors.server.packets;
 
 import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
