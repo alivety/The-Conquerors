@@ -6,10 +6,11 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.alivety.ppl.PPLAdapter;
 import io.github.alivety.ppl.packet.Packet;
 
 public class PlayerObject extends UnitObject {
-	private final SocketChannel ch;
+	private final PPLAdapter adapter;
 	protected String username;
 	public int money, mpm = 5;
 	// private final long created = new Date().getTime();
@@ -18,10 +19,10 @@ public class PlayerObject extends UnitObject {
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
 	
-	public PlayerObject(final SocketChannel ch) {
-		this.ch = ch;
+	public PlayerObject(PPLAdapter adapter) {
+		this.adapter=adapter;
 	}
-	
+
 	@Override
 	public String getOwnerSpatialID() {
 		return null;
@@ -61,16 +62,10 @@ public class PlayerObject extends UnitObject {
 		this.username = username;
 	}
 	
-	private void write(final ByteBuffer buff) throws IOException {
-		if (!this.isReady)
-			return;
-		this.ch.write(buff);
-	}
-	
 	public void write(final Packet p) {
 		try {
 			Main.out.debug(this + ".write(" + p + ")");
-			this.write(Main.encode(p));
+			adapter.writePacket(p);
 		} catch (final IOException e) {
 			Main.handleError(e);
 		}

@@ -85,8 +85,8 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onConnect(final ConnectEvent evt) throws IOException {
-		this.client.server = evt.ch;
-		this.client.server.write(Main.encode(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER)));
+		this.client.server = evt.adapter;
+		this.client.server.writePacket(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER));
 		this.client.initApp();
 		this.client.getApp().start();
 		

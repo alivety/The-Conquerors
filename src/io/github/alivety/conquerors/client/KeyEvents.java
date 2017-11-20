@@ -26,7 +26,7 @@ public class KeyEvents {
 		public void onAction(final String name, final boolean keyPressed, final float tpf) {
 			if (!keyPressed)
 				try {
-					KeyEvents.app.getClient().server.write(Main.encode(Main.createPacket(13)));
+					KeyEvents.app.getClient().server.writePacket(Main.createPacket(13));
 					KeyEvents.app.destroy();
 					System.exit(0);
 				} catch (final IOException e) {

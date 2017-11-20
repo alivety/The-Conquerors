@@ -22,12 +22,14 @@ import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
 import io.github.alivety.conquerors.test.events.DummyEvent;
+import io.github.alivety.ppl.PPLAdapter;
 import io.github.alivety.ppl.PPLServer;
+import io.github.alivety.ppl.SocketAdapter;
 import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Server implements ConquerorsApp {
-	HashMap<SocketChannel, PlayerObject> lookup = new HashMap<SocketChannel, PlayerObject>();
+	HashMap<PPLAdapter, PlayerObject> lookup = new HashMap<PPLAdapter, PlayerObject>();
 	private final List<PlayerObject> players = new ArrayList<PlayerObject>();
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
@@ -43,7 +45,7 @@ public class Server implements ConquerorsApp {
 	}
 	
 	public PlayerObject[] getOnlinePlayers() {
-		return this.players.toArray(new PlayerObject[this.players.size()]);
+		return this.players.toArray(new PlayerObject[]{});
 	}
 	
 	public void go() {
@@ -54,45 +56,45 @@ public class Server implements ConquerorsApp {
 		}
 		Main.server = 1;
 		Main.EVENT_BUS.subscribe(new ServerEventSubscriber(this));
-		Main.EVENT_BUS.bus(new DummyEvent());
 		try {
-			final PPLServer server = new PPLServer().addListener(new SocketListener() {
-				public void connect(final SocketChannel ch) throws Exception {
-					final PlayerObject p = new PlayerObject(ch);
-					Server.this.players.add(p);
-					Server.this.lookup.put(ch, p);
+			PPLServer server=new PPLServer().addListener(new SocketAdapter(){
+				@Override
+				public void connect(PPLAdapter adapter) throws Exception {
+					PlayerObject player=new PlayerObject(adapter);
+					Server.this.players.add(player);
+					Server.this.lookup.put(adapter, player);
 				}
-				
-				public void exception(final SocketChannel h, final Throwable t) {
-					final PlayerObject p = Server.this.lookup.get(h);
-					Server.this.players.remove(p);
+
+				@Override
+				public void read(PPLAdapter adapter, final Packet packet) throws Exception {
+					final PlayerObject player=Server.this.lookup.get(adapter);
+					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(adapter), packet));
+					Server.this.tasks_push(new Runnable(){
+						public void run() {
+							try {
+								Event evt=Main.resolver.resolve(packet,player);
+								Main.EVENT_BUS.bus(evt);
+							} catch (Exception e) {
+								Main.handleError(e);
+							}
+						}});
+				}
+
+				@Override
+				public void exception(PPLAdapter adapter, Throwable t) {
+					final PlayerObject player = Server.this.lookup.get(adapter);
+					Server.this.players.remove(player);
 					
 					if (t instanceof IOException) {
 						Server.this.tasks_push(new Runnable() {
 							public void run() {
-								Main.EVENT_BUS.bus(new PlayerDisconnectEvent(Server.this.lookup.get(h)));
+								Main.EVENT_BUS.bus(new PlayerDisconnectEvent(player));
 							}
 						});
 						return;
 					}
 					Main.handleError(t);
-				}
-				
-				public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
-					final Packet p = Main.decode(msg);
-					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(ch), p));
-					Server.this.tasks_push(new Runnable() {
-						public void run() {
-							try {
-								final Event evt = Main.resolver.resolve(p, Server.this.lookup.get(ch));
-								Main.EVENT_BUS.bus(evt);
-							} catch (final Exception e) {
-								Main.handleError(e);
-							}
-						}
-					});
-				}
-			});
+				}});
 			final int port = Integer.parseInt(JOptionPane.showInputDialog("Enter port number:"));
 			server.bind(port);
 			Main.out.info("started on port=" + port);
@@ -114,6 +116,13 @@ public class Server implements ConquerorsApp {
 				});
 			}
 		}, 0, 1, TimeUnit.MINUTES);
+		
+		this.tasks_push(new Runnable(){
+			public void run() {
+				if (Server.this.getOnlinePlayers().length<3) {
+					
+				}
+			}});
 		
 		while (true)
 			while (this.tasks_has())
