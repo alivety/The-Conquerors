@@ -30,15 +30,21 @@ public class Main {
 	public static final Random random = new Random();
 	public static Logger out;
 	public static final EventBus EVENT_BUS = new EventBus();
+	public static final PPLListener PACKET_CATCHER=new PPLListener();
+	public static final PacketResolver resolver = new PacketResolver();
 	public static int server = 0;
-	private static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
+	private @Deprecated static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
 	public static final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
 	public static final File USER_PREFS = new File("prefs.json");
 	public static Preferences PREFS;
 	
-	public static final PacketResolver resolver = new PacketResolver();
+	public static Packet createPacket(int id,Object... fields) {
+		Packet packet=newPacket(id,fields);
+		PACKET_CATCHER.addRow(new Object[] {"{this}",id,packet});
+		return packet;
+	}
 	
-	public static Packet createPacket(final int id, final Object... fields) {
+    private static Packet newPacket(final int id, final Object... fields) {
 		try {
 			return PPL.newInstance(id, fields);
 		} catch (final Exception e) {
