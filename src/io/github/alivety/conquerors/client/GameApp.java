@@ -65,6 +65,10 @@ public class GameApp extends SimpleApplication {
 		return spat;
 	}
 	
+	public void removeSpatial(String spatialID) {
+		this.entities.detachChildNamed(spatialID);
+	}
+	
 	@Override
 	public void simpleInitApp() {
 		Model.assetManager = this.assetManager;

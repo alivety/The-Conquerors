@@ -32,7 +32,7 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityMove(final EntityMovedEvent evt) {
-		// TODO entity movement
+		this.client.getApp().getSpatial(evt.spatialID).setLocalTranslation(evt.x, evt.y, evt.z);
 	}
 	
 	@SubscribeEvent(SYS)
@@ -42,12 +42,12 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityDespawn(final EntityRemovedEvent evt) {
-		// TODO entity despawn
+		this.client.getApp().removeSpatial(evt.spatialID);
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onEntityScale(final EntityResizedEvent evt) {
-		// TODO entity resize
+		this.client.getApp().getSpatial(evt.spatialID).scale(evt.x, evt.y, evt.z);
 	}
 	
 	@SubscribeEvent(SYS)
@@ -89,9 +89,6 @@ public class ClientEventSubscriber {
 		this.client.server.writePacket(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER));
 		this.client.initApp();
 		this.client.getApp().start();
-		
-		// this.client.getApp().scheduleAddEntity(Main.uuid("test"),
-		// "conquerors_model", "CommandCenter_Magenta");
 	}
 	
 	@SubscribeEvent(SYS)

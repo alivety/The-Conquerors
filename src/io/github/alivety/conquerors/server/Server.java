@@ -34,6 +34,11 @@ public class Server implements ConquerorsApp {
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
+	private int port;
+	
+	public Server(int port) {
+		this.port=port;
+	}
 	
 	protected void broadcast(final Packet p) {
 		final Iterator<PlayerObject> iter = this.players.iterator();
@@ -56,6 +61,7 @@ public class Server implements ConquerorsApp {
 		}
 		Main.server = 1;
 		Main.EVENT_BUS.subscribe(new ServerEventSubscriber(this));
+		Main.PACKET_CATCHER.setVisible(true);
 		try {
 			PPLServer server=new PPLServer().addListener(new SocketAdapter(){
 				@Override
@@ -68,6 +74,7 @@ public class Server implements ConquerorsApp {
 				@Override
 				public void read(PPLAdapter adapter, final Packet packet) throws Exception {
 					final PlayerObject player=Server.this.lookup.get(adapter);
+					Main.PACKET_CATCHER.addRow(new Object[] {player.username(),packet.getId(),packet});
 					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(adapter), packet));
 					Server.this.tasks_push(new Runnable(){
 						public void run() {
@@ -95,7 +102,6 @@ public class Server implements ConquerorsApp {
 					}
 					Main.handleError(t);
 				}});
-			final int port = Integer.parseInt(JOptionPane.showInputDialog("Enter port number:"));
 			server.bind(port);
 			Main.out.info("started on port=" + port);
 		} catch (final Exception e) {
@@ -119,9 +125,7 @@ public class Server implements ConquerorsApp {
 		
 		this.tasks_push(new Runnable(){
 			public void run() {
-				if (Server.this.getOnlinePlayers().length<3) {
-					
-				}
+				while (Server.this.getOnlinePlayers().length<3) {}
 			}});
 		
 		while (true)

@@ -10,7 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -19,6 +21,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -41,7 +44,7 @@ public class Preferences {
 		return (String) conq.pref.get("name");
 	}
 	
-	private static class Conquerors extends JFrame {
+	public static class Conquerors extends JFrame {
 		protected final JSONObject pref;
 		
 		private JPanel contentPane;
@@ -94,7 +97,7 @@ public class Preferences {
 			passwordField = new JPasswordField();
 			passwordField.setFont(new Font("Dialog", Font.PLAIN, 14));
 			passwordField.setBorder(new EmptyBorder(0, 0, 0, 0));
-			passwordField.setVisible(true);
+			passwordField.setVisible(false);
 			passwordField.setBounds(10, 185, 430, 35);
 			contentPane.add(passwordField);
 			
@@ -102,8 +105,8 @@ public class Preferences {
 			btnNewButton_1.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					pref.put("name", txtUsername.getText());
-					Conquerors.this.setVisible(false);
-					new Client(null).go();
+					Conquerors.this.dispose();
+					new GamePage(Conquerors.this,(JSONArray) Conquerors.this.pref.get("servers")).setVisible(true);
 				}
 			});
 			btnNewButton_1.setFont(new Font("Dialog", Font.PLAIN, 14));
@@ -132,6 +135,23 @@ public class Preferences {
 					}
 				}
 			}
+		}
+		
+		public void dispose() {
+			try {
+				this.save();
+			} catch (IOException e) {
+				Main.handleError(e);
+			}
+			this.setVisible(false);
+			super.dispose();
+		}
+		
+		public void save() throws IOException {
+			FileWriter fw=new FileWriter(Main.USER_PREFS);
+			fw.write(pref.toJSONString());
+			fw.flush();
+			fw.close();
 		}
 	}
 }

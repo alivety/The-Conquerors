@@ -20,8 +20,10 @@ import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Client extends PlayerObject implements ConquerorsApp {
-	public Client(final PPLAdapter adapter) {
+	private String hostport;
+	public Client(final PPLAdapter adapter,String hostport) {
 		super(adapter);
+		this.hostport=hostport;
 	}
 	
 	private GameApp app;
@@ -34,8 +36,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 	public void go() {
 		try {
 			Main.setupLogger(this);
-			final String hostandport = JOptionPane.showInputDialog("host:port");
-			final HostAndPort hap = HostAndPort.fromString(hostandport);
+			final HostAndPort hap = HostAndPort.fromString(hostport);
 			Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
 			PPLClient client=new PPLClient().addListener(new SocketAdapter(){
 				@Override
@@ -56,7 +57,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 				public void exception(PPLAdapter adapter, Throwable t) {
 					Main.handleError(t);
 				}});
-			client.connect(hap.getHost(), hap.getPortOrDefault(22));
+			client.connect(hap.getHost(), hap.getPortOrDefault(3033));
 		} catch (final Exception e) {
 			Main.handleError(e);
 		} catch (final Error e) {

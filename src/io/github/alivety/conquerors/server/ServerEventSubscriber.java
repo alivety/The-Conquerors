@@ -39,7 +39,10 @@ public class ServerEventSubscriber {
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.username + " has joined the game")));
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));
 		
-		// spawn starter items
+		if (server.getOnlinePlayers().length<3)
+			server.broadcast(Main.createPacket(9, Main.formatChatMessage("There must be "+(server.getOnlinePlayers().length-3)+" more players to start the game")));
+		
+		// TODO spawn starter items
 		
 	}
 	
@@ -68,12 +71,12 @@ public class ServerEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onPlayerMoveUnits(final PlayerMoveUnitsEvent evt) {
-		
+		//TODO player move units
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onSlotSelected(final WindowSlotSelectedEvent evt) {
-		
+		//TODO slot selected
 	}
 	
 	@SubscribeEvent(SYS)

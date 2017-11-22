@@ -22,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import com.google.common.base.Throwables;
 
 import io.github.alivety.conquerors.common.event.EventBus;
+import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.packet.Packet;
 
@@ -40,7 +41,7 @@ public class Main {
 	
 	public static Packet createPacket(int id,Object... fields) {
 		Packet packet=newPacket(id,fields);
-		PACKET_CATCHER.addRow(new Object[] {"{this}",id,packet});
+		PACKET_CATCHER.addRow(new Object[] {(server==1)?"Server":"Client",id,packet});
 		return packet;
 	}
 	
@@ -115,7 +116,7 @@ public class Main {
 		private static final long serialVersionUID = 1304222821855174255L;
 	}
 	
-	public static void main(final String[] arg) throws IOException {
+	public static void main(final String[] args) throws IOException {
 		JFrame.setDefaultLookAndFeelDecorated(false);
 		Main.out = Logger.getLogger("undefined");
 		try {
