@@ -45,6 +45,11 @@ public class PlayerObject extends UnitObject {
 		return "Player";
 	}
 	
+	public void redefineUnits(List<UnitObject> list) {
+		this.units.clear();
+		this.units.addAll(list);
+	}
+	
 	public void packet(final int pid, final Object... fields) {
 		this.write(Main.createPacket(pid, fields));
 	}

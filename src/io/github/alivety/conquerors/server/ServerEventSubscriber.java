@@ -41,7 +41,7 @@ public class ServerEventSubscriber {
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));
 		
 		if (server.getOnlinePlayers().length<3)
-			server.broadcast(Main.createPacket(9, Main.formatChatMessage("There must be "+(server.getOnlinePlayers().length-3)+" more players to start the game")));
+			server.broadcast(Main.createPacket(9, Main.formatChatMessage("There must be "+(3-server.getOnlinePlayers().length)+" more players to start the game")));
 		
 		// TODO spawn starter items
 		

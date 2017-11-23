@@ -3,6 +3,8 @@ package io.github.alivety.conquerors.client;
 import static io.github.alivety.conquerors.common.event.EventPriority.SYS;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -20,6 +22,7 @@ import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 
@@ -75,7 +78,19 @@ public class ClientEventSubscriber {
 	public void onPlayerVariablesUpdate(final PlayerVariablesUpdateEvent evt) {
 		this.client.money = evt.money;
 		this.client.mpm = evt.mpm;
-		// TODO units
+		List<UnitObject> units=new ArrayList<>();
+		for (String id:evt.unitSpatialID) {
+			units.add(new UnitObject(id){
+				@Override
+				public String getOwnerSpatialID() {
+					return client.getSpatialID();
+				}
+
+				@Override
+				public String getUnitType() {
+					return "unknown";
+				}});
+		}
 	}
 	
 	@SubscribeEvent(SYS)

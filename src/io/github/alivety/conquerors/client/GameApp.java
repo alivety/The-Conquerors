@@ -7,10 +7,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.Callable;
 
+import com.jme3.app.DebugKeysAppState;
+import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.font.BitmapText;
+import com.jme3.input.CameraInput;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.InputListener;
@@ -20,6 +26,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
+import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.common.Main;
 
 public class GameApp extends SimpleApplication {
@@ -29,6 +36,8 @@ public class GameApp extends SimpleApplication {
 	private final Node entities = new Node("entities");
 	
 	private boolean dragToRotate = false;
+	
+	public final float SPEED=2f;
 	
 	public GameApp(final Client client) {
 		this.client = client;
@@ -76,8 +85,8 @@ public class GameApp extends SimpleApplication {
 		KeyEvents.app = this;
 		this.initKeyBindings();
 		
-		this.setDisplayFps(false);
-		this.setDisplayStatView(false);
+		this.setDisplayFps(true);
+		this.setDisplayStatView(true);
 		
 		this.guiFont = this.assetManager.loadFont("Interface/Fonts/Default.fnt");
 		final BitmapText ch = new BitmapText(this.guiFont, false);
@@ -96,6 +105,8 @@ public class GameApp extends SimpleApplication {
 		this.addKeyMapping(KeyInput.KEY_A, KeyEvents.MovementControl);
 		this.addKeyMapping(KeyInput.KEY_D, KeyEvents.MovementControl);
 		this.addKeyMapping(KeyInput.KEY_S, KeyEvents.MovementControl);
+		this.addKeyMapping(KeyInput.KEY_UP, KeyEvents.MovementControl);
+		this.addKeyMapping(KeyInput.KEY_DOWN, KeyEvents.MovementControl);
 		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
 		
@@ -105,6 +116,24 @@ public class GameApp extends SimpleApplication {
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
 		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
 		
+		this.addKeyMapping(KeyInput.KEY_ADD, new ActionListener(){
+			@Override
+			public void onAction(String arg0, boolean arg1, float arg2) {
+				GameApp.this.scheduleTask(new Runnable(){
+					@Override
+					public void run() {
+						Main.EVENT_BUS.bus(new CreateModelEvent("testcube",
+								new int[]{
+										(int) GameApp.this.getCamera().getLocation().x+5,
+										(int) GameApp.this.getCamera().getLocation().y,
+										(int) GameApp.this.getCamera().getLocation().z
+										},
+								new int[][]{
+							{0,255,255,255,0,0,0,0,1,1,1}
+						}));
+					}});
+			}});
+		
 		this.addKeyMapping(KeyInput.KEY_P, new ActionListener() {
 			public void onAction(final String name, final boolean keyPressed, final float tpf) {
 				if (!keyPressed) {
@@ -112,6 +141,12 @@ public class GameApp extends SimpleApplication {
 					GameApp.this.flyCam.setDragToRotate(GameApp.this.dragToRotate);
 				}
 			}
+		});
+		this.enqueue(() -> {
+			inputManager.deleteMapping(CameraInput.FLYCAM_UP);
+			inputManager.deleteMapping(CameraInput.FLYCAM_DOWN);
+			inputManager.deleteMapping(CameraInput.FLYCAM_RIGHT);
+			inputManager.deleteMapping(CameraInput.FLYCAM_LEFT);
 		});
 	}
 	

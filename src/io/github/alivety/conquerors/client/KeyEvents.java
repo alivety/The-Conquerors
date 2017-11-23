@@ -7,6 +7,10 @@ import java.util.HashMap;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
+import com.jme3.math.Matrix3f;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
 
 import io.github.alivety.conquerors.common.Main;
 
@@ -18,7 +22,87 @@ public class KeyEvents {
 	
 	private static class MovementControl implements AnalogListener {
 		public void onAnalog(final String name, final float value, final float tpf) {
-			// TODO mvement
+			try {
+				String m=KeyEvents.getKey(name);
+				
+				Vector3f vel=new Vector3f();
+				Vector3f pos=app.getCamera().getLocation().clone();
+				Camera cam=app.getCamera();
+				
+				switch (m) {
+					case "w":
+						cam.getDirection(vel);
+						vel.multLocal(value*app.SPEED);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						break;
+					case "s":
+						cam.getDirection(vel);
+						vel.multLocal(-value*app.SPEED);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						break;
+					case "a":
+						app.getCamera().getLeft(vel);
+						vel.multLocal(value*app.SPEED);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						break;
+					case "d":
+						app.getCamera().getLeft(vel);
+						vel.multLocal(-value*app.SPEED);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						break;
+					case "up":
+						vel=new Vector3f(0,value*app.SPEED,0);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						
+						Matrix3f mat = new Matrix3f();
+				        mat.fromAngleNormalAxis(value, cam.getLeft());
+
+				        Vector3f up = cam.getUp();
+				        Vector3f left = cam.getLeft();
+				        Vector3f dir = cam.getDirection();
+
+				        mat.mult(up, up);
+				        mat.mult(left, left);
+				        mat.mult(dir, dir);
+
+				        Quaternion q = new Quaternion();
+				        q.fromAxes(left, up, dir);
+				        q.normalizeLocal();
+
+				        cam.setAxes(q);
+						break;
+					case "down":
+						vel=new Vector3f(0,-value*app.SPEED,0);
+						pos.addLocal(vel);
+						cam.setLocation(pos);
+						
+						Matrix3f mat1 = new Matrix3f();
+				        mat1.fromAngleNormalAxis(-value, cam.getLeft());
+
+				        Vector3f up1 = cam.getUp();
+				        Vector3f left1 = cam.getLeft();
+				        Vector3f dir1 = cam.getDirection();
+
+				        mat1.mult(up1, up1);
+				        mat1.mult(left1, left1);
+				        mat1.mult(dir1, dir1);
+
+				        Quaternion q1 = new Quaternion();
+				        q1.fromAxes(left1, up1, dir1);
+				        q1.normalizeLocal();
+
+				        cam.setAxes(q1);
+						break;
+				}
+				
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				Main.handleError(e);
+			}
 		}
 	}
 	
@@ -45,5 +129,9 @@ public class KeyEvents {
 			if ((Integer) f.get(null) == keyInput)
 				return f.getName().substring(4).toLowerCase();
 		throw new IllegalArgumentException("No such key with value=" + keyInput);
+	}
+	
+	public static String getKey(String name) throws NumberFormatException, IllegalArgumentException, IllegalAccessException {
+		return KeyEvents.getKey(Integer.parseInt(name.replace("key_map_", "")));
 	}
 }

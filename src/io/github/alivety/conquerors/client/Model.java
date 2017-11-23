@@ -57,8 +57,8 @@ public abstract class Model {
 			for (final int[] shape : this.evt.form) {
 				/*
 				 * shape[0] = type (0=cube,1=sphere) shape[1-4] = RGBA color
-				 * shape[5-7] = position shape[8-*] = shape-specific
-				 * constructors
+				 * shape[5-7] = position
+				 * shape[8-*] = shape-specific constructors
 				 */
 				final boolean cube = shape[0] == 0;
 				final ColorRGBA color = new ColorRGBA(shape[1], shape[2], shape[3], shape[4]);
