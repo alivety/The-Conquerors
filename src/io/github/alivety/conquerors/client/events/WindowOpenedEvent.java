@@ -6,9 +6,11 @@ import io.github.alivety.ppl.packet.Clientside;
 
 @Clientside
 public class WindowOpenedEvent extends Event implements Cancelable {
+	public String spatialID;
 	public String[] slots;
 	
-	public WindowOpenedEvent(final String[] slots) {
+	public WindowOpenedEvent(String spatialID, final String[] slots) {
+		this.spatialID=spatialID;
 		this.slots = slots;
 	}
 }

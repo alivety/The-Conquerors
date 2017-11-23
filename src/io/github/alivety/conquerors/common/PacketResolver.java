@@ -46,66 +46,68 @@ import io.github.alivety.ppl.packet.Packet;
 public class PacketResolver {
 	public Event resolve(@Nonnull final Packet p, final PlayerObject client) throws IllegalArgumentException, IllegalAccessException {
 		final int id = p.getId();
-		if (id == 0) {
-			final PacketLoginRequest p0 = (PacketLoginRequest) p;
-			return new LoginRequestEvent(client, p0.username, p0.protocolVersion);
-		} else if (id == 2) {
-			final PacketLoginFailure p2 = (PacketLoginFailure) p;
-			return new LoginFailureEvent(p2.reason);
-		} else if (id == 1) {
-			final PacketLoginSuccess p1 = (PacketLoginSuccess) p;
-			return new LoginSuccessEvent(p1.spatialID);
-		} else if (id == 4) {
-			final PacketSpawnEntity p4 = (PacketSpawnEntity) p;
-			return new EntitySpawnEvent(p4.model, p4.material, p4.spatialId);
-		} else if (id == 5) {
-			final PacketTranslateEntity p5 = (PacketTranslateEntity) p;
-			return new EntityMovedEvent(p5.spatialID, p5.x, p5.y, p5.z);
-		} else if (id == 6) {
-			final PacketScaleEntity p6 = (PacketScaleEntity) p;
-			return new EntityResizedEvent(p6.spatialID, p6.x, p6.y, p6.z);
-		} else if (id == 8) {
-			final PacketSendChat p8 = (PacketSendChat) p;
-			return new PlayerChatEvent(client, p8.message);
-		} else if (id == 9) {
-			final PacketChatMessage p9 = (PacketChatMessage) p;
-			return new PlayerChatEvent(null, p9.raw_msg);
-		} else if (id == 10) {
-			final PacketPlayerMovement p10 = (PacketPlayerMovement) p;
-			return new PlayerMovedEvent(client, p10.x, p10.y, p10.z);
-		} else if (id == 11) {
-			final PacketRemoveEntity p11 = (PacketRemoveEntity) p;
-			return new EntityRemovedEvent(p11.spatialId);
-		} else if (id == 12) {
-			final PacketPlayerList p12 = (PacketPlayerList) p;
-			return new PlayerListUpdatedEvent(p12.list);
-		} else if (id == 13)
-			return new PlayerDisconnectEvent(client);
-		else if (id == 14) {
-			final PacketRequestWindow p14 = (PacketRequestWindow) p;
-			return new WindowRequestedEvent(client, p14.spatialID);
-		} else if (id == 15) {
-			final PacketOpenWindow p15 = (PacketOpenWindow) p;
-			return new WindowOpenedEvent(p15.slots);
-		} else if (id == 16) {
-			final PacketSelectWindowSlot p16 = (PacketSelectWindowSlot) p;
-			return new WindowSlotSelectedEvent(client, p16.spatialID, p16.slot);
-		} else if (id == 17) {
-			final PacketUpdateEntityOwnership p17 = (PacketUpdateEntityOwnership) p;
-			return new EntityOwnershipChangedEvent(p17.spatialID, p17.ownerSpatialID);
-		} else if (id == 18) {
-			final PacketMoveUnits p18 = (PacketMoveUnits) p;
-			return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
-		} else if (id == 19) {
-			final PacketUpdatePlayer p19 = (PacketUpdatePlayer) p;
-			return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
-		} else if (id == 20) {
-			final PacketCreateModelSpatial p20 = (PacketCreateModelSpatial) p;
-			return new CreateModelSpatialEvent(p20.shape, p20.vectors);
-		} else if (id == 21) {
-			final PacketCreateModel p21 = (PacketCreateModel) p;
-			return new CreateModelEvent(p21.name, p21.position, p21.form);
-		} else
-			throw new NullPointerException("No packet with id=" + id);
+		switch (id) {
+			case 0:
+				final PacketLoginRequest p0 = (PacketLoginRequest) p;
+				return new LoginRequestEvent(client, p0.username, p0.protocolVersion);
+			case 2:
+				final PacketLoginFailure p2 = (PacketLoginFailure) p;
+				return new LoginFailureEvent(p2.reason);
+			case 1:
+				final PacketLoginSuccess p1 = (PacketLoginSuccess) p;
+				return new LoginSuccessEvent(p1.spatialID);
+			case 4:
+				final PacketSpawnEntity p4 = (PacketSpawnEntity) p;
+				return new EntitySpawnEvent(p4.model, p4.material, p4.spatialId);
+			case 5:
+				final PacketTranslateEntity p5 = (PacketTranslateEntity) p;
+				return new EntityMovedEvent(p5.spatialID, p5.x, p5.y, p5.z);
+			case 6:
+				final PacketScaleEntity p6 = (PacketScaleEntity) p;
+				return new EntityResizedEvent(p6.spatialID, p6.x, p6.y, p6.z);
+			case 8:
+				final PacketSendChat p8 = (PacketSendChat) p;
+				return new PlayerChatEvent(client, p8.message);
+			case 9:
+				final PacketChatMessage p9 = (PacketChatMessage) p;
+				return new PlayerChatEvent(null, p9.raw_msg);
+			case 10:
+				final PacketPlayerMovement p10 = (PacketPlayerMovement) p;
+				return new PlayerMovedEvent(client, p10.x, p10.y, p10.z);
+			case 11:
+				final PacketRemoveEntity p11 = (PacketRemoveEntity) p;
+				return new EntityRemovedEvent(p11.spatialId);
+			case 12:
+				final PacketPlayerList p12 = (PacketPlayerList) p;
+				return new PlayerListUpdatedEvent(p12.list);
+			case 13:
+				return new PlayerDisconnectEvent(client);
+			case 14:
+				final PacketRequestWindow p14 = (PacketRequestWindow) p;
+				return new WindowRequestedEvent(client, p14.spatialID);
+			case 15:
+				final PacketOpenWindow p15 = (PacketOpenWindow) p;
+				return new WindowOpenedEvent(p15.spatialID,p15.slots);
+			case 16:
+				final PacketSelectWindowSlot p16 = (PacketSelectWindowSlot) p;
+				return new WindowSlotSelectedEvent(client, p16.spatialID, p16.slot);
+			case 17:
+				final PacketUpdateEntityOwnership p17 = (PacketUpdateEntityOwnership) p;
+				return new EntityOwnershipChangedEvent(p17.spatialID, p17.ownerSpatialID);
+			case 18:
+				final PacketMoveUnits p18 = (PacketMoveUnits) p;
+				return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
+			case 19:
+				final PacketUpdatePlayer p19 = (PacketUpdatePlayer) p;
+				return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
+			case 20:
+				final PacketCreateModelSpatial p20 = (PacketCreateModelSpatial) p;
+				return new CreateModelSpatialEvent(p20.shape, p20.vectors);
+			case 21:
+				final PacketCreateModel p21 = (PacketCreateModel) p;
+				return new CreateModelEvent(p21.name, p21.position, p21.form);
+			default:
+				throw new NullPointerException("No packet with id=" + id);
+		}
 	}
 }

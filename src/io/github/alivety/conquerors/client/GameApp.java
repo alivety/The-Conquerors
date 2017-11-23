@@ -103,8 +103,7 @@ public class GameApp extends SimpleApplication {
 													// units
 		this.addKeyMapping("Chat", KeyInput.KEY_SLASH);// TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
-		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on
-													// selected unit
+		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
 		
 		this.addKeyMapping(KeyInput.KEY_P, new ActionListener() {
 			public void onAction(final String name, final boolean keyPressed, final float tpf) {

@@ -20,6 +20,7 @@ import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
+import io.github.alivety.conquerors.common.window.Window;
 import io.github.alivety.conquerors.server.events.PlayerDisconnectEvent;
 import io.github.alivety.conquerors.test.events.DummyEvent;
 import io.github.alivety.ppl.PPLAdapter;
@@ -32,6 +33,7 @@ public class Server implements ConquerorsApp {
 	HashMap<PPLAdapter, PlayerObject> lookup = new HashMap<PPLAdapter, PlayerObject>();
 	private final List<PlayerObject> players = new ArrayList<PlayerObject>();
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
+	private final HashMap<String,Window> windows=new HashMap<>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	private int port;
@@ -157,6 +159,19 @@ public class Server implements ConquerorsApp {
 				names.add(p.username());
 		}
 		return names.toArray(new String[names.size()]);
+	}
+	
+	public void scheduleWindowOpen(PlayerObject po,Window w) {
+		this.scheduleWindowOpen(Main.uuid(w.toString()), po, w);
+	}
+	
+	public void scheduleWindowOpen(String wID,PlayerObject po,Window w) {
+		windows.put(wID, w);
+		po.write(Main.createPacket(15, new Object[] {wID, w.getSlotValues()}));
+	}
+	
+	public Window windowByID(String wID) {
+		return windows.get(wID);
 	}
 	
 	public void registerUnit(final Unit unit) {

@@ -14,6 +14,7 @@ import io.github.alivety.conquerors.server.events.PlayerMoveUnitsEvent;
 import io.github.alivety.conquerors.server.events.PlayerMovedEvent;
 import io.github.alivety.conquerors.server.events.WindowRequestedEvent;
 import io.github.alivety.conquerors.server.events.WindowSlotSelectedEvent;
+import io.github.alivety.conquerors.server.windows.WindowAlly;
 
 public class ServerEventSubscriber {
 	private final Server server;
@@ -76,11 +77,18 @@ public class ServerEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onSlotSelected(final WindowSlotSelectedEvent evt) {
-		//TODO slot selected
+		server.windowByID(evt.spatialID).getSlots()[evt.slot].click();
 	}
 	
 	@SubscribeEvent(SYS)
 	public void onWindowRequest(final WindowRequestedEvent evt) {
-		// TODO window system
+		switch (evt.spatialID) {
+			case "ally":
+				server.scheduleWindowOpen(evt.player, new WindowAlly(evt,server));
+				break;
+				
+			default:
+				//TODO window by unit
+		}
 	}
 }
