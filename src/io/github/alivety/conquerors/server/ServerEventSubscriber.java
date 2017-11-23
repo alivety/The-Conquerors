@@ -62,6 +62,7 @@ public class ServerEventSubscriber {
 			this.server.broadcast(Main.createPacket(11, u.getSpatialID()));
 			this.server.unregister(u);
 		}
+		server.players.remove(evt.player);
 		evt.player.username(null);
 	}
 	

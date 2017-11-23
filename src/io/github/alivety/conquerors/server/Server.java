@@ -31,7 +31,7 @@ import io.github.alivety.ppl.packet.Packet;
 
 public class Server implements ConquerorsApp {
 	HashMap<PPLAdapter, PlayerObject> lookup = new HashMap<PPLAdapter, PlayerObject>();
-	private final List<PlayerObject> players = new ArrayList<PlayerObject>();
+	protected final List<PlayerObject> players = new ArrayList<PlayerObject>();
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
 	private final HashMap<String,Window> windows=new HashMap<>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
