@@ -1,9 +1,11 @@
 package io.github.alivety.conquerors.common.window;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class Window {
-	public abstract Slot[] getSlots();
+	protected abstract Slot[] w_getSlots();
 	public abstract String getTitle();
 	public abstract String getDescription();
 	
@@ -13,6 +15,19 @@ public abstract class Window {
 			list.add(s.getValue());
 		}
 		return list.toArray(new String[]{});
+	}
+	
+	public Slot[] getSlots() {
+		List<Slot> slots=Arrays.asList(this.w_getSlots());
+		slots.add(new Slot(){
+			@Override
+			public void click() {}
+
+			@Override
+			public String getValue() {
+				return "Exit";
+			}});
+		return slots.toArray(new Slot[] {});
 	}
 	
 	public void click(int slot) {

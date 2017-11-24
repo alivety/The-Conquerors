@@ -56,7 +56,8 @@ public abstract class Model {
 			final Node node = new Node(Main.uuid(this.evt.name));
 			for (final int[] shape : this.evt.form) {
 				/*
-				 * shape[0] = type (0=cube,1=sphere) shape[1-4] = RGBA color
+				 * shape[0] = type (0=cube,1=sphere)
+				 * shape[1-4] = RGBA color
 				 * shape[5-7] = position
 				 * shape[8-*] = shape-specific constructors
 				 */

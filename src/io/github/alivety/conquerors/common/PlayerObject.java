@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import io.github.alivety.ppl.PPLAdapter;
@@ -16,6 +17,7 @@ public class PlayerObject extends UnitObject {
 	// private final long created = new Date().getTime();
 	public boolean isReady = true;
 	private final List<UnitObject> units = new ArrayList<UnitObject>();
+	private final List<PlayerObject> alliance=new ArrayList<PlayerObject>();
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
 	
@@ -74,5 +76,24 @@ public class PlayerObject extends UnitObject {
 		} catch (final IOException e) {
 			Main.handleError(e);
 		}
+	}
+	
+	public boolean isAlly(PlayerObject o) {
+		return alliance.contains(o);
+	}
+	
+	public void ally(PlayerObject o) {
+		alliance.add(o);
+	}
+	
+	public int allyCount() {
+		int count=0;
+		Iterator<PlayerObject> iter=alliance.iterator();
+		while (iter.hasNext()) {
+			if (iter.next().username()!=null) {
+				count++;
+			}
+		}
+		return count;
 	}
 }

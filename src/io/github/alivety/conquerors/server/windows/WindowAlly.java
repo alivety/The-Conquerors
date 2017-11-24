@@ -18,11 +18,30 @@ public class WindowAlly extends Window {
 	}
 
 	@Override
-	public Slot[] getSlots() {
+	protected Slot[] w_getSlots() {
 		PlayerObject[] ps=server.getOnlinePlayers();
 		ArrayList<Slot> list=new ArrayList<>();
 		for (final PlayerObject po:ps) {
+			if (server.getOnlinePlayers().length<5) {
+				if (evt.player.allyCount()==2) {
+					evt.player.packet(9, Main.formatChatMessage("You cannot have more than 2 players in an alliance (3 for games with over 6 players"));
+					break;
+				}
+				if (po.allyCount()==2) {
+					continue;
+				}
+			} else {
+				if (evt.player.allyCount()==3) {
+					evt.player.packet(9, Main.formatChatMessage("You cannot have more than 3 players in an alliance (2 for games with under 6 players"));
+					break;
+				}
+				if (po.allyCount()==3) {
+					continue;
+				}
+			}
 			if (po.username()==null)
+				continue;
+			if (po.isAlly(evt.player))
 				continue;
 			list.add(new Slot(){
 				@Override
@@ -31,13 +50,33 @@ public class WindowAlly extends Window {
 					po.packet(9, Main.formatChatMessage("You have an ally request from "+evt.player.username()));
 					server.scheduleWindowOpen(po, new Window(){
 						@Override
-						public Slot[] getSlots() {
+						public Slot[] w_getSlots() {
 							return new Slot[]{
 									new Slot(){
 										@Override
 										public void click() {
+											if (server.getOnlinePlayers().length<5) {
+												if (evt.player.allyCount()==2) {
+													po.packet(9, Main.formatChatMessage("You cannot have more than 2 players in an alliance (3 for games with over 6 players"));
+													return;
+												}
+												if (po.allyCount()==2) {
+													po.packet(9, Main.formatChatMessage("You cannot have more than 2 players in an alliance (3 for games with over 6 players"));
+													return;
+												}
+											} else {
+												if (evt.player.allyCount()==3) {
+													po.packet(9, Main.formatChatMessage("You cannot have more than 3 players in an alliance (2 for games with under 6 players"));
+													return;
+												}
+												if (po.allyCount()==3) {
+													po.packet(9, Main.formatChatMessage("You cannot have more than 2 players in an alliance (3 for games with over 6 players"));
+													return;
+												}
+											}
 											evt.player.packet(9, Main.formatChatMessage(po.username()+" accepted your ally request"));
-											//TODO ally system
+											evt.player.ally(po);
+											po.ally(evt.player);
 										}
 
 										@Override

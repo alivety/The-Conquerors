@@ -23,8 +23,12 @@ import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
+import com.jme3.texture.Texture.WrapMode;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.common.Main;
@@ -96,6 +100,9 @@ public class GameApp extends SimpleApplication {
 		this.guiNode.attachChild(ch);
 		
 		this.rootNode.attachChild(this.entities);
+		
+		
+		viewPort.setBackgroundColor(ColorRGBA.Blue);
 	}
 	
 	private void initKeyBindings() {
@@ -110,8 +117,7 @@ public class GameApp extends SimpleApplication {
 		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
 		
-		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected
-													// units
+		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
 		this.addKeyMapping("Chat", KeyInput.KEY_SLASH);// TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
 		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
@@ -162,7 +168,7 @@ public class GameApp extends SimpleApplication {
 			public void onAction(final String name, final boolean keyPressed, final float tpf) {
 				if (!keyPressed)
 					try {
-						Main.out.debug(name + ": " + KeyEvents.getKey(Integer.parseInt(name.replace("key_map_", ""))));
+						Main.out.debug(name + ": " + KeyEvents.getKey(name));
 					} catch (final Exception e) {
 						Main.handleError(e);
 					}
