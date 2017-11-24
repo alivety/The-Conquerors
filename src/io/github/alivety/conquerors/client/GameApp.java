@@ -118,7 +118,7 @@ public class GameApp extends SimpleApplication {
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
 		
 		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
-		this.addKeyMapping("Chat", KeyInput.KEY_SLASH);// TODO open chat
+		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
 		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
 		
