@@ -15,6 +15,7 @@ import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.client.packets.PacketChatMessage;
+import io.github.alivety.conquerors.client.packets.PacketCheckModel;
 import io.github.alivety.conquerors.client.packets.PacketCreateModel;
 import io.github.alivety.conquerors.client.packets.PacketCreateModelSpatial;
 import io.github.alivety.conquerors.client.packets.PacketLoginFailure;
@@ -41,6 +42,7 @@ import io.github.alivety.conquerors.server.packets.PacketPlayerMovement;
 import io.github.alivety.conquerors.server.packets.PacketRequestWindow;
 import io.github.alivety.conquerors.server.packets.PacketSelectWindowSlot;
 import io.github.alivety.conquerors.server.packets.PacketSendChat;
+import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.packet.Packet;
 
 public class PacketResolver {
@@ -109,5 +111,15 @@ public class PacketResolver {
 			default:
 				throw new NullPointerException("No packet with id=" + id);
 		}
+	}
+	
+	public void register() {
+		PPL.manualLoadPacket(PacketChatMessage.class);
+		PPL.manualLoadPacket(PacketCheckModel.class);
+		PPL.manualLoadPacket(PacketCreateModel.class);
+		PPL.manualLoadPacket(PacketCreateModelSpatial.class);
+		PPL.manualLoadPacket(PacketLoginFailure.class);
+		PPL.manualLoadPacket(PacketLoginSuccess.class);
+		PPL.manualLoadPacket(PacketOpenWindow.class);
 	}
 }
