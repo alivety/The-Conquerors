@@ -17,3 +17,13 @@ This project was inspired by [The Conquerors by BrokenBone](https://www.roblox.c
 | E | Open window |
 | J | Teleport to base |
 | P | Toggle flyby |
+
+## Licensing
+
+The Conquerors uses Guava, JMonkeyEngine, and json-simple. No modifications were made to any of these libraries.
+
+Guava is licensed under the Apache License, and JMonkeyEngine is licensed under the BSD 3-Clause license. Their software is provided "as is". and is packaged in the binary jarfile.
+
+The Conquerors itself is licensed under the Apache License.
+
+The authors of the libraires retain their respective property and copyright.
