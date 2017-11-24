@@ -1,8 +1,10 @@
 package io.github.alivety.conquerors.common;
 
+import com.jme3.math.Vector3f;
+
 public abstract class UnitObject {
 	protected final String spatialID;
-	private Vector position;
+	private Vector3f position;
 	private int health = 20;
 	
 	protected UnitObject() {
@@ -15,7 +17,7 @@ public abstract class UnitObject {
 	
 	public abstract String getOwnerSpatialID();
 	
-	public Vector getPosition() {
+	public Vector3f getPosition() {
 		return this.position;
 	}
 	
@@ -25,12 +27,12 @@ public abstract class UnitObject {
 	
 	public abstract String getUnitType();
 	
-	public Vector move(final Vector hm) {
+	public Vector3f move(final Vector3f hm) {
 		this.position = this.position.add(hm);
 		return this.position;
 	}
 	
-	public Vector teleport(final Vector loc) {
+	public Vector3f teleport(final Vector3f loc) {
 		this.position = loc;
 		return this.position;
 	}

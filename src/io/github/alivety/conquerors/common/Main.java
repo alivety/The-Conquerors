@@ -20,6 +20,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.google.common.base.Throwables;
+import com.jme3.math.Vector3f;
 
 import io.github.alivety.conquerors.common.event.EventBus;
 import io.github.alivety.conquerors.server.Server;
@@ -153,10 +154,6 @@ public class Main {
 		} catch (final Exception e) {
 			Main.handleError(e);
 		}
-	}
-	
-	public static Vector nv(final float x, final float y, final float z) {
-		return new Vector(x, y, z);
 	}
 	
 	public static void setupLogger(final ConquerorsApp app) throws IOException {
