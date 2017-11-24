@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.AnalogListener;
@@ -28,36 +29,41 @@ public class KeyEvents {
 				Vector3f vel=new Vector3f();
 				Vector3f pos=app.getCamera().getLocation().clone();
 				Camera cam=app.getCamera();
+				CharacterControl player=app.player;
+				
+				Vector3f camDir=(cam.getDirection()).multLocal(0.6f);
+		        Vector3f camLeft = (cam.getLeft()).multLocal(0.4f);
+		        Vector3f walkDirection=new Vector3f(0, 0, 0);
 				
 				switch (m) {
 					case "w":
 						cam.getDirection(vel);
 						vel.multLocal(value*app.SPEED);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						walkDirection.addLocal(camDir);
 						break;
 					case "s":
 						cam.getDirection(vel);
 						vel.multLocal(-value*app.SPEED);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						walkDirection.addLocal(camDir.negate());
 						break;
 					case "a":
 						app.getCamera().getLeft(vel);
 						vel.multLocal(value*app.SPEED);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						walkDirection.addLocal(camLeft.negate());
 						break;
 					case "d":
 						app.getCamera().getLeft(vel);
 						vel.multLocal(-value*app.SPEED);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						walkDirection.addLocal(camLeft);
 						break;
 					case "up":
 						vel=new Vector3f(0,value*app.SPEED,0);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						player.jump();
 						
 						Matrix3f mat = new Matrix3f();
 				        mat.fromAngleNormalAxis(value, cam.getLeft());
@@ -79,7 +85,7 @@ public class KeyEvents {
 					case "down":
 						vel=new Vector3f(0,-value*app.SPEED,0);
 						pos.addLocal(vel);
-						cam.setLocation(pos);
+						//cam.setLocation(pos);
 						
 						Matrix3f mat1 = new Matrix3f();
 				        mat1.fromAngleNormalAxis(-value, cam.getLeft());
@@ -99,6 +105,7 @@ public class KeyEvents {
 				        cam.setAxes(q1);
 						break;
 				}
+				player.setWalkDirection(walkDirection);
 				
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				Main.handleError(e);

@@ -27,6 +27,14 @@
 			<name>bintray</name>
 			<url>https://dl.bintray.com/jmonkeyengine/org.jmonkeyengine</url>
 		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>bintray-stephengold-org.jmonkeyengine</id>
+			<name>bintray</name>
+			<url>https://dl.bintray.com/stephengold/org.jmonkeyengine</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -53,6 +61,26 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>23.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-terrain</artifactId>
+			<version>3.1.0-stable</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-testdata</artifactId>
+			<version>3.1.0-stable</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-bullet</artifactId>
+			<version>3.1.0-stable</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jmonkeyengine</groupId>
+			<artifactId>jme3-bullet-native</artifactId>
+			<version>3.1.0-stable</version>
 		</dependency>
 	</dependencies>
 </project>

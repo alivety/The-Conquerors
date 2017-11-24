@@ -15,6 +15,12 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapText;
 import com.jme3.input.CameraInput;
 import com.jme3.input.KeyInput;
@@ -23,6 +29,7 @@ import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -36,6 +43,10 @@ import io.github.alivety.conquerors.common.Main;
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	private final Client client;
+	
+	private BulletAppState bullet=new BulletAppState();
+	protected CharacterControl player;
+	private RigidBodyControl entityBody;
 	
 	private final Node entities = new Node("entities");
 	
@@ -85,6 +96,15 @@ public class GameApp extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {
 		Model.assetManager = this.assetManager;
+		stateManager.attach(bullet);
+		
+		CapsuleCollisionShape capsule=new CapsuleCollisionShape(1.5f,6f,1);
+		player=new CharacterControl(capsule,0.05f);
+		player.setJumpSpeed(20);
+	    player.setFallSpeed(30);
+	    player.setGravity(30);
+	    player.setPhysicsLocation(new Vector3f(0, 10, 0));
+	    bullet.getPhysicsSpace().add(player);
 		
 		KeyEvents.app = this;
 		this.initKeyBindings();
@@ -102,7 +122,34 @@ public class GameApp extends SimpleApplication {
 		this.rootNode.attachChild(this.entities);
 		
 		
-		viewPort.setBackgroundColor(ColorRGBA.Blue);
+		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
+		
+	    this.enqueue(() -> {
+			Material mat_terrain = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
+
+			mat_terrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+
+			Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
+			grass.setWrap(WrapMode.Repeat);
+			mat_terrain.setTexture("Tex1", grass);
+			mat_terrain.setFloat("Tex1Scale", 64f);
+
+			Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
+			dirt.setWrap(WrapMode.Repeat);
+			mat_terrain.setTexture("Tex2", dirt);
+			mat_terrain.setFloat("Tex2Scale", 32f);
+
+			Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
+			rock.setWrap(WrapMode.Repeat);
+			mat_terrain.setTexture("Tex3", rock);
+			mat_terrain.setFloat("Tex3Scale", 128f);
+			
+			Box ground=new Box(25,1,25);
+			Geometry g=new Geometry("the ground",ground);
+			g.setMaterial(mat_terrain);
+			g.setLocalTranslation(0, -5, 0);
+			GameApp.this.entities.attachChild(g);
+	    });
 	}
 	
 	private void initKeyBindings() {
@@ -181,6 +228,11 @@ public class GameApp extends SimpleApplication {
 	public void simpleUpdate(final float tpf) {
 		while (this.hasMoreTasks())
 			this.getNextTask().run();
+		CollisionShape shape=CollisionShapeFactory.createMeshShape(this.entities);
+		bullet.getPhysicsSpace().remove(this.entityBody);
+		this.entityBody=new RigidBodyControl(shape,0);
+		bullet.getPhysicsSpace().add(this.entityBody);
+		cam.setLocation(player.getPhysicsLocation());
 	}
 	
 	public Client getClient() {
