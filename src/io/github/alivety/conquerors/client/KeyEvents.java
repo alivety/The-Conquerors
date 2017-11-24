@@ -31,8 +31,8 @@ public class KeyEvents {
 				Camera cam=app.getCamera();
 				CharacterControl player=app.player;
 				
-				Vector3f camDir=(cam.getDirection()).multLocal(0.6f);
-		        Vector3f camLeft = (cam.getLeft()).multLocal(0.4f);
+				Vector3f camDir=(cam.getDirection()).multLocal(0.06f);
+		        Vector3f camLeft = (cam.getLeft()).multLocal(0.04f);
 		        Vector3f walkDirection=new Vector3f(0, 0, 0);
 				
 				switch (m) {
@@ -52,13 +52,13 @@ public class KeyEvents {
 						app.getCamera().getLeft(vel);
 						vel.multLocal(value*app.SPEED);
 						pos.addLocal(vel);
-						walkDirection.addLocal(camLeft.negate());
+						walkDirection.addLocal(camLeft);
 						break;
 					case "d":
 						app.getCamera().getLeft(vel);
 						vel.multLocal(-value*app.SPEED);
 						pos.addLocal(vel);
-						walkDirection.addLocal(camLeft);
+						walkDirection.addLocal(camLeft.negate());
 						break;
 					case "up":
 						vel=new Vector3f(0,value*app.SPEED,0);

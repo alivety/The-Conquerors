@@ -52,7 +52,7 @@ public class GameApp extends SimpleApplication {
 	
 	private boolean dragToRotate = false;
 	
-	public final float SPEED=2f;
+	public final float SPEED=1f;
 	
 	public GameApp(final Client client) {
 		this.client = client;
@@ -152,18 +152,38 @@ public class GameApp extends SimpleApplication {
 	    });
 	}
 	
+	private boolean left,right,up,down;
+	
 	private void initKeyBindings() {
 		this.inputManager.clearMappings();
 		
-		this.addKeyMapping(KeyInput.KEY_W, KeyEvents.MovementControl);
-		this.addKeyMapping(KeyInput.KEY_A, KeyEvents.MovementControl);
-		this.addKeyMapping(KeyInput.KEY_D, KeyEvents.MovementControl);
-		this.addKeyMapping(KeyInput.KEY_S, KeyEvents.MovementControl);
-		this.addKeyMapping(KeyInput.KEY_UP, KeyEvents.MovementControl);
-		this.addKeyMapping(KeyInput.KEY_DOWN, KeyEvents.MovementControl);
+		this.addKeyMapping(KeyInput.KEY_W, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				up=keyPressed;
+			}});
+		this.addKeyMapping(KeyInput.KEY_A, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				left=keyPressed;
+			}});
+		this.addKeyMapping(KeyInput.KEY_D, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				right=keyPressed;
+			}});
+		this.addKeyMapping(KeyInput.KEY_S, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				down=keyPressed;
+			}});
+		this.addKeyMapping(KeyInput.KEY_SPACE, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				if (keyPressed) player.jump();
+			}});
 		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
-		
 		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
 		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
@@ -232,6 +252,20 @@ public class GameApp extends SimpleApplication {
 		bullet.getPhysicsSpace().remove(this.entityBody);
 		this.entityBody=new RigidBodyControl(shape,0);
 		bullet.getPhysicsSpace().add(this.entityBody);
+		
+		Vector3f camDir=cam.getDirection().multLocal(0.2f);
+		Vector3f camLeft=cam.getLeft().multLocal(0.2f);
+		Vector3f walkDirection=new Vector3f(0,0,0);
+		if (left)
+			walkDirection.addLocal(camLeft);
+		if (right)
+			walkDirection.addLocal(camLeft.negate());
+		if (up)
+			walkDirection.addLocal(camDir);
+		if (down)
+			walkDirection.addLocal(camDir.negate());
+		
+		player.setWalkDirection(walkDirection);
 		cam.setLocation(player.getPhysicsLocation());
 	}
 	
