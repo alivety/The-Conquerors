@@ -34,6 +34,10 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.terrain.geomipmap.TerrainLodControl;
+import com.jme3.terrain.geomipmap.TerrainQuad;
+import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 
@@ -47,6 +51,8 @@ public class GameApp extends SimpleApplication {
 	private BulletAppState bullet=new BulletAppState();
 	protected CharacterControl player;
 	private RigidBodyControl entityBody;
+	
+	private boolean showStats=false;
 	
 	private final Node entities = new Node("entities");
 	
@@ -109,8 +115,8 @@ public class GameApp extends SimpleApplication {
 		KeyEvents.app = this;
 		this.initKeyBindings();
 		
-		this.setDisplayFps(true);
-		this.setDisplayStatView(true);
+		this.setDisplayFps(showStats);
+		this.setDisplayStatView(showStats);
 		
 		this.guiFont = this.assetManager.loadFont("Interface/Fonts/Default.fnt");
 		final BitmapText ch = new BitmapText(this.guiFont, false);
@@ -144,11 +150,24 @@ public class GameApp extends SimpleApplication {
 			mat_terrain.setTexture("Tex3", rock);
 			mat_terrain.setFloat("Tex3Scale", 128f);
 			
-			Box ground=new Box(25,1,25);
-			Geometry g=new Geometry("the ground",ground);
-			g.setMaterial(mat_terrain);
-			g.setLocalTranslation(0, -5, 0);
-			GameApp.this.entities.attachChild(g);
+			AbstractHeightMap heightmap = null;
+		    Texture heightMapImage = assetManager.loadTexture(
+		            "Textures/Terrain/splat/mountains512.png");
+		    heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
+		    heightmap.load();
+
+		    int patchSize = 65;
+		    TerrainQuad terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());
+
+		    /** 4. We give the terrain its material, position & scale it, and attach it. */
+		    terrain.setMaterial(mat_terrain);
+		    terrain.setLocalTranslation(0, -300, 0);
+		    terrain.setLocalScale(2f, 1f, 2f);
+		    entities.attachChild(terrain);
+
+		    /** 5. The LOD (level of detail) depends on were the camera is: */
+		    TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
+		    terrain.addControl(control);
 	    });
 	}
 	
@@ -183,6 +202,16 @@ public class GameApp extends SimpleApplication {
 				if (keyPressed) player.jump();
 			}});
 		
+		this.addKeyMapping(KeyInput.KEY_TAB, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				if (!keyPressed) {
+					showStats=!showStats;
+					setDisplayFps(showStats);
+					setDisplayStatView(showStats);
+				}
+			}});
+		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
 		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
 		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
@@ -205,6 +234,14 @@ public class GameApp extends SimpleApplication {
 							{0,255,255,255,0,0,0,0,1,1,1}
 						}));
 					}});
+			}});
+		
+		this.addKeyMapping(KeyInput.KEY_J, new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				if (!keyPressed) {
+					player.setPhysicsLocation(new Vector3f(0,0,0));
+				}
 			}});
 		
 		this.addKeyMapping(KeyInput.KEY_P, new ActionListener() {
