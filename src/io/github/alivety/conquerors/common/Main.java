@@ -128,24 +128,6 @@ public class Main {
 				fw.close();
 			}
 			
-			// print thread information
-			Main.ses.scheduleWithFixedDelay(new Runnable() {
-				public void run() {
-					ThreadGroup rootGroup = Thread.currentThread().getThreadGroup();
-					ThreadGroup parentGroup;
-					while ((parentGroup = rootGroup.getParent()) != null)
-						rootGroup = parentGroup;
-					Thread[] threads = new Thread[rootGroup.activeCount()];
-					while (rootGroup.enumerate(threads, true) == threads.length)
-						threads = new Thread[threads.length * 2];
-					for (final Thread t : threads) {
-						if (t == null)
-							break;
-						Main.out.debug(t);
-					}
-				}
-			}, 0, 1, TimeUnit.MINUTES);
-			
 			PPL.loadPackets();
 			
 			final JSONParser parser = new JSONParser();
