@@ -9,6 +9,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Cylinder;
 import com.jme3.scene.shape.Sphere;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
@@ -25,6 +26,11 @@ public abstract class Model {
 	protected Spatial makeSphere(final int zSamples, final int radialSamples, final float radius) {
 		final Sphere sphere = new Sphere(zSamples, radialSamples, radius);
 		return new Geometry(Main.uuid("sphere"), sphere);
+	}
+	
+	protected Spatial makeCylinder(int axisSamples,int radialSamples,float radius,float height) {
+		Cylinder cyl=new Cylinder(axisSamples,radialSamples,radius,height);
+		return new Geometry(Main.uuid("cylinder"),cyl);
 	}
 	
 	protected void positionSpatial(final Spatial spat, final Vector3f location) {
@@ -56,19 +62,22 @@ public abstract class Model {
 			final Node node = new Node(Main.uuid(this.evt.name));
 			for (final int[] shape : this.evt.form) {
 				/*
-				 * shape[0] = type (0=cube,1=sphere)
+				 * shape[0] = type (0=cube,1=sphere,2=cylindar)
 				 * shape[1-4] = RGBA color
 				 * shape[5-7] = position
 				 * shape[8-*] = shape-specific constructors
 				 */
-				final boolean cube = shape[0] == 0;
 				final ColorRGBA color = new ColorRGBA(shape[1], shape[2], shape[3], shape[4]);
 				final Vector3f pos = new Vector3f(shape[5], shape[6], shape[7]);
 				Spatial spat;
-				if (cube)
+				if (shape[0]==0)
 					spat = this.makeCube(new Vector3f(shape[8], shape[9], shape[10]));
-				else
+				else if (shape[0]==1)
 					spat = this.makeSphere(32, 32, shape[8]);
+				else if (shape[0]==2)
+					spat=this.makeCylinder(32, 32, shape[8], shape[10]);
+				else
+					throw new IllegalArgumentException(shape[0]+" is not a valid shape ID");
 				this.colorSpatial(spat, color);
 				this.positionSpatial(spat, pos);
 				node.attachChild(spat);
