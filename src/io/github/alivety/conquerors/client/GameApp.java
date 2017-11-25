@@ -1,6 +1,7 @@
 package io.github.alivety.conquerors.client;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,19 +22,30 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.CameraInput;
 import com.jme3.input.KeyInput;
+import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Ray;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.BloomFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
+import com.jme3.scene.shape.Sphere;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
@@ -53,6 +65,8 @@ public class GameApp extends SimpleApplication {
 	private BulletAppState bullet=new BulletAppState();
 	protected CharacterControl player;
 	private RigidBodyControl entityBody;
+	
+	protected List<Spatial> selected=new ArrayList<>();
 	
 	private boolean showStats=false;
 	
@@ -99,6 +113,31 @@ public class GameApp extends SimpleApplication {
 	
 	public void removeSpatial(String spatialID) {
 		this.entities.detachChildNamed(spatialID);
+	}
+	
+	public void selectEntity(Spatial spat) {
+		Main.out.debug(spat);
+		if (selected.contains(spat)) {
+			SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
+			    @Override
+			    public void visit(Geometry geom) {
+			        Main.out.debug("visiting geomety " + geom.getName());
+			        geom.getMaterial().clearParam("GlowColor");
+			    }
+			};
+			spat.depthFirstTraversal(geometryGlowVisitor);
+			selected.remove(spat);
+		} else {
+			SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
+			    @Override
+			    public void visit(Geometry geom) {
+			        Main.out.debug("visiting geomety " + geom.getName());
+			        geom.getMaterial().setColor("GlowColor", ColorRGBA.Blue);
+			    }
+			};
+			spat.depthFirstTraversal(geometryGlowVisitor);
+			selected.add(spat);
+		}
 	}
 	
 	@Override
@@ -150,7 +189,6 @@ public class GameApp extends SimpleApplication {
 			mat_terrain.setTexture("Tex3", rock);
 			mat_terrain.setFloat("Tex3Scale", 128f);
 			
-		    Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
 		    HillHeightMap heightmap = null;
 		    HillHeightMap.NORMALIZE_RANGE = 100;
 		    try {
@@ -162,18 +200,21 @@ public class GameApp extends SimpleApplication {
 		    mat_terrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
 
 		    int patchSize = 65;
-		    TerrainQuad terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());
+		    TerrainQuad terrain = new TerrainQuad("the ground", patchSize, 513, heightmap.getHeightMap());
 
-		    /** 4. We give the terrain its material, position & scale it, and attach it. */
 		    terrain.setMaterial(mat_terrain);
 		    terrain.setLocalTranslation(0, -300, 0);
 		    terrain.setLocalScale(2f, 1f, 2f);
 		    entities.attachChild(terrain);
 
-		    /** 5. The LOD (level of detail) depends on were the camera is: */
 		    TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
 		    terrain.addControl(control);
 	    });
+	    
+	    FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
+	    BloomFilter bloom=new BloomFilter(BloomFilter.GlowMode.Objects);
+	    fpp.addFilter(bloom);
+	    viewPort.addProcessor(fpp);
 	}
 	
 	private boolean left,right,up,down;
@@ -218,26 +259,62 @@ public class GameApp extends SimpleApplication {
 			}});
 		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
-		this.addKeyMapping("Clear", KeyInput.KEY_C);// TODO clear all selected units
+		this.addKeyMapping("Clear", KeyInput.KEY_C);
+		inputManager.addListener(new ActionListener(){
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (!isPressed) {
+					Iterator<Spatial> iter=selected.iterator();
+					while (iter.hasNext()) {
+						selectEntity(iter.next());
+					}
+				}
+			}}, "Clear");
 		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
 		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
 		
+		inputManager.addMapping("select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		inputManager.addListener(new ActionListener(){
+			@Override
+			public void onAction(String name, boolean keyPressed, float tpf) {
+				if (!keyPressed) {
+					CollisionResults results = new CollisionResults();
+					Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+					entities.collideWith(ray, results);
+					if (results.size()>0) {
+						Spatial spat=results.getClosestCollision().getGeometry();
+						while (!spat.getParent().equals(entities)) {
+							spat=spat.getParent();
+						}
+						if ("the ground".equals(spat.getName())) return;
+						selectEntity(spat);
+					}
+				}
+			}}, "select");
 		this.addKeyMapping(KeyInput.KEY_ADD, new ActionListener(){
 			@Override
-			public void onAction(String arg0, boolean arg1, float arg2) {
+			public void onAction(String name, boolean keyPressed, float tpf) {
 				GameApp.this.scheduleTask(new Runnable(){
 					@Override
 					public void run() {
+						if (!keyPressed) {
+							Ray ray = new Ray(cam.getLocation(), cam.getDirection());
+							CollisionResults results = new CollisionResults();
+							entities.collideWith(ray, results);
+							if (results.size() > 0) {
+								Vector3f loc=results.getClosestCollision().getContactPoint();
 						Main.EVENT_BUS.bus(new CreateModelEvent("testcube",
 								new int[]{
-										(int) GameApp.this.getCamera().getLocation().x+5,
-										(int) GameApp.this.getCamera().getLocation().y,
-										(int) GameApp.this.getCamera().getLocation().z
+										(int) loc.x,
+										(int) loc.y,
+										(int) loc.z
 										},
 								new int[][]{
 							{0,255,255,255,0,0,0,0,1,1,1}
 						}));
+						}
+						}
 					}});
 			}});
 		
