@@ -58,6 +58,7 @@ import com.jme3.texture.Texture.WrapMode;
 import com.jme3.texture.Texture2D;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
+import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 
@@ -135,7 +136,7 @@ public class GameApp extends SimpleApplication {
 			    @Override
 			    public void visit(Geometry geom) {
 			        Main.out.debug("visiting geomety " + geom.getName());
-			        geom.getMaterial().setColor("GlowColor", ColorRGBA.Blue);
+			        geom.getMaterial().setColor("GlowColor", client.color);
 			    }
 			};
 			spat.depthFirstTraversal(geometryGlowVisitor);
@@ -326,12 +327,13 @@ public class GameApp extends SimpleApplication {
 					@Override
 					public void run() {
 						if (!keyPressed) {
+							String uuid=Main.uuid("testcube");
 							Ray ray = new Ray(cam.getLocation(), cam.getDirection());
 							CollisionResults results = new CollisionResults();
 							entities.collideWith(ray, results);
 							if (results.size() > 0) {
 								Vector3f loc=results.getClosestCollision().getContactPoint();
-						Main.EVENT_BUS.bus(new CreateModelEvent("testcube",
+						Main.EVENT_BUS.bus(new CreateModelEvent(uuid,
 								new int[]{
 										(int) loc.x,
 										(int) loc.y,
@@ -340,6 +342,7 @@ public class GameApp extends SimpleApplication {
 								new int[][]{
 							{0,255,255,255,0,0,0,0,1,1,1}
 						}));
+						Main.EVENT_BUS.bus(new EntityOwnershipChangedEvent(uuid, client.username()));
 						}
 						}
 					}});
