@@ -7,10 +7,12 @@ import io.github.alivety.ppl.packet.Clientside;
 public class PlayerVariablesUpdateEvent extends Event {
 	public int money, mpm;
 	public String[] unitSpatialID;
+	public String[] alliance;
 	
-	public PlayerVariablesUpdateEvent(final int money, final int mpm, final String[] unitSpatialID) {
+	public PlayerVariablesUpdateEvent(final int money, final int mpm, final String[] unitSpatialID,String[] alliance) {
 		this.money = money;
 		this.mpm = mpm;
 		this.unitSpatialID = unitSpatialID;
+		this.alliance=alliance;
 	}
 }

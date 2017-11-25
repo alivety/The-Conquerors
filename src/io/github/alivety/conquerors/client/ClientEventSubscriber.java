@@ -92,6 +92,9 @@ public class ClientEventSubscriber {
 					return "unknown";
 				}});
 		}
+		for (String id:evt.alliance) {
+			client.ally(id);
+		}
 	}
 	
 	@SubscribeEvent(SYS)

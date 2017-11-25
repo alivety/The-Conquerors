@@ -99,4 +99,16 @@ public class PlayerObject extends UnitObject {
 		}
 		return count;
 	}
+	
+	public String[] getAlliesSpatialID() {
+		ArrayList<String> a=new ArrayList<>(this.allyCount());
+		Iterator<PlayerObject> iter=alliance.iterator();
+		while (iter.hasNext()) {
+			PlayerObject o=iter.next();
+			if (o.username()!=null) {
+				a.add(o.spatialID);
+			}
+		}
+		return a.toArray(new String[] {});
+	}
 }

@@ -9,4 +9,5 @@ import io.github.alivety.ppl.packet.PacketField;
 public class PacketUpdatePlayer extends Packet {
 	@PacketField public int money, mpm;
 	@PacketField public String[] unitSpatialID;
+	@PacketField public String[] alliance;
 }

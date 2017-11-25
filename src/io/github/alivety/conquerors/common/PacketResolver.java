@@ -101,7 +101,7 @@ public class PacketResolver {
 				return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
 			case 19:
 				final PacketUpdatePlayer p19 = (PacketUpdatePlayer) p;
-				return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID);
+				return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID,p19.alliance);
 			case 20:
 				final PacketCreateModelSpatial p20 = (PacketCreateModelSpatial) p;
 				return new CreateModelSpatialEvent(p20.shape, p20.vectors);

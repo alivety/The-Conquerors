@@ -2,6 +2,8 @@ package io.github.alivety.conquerors.client;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -21,6 +23,7 @@ import io.github.alivety.ppl.packet.Packet;
 
 public class Client extends PlayerObject implements ConquerorsApp {
 	private String hostport;
+	public List<String> allies=new Vector<String>();
 	public Client(final PPLAdapter adapter,String hostport) {
 		super(adapter);
 		this.hostport=hostport;
@@ -82,5 +85,9 @@ public class Client extends PlayerObject implements ConquerorsApp {
 		Preconditions.checkArgument(this.app == null, "App has already initialized");
 		Main.out.debug("initApp()");
 		this.app = new GameApp(this);
+	}
+	
+	public void ally(String spatialID) {
+		allies.add(spatialID);
 	}
 }

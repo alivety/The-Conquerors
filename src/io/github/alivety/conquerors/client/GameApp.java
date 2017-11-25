@@ -291,6 +291,7 @@ public class GameApp extends SimpleApplication {
 					entities.collideWith(s, results);
 					for (int i=0;i<results.size();i++) {
 						Spatial spat=results.getCollision(i).getGeometry();
+						if (spat==null) continue;
 						while (!spat.getParent().equals(entities)) {
 							spat=spat.getParent();
 						}
@@ -337,7 +338,8 @@ public class GameApp extends SimpleApplication {
 								Main.handleError(e);
 							}
 						} else {
-							selectEntity(spat);
+							if (client.username().equals(spat.getUserData("owner")) || client.allies.contains(spat.getUserData("owner")))
+								selectEntity(spat);
 						}
 					}
 				}

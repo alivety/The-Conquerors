@@ -133,7 +133,7 @@ public class Server implements ConquerorsApp {
 					public void run() {
 						for (final PlayerObject p : Server.this.getOnlinePlayers()) {
 							p.money += p.mpm;
-							p.write(Main.createPacket(19, p.money, p.mpm, p.getUnitSpatialIDs()));
+							p.write(Main.createPacket(19, p.money, p.mpm, p.getUnitSpatialIDs(),p.getAlliesSpatialID()));
 						}
 					}
 				});
