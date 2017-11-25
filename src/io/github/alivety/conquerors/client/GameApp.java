@@ -18,6 +18,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.bounding.BoundingSphere;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -279,7 +280,28 @@ public class GameApp extends SimpleApplication {
 				}
 			}}, "Clear");
 		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
-		this.addKeyMapping("SelN", KeyInput.KEY_G);// TODO select nearby units
+		this.addKeyMapping("SelN", KeyInput.KEY_G);
+		inputManager.addListener(new ActionListener(){
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (!isPressed) {
+					float radius=24;
+					BoundingSphere s=new BoundingSphere(radius,cam.getLocation().add(0, -6, 0));
+					CollisionResults results=new CollisionResults();
+					entities.collideWith(s, results);
+					for (int i=0;i<results.size();i++) {
+						Spatial spat=results.getCollision(i).getGeometry();
+						while (!spat.getParent().equals(entities)) {
+							spat=spat.getParent();
+						}
+						if (client.username().equals(spat.getUserData("owner"))) {
+							if (!selected.contains(spat)) {
+								selectEntity(spat);
+							}
+						}
+					}
+				}
+			}}, "SelN");
 		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
 		
 		inputManager.addMapping("select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -306,13 +328,13 @@ public class GameApp extends SimpleApplication {
 									Main.EVENT_BUS.bus(new PlayerChatEvent(null,Main.formatChatMessage("You cannot control units that are not yours")));
 									return;
 								}
-								String[] spatialID=id_list.toArray(new String[] {});
-								Vector3f loc=results.getClosestCollision().getContactPoint();
-								try {
-									client.server.writePacket(Main.createPacket(18, new Object[]{spatialID, (int)loc.x,(int)loc.y,(int)loc.z}));
-								} catch (IOException e) {
-									Main.handleError(e);
-								}
+							}
+							String[] spatialID=id_list.toArray(new String[] {});
+							Vector3f loc=results.getClosestCollision().getContactPoint();
+							try {
+								client.server.writePacket(Main.createPacket(18, new Object[]{spatialID, (int)loc.x,(int)loc.y,(int)loc.z}));
+							} catch (IOException e) {
+								Main.handleError(e);
 							}
 						} else {
 							selectEntity(spat);
