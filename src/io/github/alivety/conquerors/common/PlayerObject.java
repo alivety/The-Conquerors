@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jme3.math.ColorRGBA;
+
 import io.github.alivety.ppl.PPLAdapter;
 import io.github.alivety.ppl.packet.Packet;
 
@@ -20,6 +22,7 @@ public class PlayerObject extends UnitObject {
 	private final List<PlayerObject> alliance=new ArrayList<PlayerObject>();
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
+	private ColorRGBA color;
 	
 	public PlayerObject(PPLAdapter adapter) {
 		this.adapter=adapter;

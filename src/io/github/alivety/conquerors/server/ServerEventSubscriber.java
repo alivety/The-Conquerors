@@ -33,6 +33,10 @@ public class ServerEventSubscriber {
 			evt.client.packet(2, "A player with that username is already connected");
 			return;
 		}
+		if (server.getOnlinePlayers().length==10) {
+			evt.client.packet(2, "There are already 10 players connected");
+			return;
+		}
 		
 		evt.client.username(evt.username);
 		evt.client.packet(1, evt.client.getSpatialID());
@@ -40,11 +44,12 @@ public class ServerEventSubscriber {
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.username + " has joined the game")));
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));
 		
-		if (server.getOnlinePlayers().length<3)
+		if (server.getOnlinePlayers().length<3) {
 			server.broadcast(Main.createPacket(9, Main.formatChatMessage("There must be "+(3-server.getOnlinePlayers().length)+" more players to start the game")));
+			server.begin=false;
+		}
 		
 		// TODO spawn starter items
-		
 	}
 	
 	@SubscribeEvent(SYS)
@@ -73,6 +78,10 @@ public class ServerEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onPlayerMoveUnits(final PlayerMoveUnitsEvent evt) {
+		if (!server.begin) {
+			evt.player.packet(9, Main.formatChatMessage("You cannot move units until the game has began"));
+			return;
+		}
 		//TODO player move units
 	}
 	
@@ -89,6 +98,10 @@ public class ServerEventSubscriber {
 				break;
 				
 			default:
+				if (!server.begin) {
+					evt.player.packet(9, Main.formatChatMessage("You cannot move units until the game has began"));
+					return;
+				}
 				//TODO window by unit
 		}
 	}

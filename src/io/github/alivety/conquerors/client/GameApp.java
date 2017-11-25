@@ -37,9 +37,11 @@ import com.jme3.scene.shape.Box;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
+import com.jme3.terrain.heightmap.HillHeightMap;
 import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
+import com.jme3.texture.Texture2D;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.common.Main;
@@ -133,8 +135,6 @@ public class GameApp extends SimpleApplication {
 	    this.enqueue(() -> {
 			Material mat_terrain = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
 
-			mat_terrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
-
 			Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
 			grass.setWrap(WrapMode.Repeat);
 			mat_terrain.setTexture("Tex1", grass);
@@ -150,11 +150,16 @@ public class GameApp extends SimpleApplication {
 			mat_terrain.setTexture("Tex3", rock);
 			mat_terrain.setFloat("Tex3Scale", 128f);
 			
-			AbstractHeightMap heightmap = null;
-		    Texture heightMapImage = assetManager.loadTexture(
-		            "Textures/Terrain/splat/mountains512.png");
-		    heightmap = new ImageBasedHeightMap(heightMapImage.getImage());
-		    heightmap.load();
+		    Texture heightMapImage = assetManager.loadTexture("Textures/Terrain/splat/mountains512.png");
+		    HillHeightMap heightmap = null;
+		    HillHeightMap.NORMALIZE_RANGE = 100;
+		    try {
+		        heightmap = new HillHeightMap(513, 1000, 50, 100, (byte) 3);
+		    } catch (Exception ex) {
+		        ex.printStackTrace();
+		    }
+		    
+		    mat_terrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
 
 		    int patchSize = 65;
 		    TerrainQuad terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());

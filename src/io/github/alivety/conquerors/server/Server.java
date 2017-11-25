@@ -14,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.JOptionPane;
 
 import com.google.common.collect.Maps;
+import com.jme3.math.ColorRGBA;
 
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
@@ -37,6 +38,21 @@ public class Server implements ConquerorsApp {
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	private int port;
+	
+	protected final ColorRGBA[] teams={
+			ColorRGBA.White,
+			ColorRGBA.Black,
+			ColorRGBA.Blue,
+			ColorRGBA.Cyan,
+			ColorRGBA.Gray,
+			ColorRGBA.Green,
+			ColorRGBA.Magenta,
+			ColorRGBA.Pink,
+			ColorRGBA.Red,
+			ColorRGBA.Yellow
+	};
+	
+	public boolean begin=false;
 	
 	public Server(int port) {
 		this.port=port;
@@ -124,9 +140,15 @@ public class Server implements ConquerorsApp {
 			}
 		}, 0, 1, TimeUnit.MINUTES);
 		
-		while (true)
+		while (true) {
 			while (this.tasks_has())
 				this.tasks_pop().run();
+			
+			if (this.getOnlinePlayers().length>2 && begin==false) {
+				begin=true;
+				this.broadcast(Main.createPacket(9, Main.formatChatMessage("There are now enough players to begin the game")));
+			}
+		}
 	}
 	
 	private synchronized void packets_push(final Entry<PlayerObject, Packet> e) {
