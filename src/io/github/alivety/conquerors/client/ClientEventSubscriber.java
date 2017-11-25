@@ -66,7 +66,8 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(final LoginSuccessEvent evt) {
-		Main.out.info("Login Successful: " + evt.spatialID);
+		client.username(evt.spatialID);
+		client.color=evt.team;
 	}
 	
 	@SubscribeEvent(SYS)
@@ -102,8 +103,12 @@ public class ClientEventSubscriber {
 	public void onConnect(final ConnectEvent evt) throws IOException {
 		this.client.server = evt.adapter;
 		this.client.server.writePacket(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER));
-		this.client.initApp();
-		this.client.getApp().start();
+		new Thread("game"){
+			public void run() {
+				client.initApp();
+				client.getApp().start();
+			}
+		}.start();
 	}
 	
 	@SubscribeEvent(SYS)

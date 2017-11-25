@@ -5,12 +5,12 @@ import io.github.alivety.ppl.packet.Clientside;
 
 @Clientside
 public class CreateModelEvent extends Event {
-	public String name;
+	public String spatialID;
 	public int[] position;
 	public int[][] form;
 	
-	public CreateModelEvent(final String name, final int[] position, final int[][] form) {
-		this.name = name;
+	public CreateModelEvent(final String spatialID, final int[] position, final int[][] form) {
+		this.spatialID = spatialID;
 		this.position = position;
 		this.form = form;
 	}

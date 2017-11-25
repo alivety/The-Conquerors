@@ -31,7 +31,7 @@ import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Server implements ConquerorsApp {
-	HashMap<String, PlayerObject> lookup = new HashMap<String, PlayerObject>();
+	HashMap<PPLAdapter, PlayerObject> lookup = new HashMap<PPLAdapter, PlayerObject>();
 	protected final List<PlayerObject> players = new ArrayList<PlayerObject>();
 	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
 	private final HashMap<String,Window> windows=new HashMap<>();
@@ -86,14 +86,15 @@ public class Server implements ConquerorsApp {
 				public void connect(PPLAdapter adapter) throws Exception {
 					PlayerObject player=new PlayerObject(adapter);
 					Server.this.players.add(player);
-					Server.this.lookup.put(adapter.toString(), player);
+					Server.this.lookup.put(adapter, player);
 				}
 
 				@Override
 				public void read(PPLAdapter adapter, final Packet packet) throws Exception {
-					final PlayerObject player=Server.this.lookup.get(adapter.toString());
+					final PlayerObject player=Server.this.lookup.get(adapter);
+					Main.out.debug("read: "+packet);
 					Main.PACKET_CATCHER.addRow(new Object[] {player.username(),packet.getId(),packet});
-					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(adapter.toString()), packet));
+					Server.this.packets_push(Maps.immutableEntry(Server.this.lookup.get(adapter), packet));
 					Server.this.tasks_push(new Runnable(){
 						public void run() {
 							try {
@@ -107,7 +108,7 @@ public class Server implements ConquerorsApp {
 
 				@Override
 				public void exception(PPLAdapter adapter, Throwable t) {
-					final PlayerObject player = Server.this.lookup.get(adapter.toString());
+					final PlayerObject player = Server.this.lookup.get(adapter);
 					Server.this.players.remove(player);
 					
 					if (t instanceof IOException) {
@@ -130,7 +131,6 @@ public class Server implements ConquerorsApp {
 			public void run() {
 				Server.this.tasks_push(new Runnable() {
 					public void run() {
-						Main.out.debug("Updating player info");
 						for (final PlayerObject p : Server.this.getOnlinePlayers()) {
 							p.money += p.mpm;
 							p.write(Main.createPacket(19, p.money, p.mpm, p.getUnitSpatialIDs()));

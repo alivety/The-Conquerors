@@ -59,7 +59,7 @@ public abstract class Model {
 		
 		@Override
 		public Spatial build() {
-			final Node node = new Node(Main.uuid(this.evt.name));
+			final Node node = new Node(this.evt.spatialID);
 			for (final int[] shape : this.evt.form) {
 				/*
 				 * shape[0] = type (0=cube,1=sphere,2=cylindar)

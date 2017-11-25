@@ -46,7 +46,11 @@ public class Client extends PlayerObject implements ConquerorsApp {
 
 				@Override
 				public void read(PPLAdapter adapter, Packet packet) throws Exception {
+					Main.out.debug("read: "+packet+" app?"+app);
 					final Event evt=Main.resolver.resolve(packet, null);
+					while (app==null) {
+						Thread.sleep(1);
+					}
 					Client.this.app.scheduleTask(new Runnable(){
 						public void run() {
 							Main.EVENT_BUS.bus(evt);
@@ -65,6 +69,10 @@ public class Client extends PlayerObject implements ConquerorsApp {
 		}
 	}
 	
+	public boolean ready() {
+		return app!=null;
+	}
+	
 	public GameApp getApp() {
 		Preconditions.checkNotNull(this.app, "App has not been initialized");
 		return this.app;
@@ -72,6 +80,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 	
 	public void initApp() {
 		Preconditions.checkArgument(this.app == null, "App has already initialized");
+		Main.out.debug("initApp()");
 		this.app = new GameApp(this);
 	}
 }

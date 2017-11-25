@@ -22,7 +22,7 @@ public class PlayerObject extends UnitObject {
 	private final List<PlayerObject> alliance=new ArrayList<PlayerObject>();
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
-	private ColorRGBA color;
+	public ColorRGBA color;
 	
 	public PlayerObject(PPLAdapter adapter) {
 		this.adapter=adapter;

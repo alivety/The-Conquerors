@@ -39,7 +39,7 @@ public class ServerEventSubscriber {
 		}
 		
 		evt.client.username(evt.username);
-		evt.client.packet(1, evt.client.getSpatialID());
+		evt.client.packet(1, evt.client.getSpatialID(), server.teams[(int) (Math.random()*server.teams.length)]);
 		this.server.broadcast(Main.createPacket(12, new Object[] { this.server.playerList() }));
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.username + " has joined the game")));
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));

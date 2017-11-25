@@ -57,7 +57,7 @@ public class PacketResolver {
 				return new LoginFailureEvent(p2.reason);
 			case 1:
 				final PacketLoginSuccess p1 = (PacketLoginSuccess) p;
-				return new LoginSuccessEvent(p1.spatialID);
+				return new LoginSuccessEvent(p1.spatialID,p1.team);
 			case 4:
 				final PacketSpawnEntity p4 = (PacketSpawnEntity) p;
 				return new EntitySpawnEvent(p4.model, p4.material, p4.spatialId);
@@ -107,19 +107,9 @@ public class PacketResolver {
 				return new CreateModelSpatialEvent(p20.shape, p20.vectors);
 			case 21:
 				final PacketCreateModel p21 = (PacketCreateModel) p;
-				return new CreateModelEvent(p21.name, p21.position, p21.form);
+				return new CreateModelEvent(p21.spatialID, p21.position, p21.form);
 			default:
 				throw new NullPointerException("No packet with id=" + id);
 		}
-	}
-	
-	public void register() {
-		PPL.manualLoadPacket(PacketChatMessage.class);
-		PPL.manualLoadPacket(PacketCheckModel.class);
-		PPL.manualLoadPacket(PacketCreateModel.class);
-		PPL.manualLoadPacket(PacketCreateModelSpatial.class);
-		PPL.manualLoadPacket(PacketLoginFailure.class);
-		PPL.manualLoadPacket(PacketLoginSuccess.class);
-		PPL.manualLoadPacket(PacketOpenWindow.class);
 	}
 }

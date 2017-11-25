@@ -1,5 +1,6 @@
 package io.github.alivety.conquerors.client;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import com.jme3.app.DebugKeysAppState;
@@ -57,6 +59,7 @@ import com.jme3.texture.Texture2D;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
@@ -66,7 +69,7 @@ public class GameApp extends SimpleApplication {
 	protected CharacterControl player;
 	private RigidBodyControl entityBody;
 	
-	protected List<Spatial> selected=new ArrayList<>();
+	protected List<Spatial> selected=new Vector<>();
 	
 	private boolean showStats=false;
 	
@@ -217,6 +220,10 @@ public class GameApp extends SimpleApplication {
 	    viewPort.addProcessor(fpp);
 	}
 	
+	public void start() {
+		super.start();
+	}
+	
 	private boolean left,right,up,down;
 	
 	private void initKeyBindings() {
@@ -264,7 +271,7 @@ public class GameApp extends SimpleApplication {
 			@Override
 			public void onAction(String name, boolean isPressed, float tpf) {
 				if (!isPressed) {
-					Iterator<Spatial> iter=selected.iterator();
+					Iterator<Spatial> iter=new Vector(selected).iterator();
 					while (iter.hasNext()) {
 						selectEntity(iter.next());
 					}
@@ -287,8 +294,28 @@ public class GameApp extends SimpleApplication {
 						while (!spat.getParent().equals(entities)) {
 							spat=spat.getParent();
 						}
-						if ("the ground".equals(spat.getName())) return;
-						selectEntity(spat);
+						if ("the ground".equals(spat.getName())) {
+							List<String> id_list=new ArrayList<>();
+							Iterator<Spatial> iter=selected.iterator();
+							while (iter.hasNext()) {
+								Spatial s=iter.next();
+								if (client.username().equals(s.getUserData("owner"))) {
+									id_list.add(s.getName());
+								} else {
+									Main.EVENT_BUS.bus(new PlayerChatEvent(null,Main.formatChatMessage("You cannot control units that are not yours")));
+									return;
+								}
+								String[] spatialID=id_list.toArray(new String[] {});
+								Vector3f loc=results.getClosestCollision().getContactPoint();
+								try {
+									client.server.writePacket(Main.createPacket(18, new Object[]{spatialID, (int)loc.x,(int)loc.y,(int)loc.z}));
+								} catch (IOException e) {
+									Main.handleError(e);
+								}
+							}
+						} else {
+							selectEntity(spat);
+						}
 					}
 				}
 			}}, "select");
@@ -367,6 +394,7 @@ public class GameApp extends SimpleApplication {
 	public void simpleUpdate(final float tpf) {
 		while (this.hasMoreTasks())
 			this.getNextTask().run();
+		
 		CollisionShape shape=CollisionShapeFactory.createMeshShape(this.entities);
 		bullet.getPhysicsSpace().remove(this.entityBody);
 		this.entityBody=new RigidBodyControl(shape,0);
