@@ -62,6 +62,7 @@ import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
+import io.github.alivety.conquerors.server.packets.PacketRequestWindow;
 
 public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
@@ -117,6 +118,7 @@ public class GameApp extends SimpleApplication {
 	}
 	
 	public void removeSpatial(String spatialID) {
+		selected.remove(entities.getChild(spatialID));
 		this.entities.detachChildNamed(spatialID);
 	}
 	
@@ -303,7 +305,20 @@ public class GameApp extends SimpleApplication {
 					}
 				}
 			}}, "SelN");
-		this.addKeyMapping("Win", KeyInput.KEY_E);// TODO open window on selected unit
+		this.addKeyMapping("Win", KeyInput.KEY_E);
+		inputManager.addListener(new ActionListener(){
+			@Override
+			public void onAction(String name, boolean isPressed, float tpf) {
+				if (!isPressed) {
+					PacketRequestWindow prw=new PacketRequestWindow();
+					prw.spatialID=selected.get(0).getName();
+					try {
+						client.server.writePacket(prw);
+					} catch (IOException e) {
+						Main.handleError(e);
+					}
+				}
+			}}, "Win");
 		
 		inputManager.addMapping("select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addListener(new ActionListener(){

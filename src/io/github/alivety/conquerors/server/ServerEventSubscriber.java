@@ -99,7 +99,7 @@ public class ServerEventSubscriber {
 				
 			default:
 				if (!server.begin) {
-					evt.player.packet(9, Main.formatChatMessage("You cannot move units until the game has began"));
+					evt.player.packet(9, Main.formatChatMessage("You cannot use units until the game has began"));
 					return;
 				}
 				//TODO window by unit
