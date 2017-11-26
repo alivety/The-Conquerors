@@ -1,7 +1,5 @@
 package io.github.alivety.conquerors.client.events;
 
-import java.nio.channels.SocketChannel;
-
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.ppl.PPLAdapter;
 import io.github.alivety.ppl.packet.Clientside;

@@ -1,8 +1,6 @@
 package io.github.alivety.conquerors.common;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,15 +19,15 @@ public class PlayerObject extends UnitObject {
 	// private final long created = new Date().getTime();
 	public boolean isReady = true;
 	private final List<UnitObject> units = new ArrayList<UnitObject>();
-	private final List<PlayerObject> alliance=new ArrayList<PlayerObject>();
+	private final List<PlayerObject> alliance = new ArrayList<PlayerObject>();
 	// private final List<PlayerObject> alliance = new
 	// ArrayList<PlayerObject>();
 	public ColorRGBA color;
 	
-	public PlayerObject(PPLAdapter adapter) {
-		this.adapter=adapter;
+	public PlayerObject(final PPLAdapter adapter) {
+		this.adapter = adapter;
 	}
-
+	
 	@Override
 	public String getOwnerSpatialID() {
 		return null;
@@ -52,19 +50,19 @@ public class PlayerObject extends UnitObject {
 		return "Player";
 	}
 	
-	public void addUnit(UnitObject u) {
+	public void addUnit(final UnitObject u) {
 		this.units.add(u);
 	}
 	
-	public void addUnits(UnitObject...u) {
+	public void addUnits(final UnitObject... u) {
 		this.units.addAll(Arrays.asList(u));
 	}
 	
-	public void addUnits(Collection<? extends UnitObject> u) {
+	public void addUnits(final Collection<? extends UnitObject> u) {
 		this.units.addAll(u);
 	}
 	
-	public void redefineUnits(List<UnitObject> list) {
+	public void redefineUnits(final List<UnitObject> list) {
 		this.units.clear();
 		this.units.addAll(list);
 	}
@@ -89,39 +87,36 @@ public class PlayerObject extends UnitObject {
 	public void write(final Packet p) {
 		try {
 			Main.out.debug(this + ".write(" + p + ")");
-			adapter.writePacket(p);
+			this.adapter.writePacket(p);
 		} catch (final IOException e) {
 			Main.handleError(e);
 		}
 	}
 	
-	public boolean isAlly(PlayerObject o) {
-		return alliance.contains(o);
+	public boolean isAlly(final PlayerObject o) {
+		return this.alliance.contains(o);
 	}
 	
-	public void ally(PlayerObject o) {
-		alliance.add(o);
+	public void ally(final PlayerObject o) {
+		this.alliance.add(o);
 	}
 	
 	public int allyCount() {
-		int count=0;
-		Iterator<PlayerObject> iter=alliance.iterator();
-		while (iter.hasNext()) {
-			if (iter.next().username()!=null) {
+		int count = 0;
+		final Iterator<PlayerObject> iter = this.alliance.iterator();
+		while (iter.hasNext())
+			if (iter.next().username() != null)
 				count++;
-			}
-		}
 		return count;
 	}
 	
 	public String[] getAlliesSpatialID() {
-		ArrayList<String> a=new ArrayList<>(this.allyCount());
-		Iterator<PlayerObject> iter=alliance.iterator();
+		final ArrayList<String> a = new ArrayList<>(this.allyCount());
+		final Iterator<PlayerObject> iter = this.alliance.iterator();
 		while (iter.hasNext()) {
-			PlayerObject o=iter.next();
-			if (o.username()!=null) {
+			final PlayerObject o = iter.next();
+			if (o.username() != null)
 				a.add(o.spatialID);
-			}
 		}
 		return a.toArray(new String[] {});
 	}

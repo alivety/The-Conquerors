@@ -1,8 +1,5 @@
 package io.github.alivety.conquerors.test;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,17 +41,15 @@ public class PacketListChooser extends JFrame {
 		this.pid_tf.setColumns(10);
 		
 		final JButton btnBuildPacket = new JButton("Build Packet");
-		btnBuildPacket.addActionListener(new ActionListener() {
-			public void actionPerformed(final ActionEvent arg0) {
-				PacketBuilder pb = null;
-				try {
-					pb = new PacketBuilder(test, Main.getUnbuiltPacket(Integer.parseInt(PacketListChooser.this.pid_tf.getText())), true);
-					PacketListChooser.this.pid_tf.setText("");
-				} catch (final Exception e) {
-					Main.handleError(e);
-				}
-				pb.setVisible(true);
+		btnBuildPacket.addActionListener(arg0 -> {
+			PacketBuilder pb = null;
+			try {
+				pb = new PacketBuilder(test, Main.getUnbuiltPacket(Integer.parseInt(PacketListChooser.this.pid_tf.getText())), true);
+				PacketListChooser.this.pid_tf.setText("");
+			} catch (final Exception e) {
+				Main.handleError(e);
 			}
+			pb.setVisible(true);
 		});
 		btnBuildPacket.setBounds(224, 7, 165, 23);
 		this.contentPane.add(btnBuildPacket);

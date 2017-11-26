@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.swing.JFrame;
@@ -20,10 +19,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import com.google.common.base.Throwables;
-import com.jme3.math.Vector3f;
 
 import io.github.alivety.conquerors.common.event.EventBus;
-import io.github.alivety.conquerors.server.Server;
 import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.packet.Packet;
 
@@ -32,7 +29,7 @@ public class Main {
 	public static final Random random = new Random();
 	public static Logger out;
 	public static final EventBus EVENT_BUS = new EventBus();
-	public static final PPLListener PACKET_CATCHER=new PPLListener();
+	public static final PPLListener PACKET_CATCHER = new PPLListener();
 	public static final PacketResolver resolver = new PacketResolver();
 	public static int server = 0;
 	private @Deprecated static final String PACKET_LOCATION = "io.github.alivety.conquerors.common.packets.P";
@@ -40,13 +37,13 @@ public class Main {
 	public static final File USER_PREFS = new File("prefs.json");
 	public static Preferences PREFS;
 	
-	public static Packet createPacket(int id,Object... fields) {
-		Packet packet=newPacket(id,fields);
-		PACKET_CATCHER.addRow(new Object[] {(server==1)?"Server":"Client",id,packet});
+	public static Packet createPacket(final int id, final Object... fields) {
+		final Packet packet = Main.newPacket(id, fields);
+		Main.PACKET_CATCHER.addRow(new Object[] { (Main.server == 1) ? "Server" : "Client", id, packet });
 		return packet;
 	}
 	
-    private static Packet newPacket(final int id, final Object... fields) {
+	private static Packet newPacket(final int id, final Object... fields) {
 		try {
 			return PPL.newInstance(id, fields);
 		} catch (final Exception e) {

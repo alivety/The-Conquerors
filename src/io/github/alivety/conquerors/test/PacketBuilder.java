@@ -1,7 +1,5 @@
 package io.github.alivety.conquerors.test;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -113,25 +111,23 @@ public class PacketBuilder extends JFrame {
 		
 		if (builder) {
 			final JButton btnNewButton = new JButton("Build and Send");
-			btnNewButton.addActionListener(new ActionListener() {
-				public void actionPerformed(final ActionEvent arg0) {
-					try {
-						final Set<Entry<String, JTextField>> fields = typeMap.keySet();
-						final Iterator<Entry<String, JTextField>> iter = fields.iterator();
-						while (iter.hasNext()) {
-							final Entry<String, JTextField> vals = iter.next();
-							final String name = vals.getKey();
-							final String val = vals.getValue().getText();
-							final Class<?> type = typeMap.get(vals);
-							p.setPacketField(name, ObjectConverter.convert(val, type));
-						}
-						test.SOCKET.write(Main.encode(p));
-						test.pl.addRow(new Object[] { test.who, p.getId(), p });
-					} catch (final Exception e) {
-						Main.handleError(e);
+			btnNewButton.addActionListener(arg0 -> {
+				try {
+					final Set<Entry<String, JTextField>> fields = typeMap.keySet();
+					final Iterator<Entry<String, JTextField>> iter = fields.iterator();
+					while (iter.hasNext()) {
+						final Entry<String, JTextField> vals = iter.next();
+						final String name = vals.getKey();
+						final String val = vals.getValue().getText();
+						final Class<?> type = typeMap.get(vals);
+						p.setPacketField(name, ObjectConverter.convert(val, type));
 					}
-					PacketBuilder.this.dispose();
+					test.SOCKET.write(Main.encode(p));
+					test.pl.addRow(new Object[] { test.who, p.getId(), p });
+				} catch (final Exception e) {
+					Main.handleError(e);
 				}
+				PacketBuilder.this.dispose();
 			});
 			btnNewButton.setBounds(10, 227, 855, 23);
 			this.contentPane.add(btnNewButton);

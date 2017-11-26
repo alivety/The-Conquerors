@@ -1,11 +1,7 @@
 package io.github.alivety.conquerors.client;
 
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.JOptionPane;
 
 import com.google.common.base.Preconditions;
 import com.google.common.net.HostAndPort;
@@ -18,53 +14,54 @@ import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.ppl.PPLAdapter;
 import io.github.alivety.ppl.PPLClient;
 import io.github.alivety.ppl.SocketAdapter;
-import io.github.alivety.ppl.SocketListener;
 import io.github.alivety.ppl.packet.Packet;
 
 public class Client extends PlayerObject implements ConquerorsApp {
-	private String hostport;
-	public List<String> allies=new Vector<String>();
-	public Client(final PPLAdapter adapter,String hostport) {
+	private final String hostport;
+	public List<String> allies = new Vector<String>();
+	
+	public Client(final PPLAdapter adapter, final String hostport) {
 		super(adapter);
-		this.hostport=hostport;
+		this.hostport = hostport;
 	}
 	
 	private GameApp app;
 	protected PPLAdapter server;
 	
+	@Override
 	public PlayerObject[] getOnlinePlayers() {
 		return null;
 	}
 	
+	@Override
 	public void go() {
 		try {
 			Main.setupLogger(this);
-			final HostAndPort hap = HostAndPort.fromString(hostport);
+			final HostAndPort hap = HostAndPort.fromString(this.hostport);
 			Main.EVENT_BUS.subscribe(new ClientEventSubscriber(Client.this));
-			PPLClient client=new PPLClient().addListener(new SocketAdapter(){
+			final PPLClient client = new PPLClient().addListener(new SocketAdapter() {
 				@Override
-				public void connect(PPLAdapter adapter) throws Exception {
+				public void connect(final PPLAdapter adapter) throws Exception {
 					Main.EVENT_BUS.bus(new ConnectEvent(adapter));
 				}
-
+				
 				@Override
-				public void read(PPLAdapter adapter, Packet packet) throws Exception {
-					Main.out.debug("read: "+packet+" app?"+app);
-					final Event evt=Main.resolver.resolve(packet, null);
-					while (app==null) {
+				public void read(final PPLAdapter adapter, final Packet packet) throws Exception {
+					Main.out.debug("read: " + packet + " app?" + Client.this.app);
+					final Event evt = Main.resolver.resolve(packet, null);
+					while (Client.this.app == null)
 						Thread.sleep(1);
-					}
-					Client.this.app.scheduleTask(new Runnable(){
-						public void run() {
-							Main.out.debug("scheduled bus for "+evt);
-							Main.EVENT_BUS.bus(evt);
-						}});
+					Client.this.app.scheduleTask(() -> {
+						Main.out.debug("scheduled bus for " + evt);
+						Main.EVENT_BUS.bus(evt);
+					});
 				}
-
+				
 				@Override
-				public void exception(PPLAdapter adapter, Throwable t) {
+				public void exception(final PPLAdapter adapter, final Throwable t) {
 					Main.handleError(t);
-				}});
+				}
+			});
 			client.connect(hap.getHost(), hap.getPortOrDefault(3033));
 		} catch (final Exception e) {
 			Main.handleError(e);
@@ -74,7 +71,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 	}
 	
 	public boolean ready() {
-		return app!=null;
+		return this.app != null;
 	}
 	
 	public GameApp getApp() {
@@ -88,7 +85,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 		this.app = new GameApp(this);
 	}
 	
-	public void ally(String spatialID) {
-		allies.add(spatialID);
+	public void ally(final String spatialID) {
+		this.allies.add(spatialID);
 	}
 }

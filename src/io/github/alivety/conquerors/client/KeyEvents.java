@@ -22,87 +22,88 @@ public class KeyEvents {
 	public static final ExitControl ExitControl = new ExitControl();
 	
 	private static class MovementControl implements AnalogListener {
+		@Override
 		public void onAnalog(final String name, final float value, final float tpf) {
 			try {
-				String m=KeyEvents.getKey(name);
+				final String m = KeyEvents.getKey(name);
 				
-				Vector3f vel=new Vector3f();
-				Vector3f pos=app.getCamera().getLocation().clone();
-				Camera cam=app.getCamera();
-				CharacterControl player=app.player;
+				Vector3f vel = new Vector3f();
+				final Vector3f pos = KeyEvents.app.getCamera().getLocation().clone();
+				final Camera cam = KeyEvents.app.getCamera();
+				final CharacterControl player = KeyEvents.app.player;
 				
-				Vector3f camDir=(cam.getDirection()).multLocal(0.06f);
-		        Vector3f camLeft = (cam.getLeft()).multLocal(0.04f);
-		        Vector3f walkDirection=new Vector3f(0, 0, 0);
+				final Vector3f camDir = (cam.getDirection()).multLocal(0.06f);
+				final Vector3f camLeft = (cam.getLeft()).multLocal(0.04f);
+				final Vector3f walkDirection = new Vector3f(0, 0, 0);
 				
 				switch (m) {
 					case "w":
 						cam.getDirection(vel);
-						vel.multLocal(value*app.SPEED);
+						vel.multLocal(value * KeyEvents.app.SPEED);
 						pos.addLocal(vel);
 						walkDirection.addLocal(camDir);
 						break;
 					case "s":
 						cam.getDirection(vel);
-						vel.multLocal(-value*app.SPEED);
+						vel.multLocal(-value * KeyEvents.app.SPEED);
 						pos.addLocal(vel);
 						walkDirection.addLocal(camDir.negate());
 						break;
 					case "a":
-						app.getCamera().getLeft(vel);
-						vel.multLocal(value*app.SPEED);
+						KeyEvents.app.getCamera().getLeft(vel);
+						vel.multLocal(value * KeyEvents.app.SPEED);
 						pos.addLocal(vel);
 						walkDirection.addLocal(camLeft);
 						break;
 					case "d":
-						app.getCamera().getLeft(vel);
-						vel.multLocal(-value*app.SPEED);
+						KeyEvents.app.getCamera().getLeft(vel);
+						vel.multLocal(-value * KeyEvents.app.SPEED);
 						pos.addLocal(vel);
 						walkDirection.addLocal(camLeft.negate());
 						break;
 					case "up":
-						vel=new Vector3f(0,value*app.SPEED,0);
+						vel = new Vector3f(0, value * KeyEvents.app.SPEED, 0);
 						pos.addLocal(vel);
 						player.jump();
 						
-						Matrix3f mat = new Matrix3f();
-				        mat.fromAngleNormalAxis(value, cam.getLeft());
-
-				        Vector3f up = cam.getUp();
-				        Vector3f left = cam.getLeft();
-				        Vector3f dir = cam.getDirection();
-
-				        mat.mult(up, up);
-				        mat.mult(left, left);
-				        mat.mult(dir, dir);
-
-				        Quaternion q = new Quaternion();
-				        q.fromAxes(left, up, dir);
-				        q.normalizeLocal();
-
-				        cam.setAxes(q);
+						final Matrix3f mat = new Matrix3f();
+						mat.fromAngleNormalAxis(value, cam.getLeft());
+						
+						final Vector3f up = cam.getUp();
+						final Vector3f left = cam.getLeft();
+						final Vector3f dir = cam.getDirection();
+						
+						mat.mult(up, up);
+						mat.mult(left, left);
+						mat.mult(dir, dir);
+						
+						final Quaternion q = new Quaternion();
+						q.fromAxes(left, up, dir);
+						q.normalizeLocal();
+						
+						cam.setAxes(q);
 						break;
 					case "down":
-						vel=new Vector3f(0,-value*app.SPEED,0);
+						vel = new Vector3f(0, -value * KeyEvents.app.SPEED, 0);
 						pos.addLocal(vel);
-						//cam.setLocation(pos);
+						// cam.setLocation(pos);
 						
-						Matrix3f mat1 = new Matrix3f();
-				        mat1.fromAngleNormalAxis(-value, cam.getLeft());
-
-				        Vector3f up1 = cam.getUp();
-				        Vector3f left1 = cam.getLeft();
-				        Vector3f dir1 = cam.getDirection();
-
-				        mat1.mult(up1, up1);
-				        mat1.mult(left1, left1);
-				        mat1.mult(dir1, dir1);
-
-				        Quaternion q1 = new Quaternion();
-				        q1.fromAxes(left1, up1, dir1);
-				        q1.normalizeLocal();
-
-				        cam.setAxes(q1);
+						final Matrix3f mat1 = new Matrix3f();
+						mat1.fromAngleNormalAxis(-value, cam.getLeft());
+						
+						final Vector3f up1 = cam.getUp();
+						final Vector3f left1 = cam.getLeft();
+						final Vector3f dir1 = cam.getDirection();
+						
+						mat1.mult(up1, up1);
+						mat1.mult(left1, left1);
+						mat1.mult(dir1, dir1);
+						
+						final Quaternion q1 = new Quaternion();
+						q1.fromAxes(left1, up1, dir1);
+						q1.normalizeLocal();
+						
+						cam.setAxes(q1);
 						break;
 				}
 				player.setWalkDirection(walkDirection);
@@ -114,6 +115,7 @@ public class KeyEvents {
 	}
 	
 	private static class ExitControl implements ActionListener {
+		@Override
 		public void onAction(final String name, final boolean keyPressed, final float tpf) {
 			if (!keyPressed)
 				try {
@@ -138,7 +140,7 @@ public class KeyEvents {
 		throw new IllegalArgumentException("No such key with value=" + keyInput);
 	}
 	
-	public static String getKey(String name) throws NumberFormatException, IllegalArgumentException, IllegalAccessException {
+	public static String getKey(final String name) throws NumberFormatException, IllegalArgumentException, IllegalAccessException {
 		return KeyEvents.getKey(Integer.parseInt(name.replace("key_map_", "")));
 	}
 }

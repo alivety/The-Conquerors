@@ -1,7 +1,5 @@
 package io.github.alivety.conquerors.test;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
@@ -21,27 +19,28 @@ public class TestAsClient extends Test {
 		Main.out.info(host + ":" + port);
 		
 		final PPLClient client = new PPLClient().addListener(new SocketListener() {
+			@Override
 			public void connect(final SocketChannel ch) throws Exception {
 				Main.out.info("connected");
 				TestAsClient.this.SOCKET = ch;
 			}
 			
+			@Override
 			public void exception(final SocketChannel h, final Throwable t) {
 				Main.handleError(t);
 			}
 			
+			@Override
 			public void read(final SocketChannel ch, final ByteBuffer msg) throws Exception {
 				final Packet p = Main.decode(msg);
 				final JButton btn = new JButton("View Packet Data");
-				btn.addActionListener(new ActionListener() {
-					public void actionPerformed(final ActionEvent arg0) {
-						try {
-							new PacketBuilder(TestAsClient.this, p, false).setVisible(true);
-						} catch (final IllegalAccessException e) {
-							Main.handleError(e);
-						}
-						;
+				btn.addActionListener(arg0 -> {
+					try {
+						new PacketBuilder(TestAsClient.this, p, false).setVisible(true);
+					} catch (final IllegalAccessException e) {
+						Main.handleError(e);
 					}
+					;
 				});
 				TestAsClient.this.pl.addRow(new Object[] { "Server", p.getId(), p });
 			}

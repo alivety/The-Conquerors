@@ -37,13 +37,12 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityMove(final EntityMovedEvent evt) {
-		System.out.println(client.username());
+		System.out.println(this.client.username());
 		System.out.println(evt.spatialID);
-		if (evt.spatialID.startsWith("Player")) {
-			client.getApp().player.setPhysicsLocation(new Vector3f(evt.x,evt.y,evt.z));
-		} else {
+		if (evt.spatialID.startsWith("Player"))
+			this.client.getApp().player.setPhysicsLocation(new Vector3f(evt.x, evt.y, evt.z));
+		else
 			this.client.getApp().getSpatial(evt.spatialID).setLocalTranslation(evt.x, evt.y, evt.z);
-		}
 	}
 	
 	@SubscribeEvent(SYS)
@@ -74,9 +73,9 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(final LoginSuccessEvent evt) {
-		client.username(evt.spatialID);
-		Main.out.debug("SET CLIENT TO "+client.username());
-		client.color=evt.team;
+		this.client.username(evt.spatialID);
+		Main.out.debug("SET CLIENT TO " + this.client.username());
+		this.client.color = evt.team;
 	}
 	
 	@SubscribeEvent(SYS)
@@ -88,22 +87,21 @@ public class ClientEventSubscriber {
 	public void onPlayerVariablesUpdate(final PlayerVariablesUpdateEvent evt) {
 		this.client.money = evt.money;
 		this.client.mpm = evt.mpm;
-		List<UnitObject> units=new ArrayList<>();
-		for (String id:evt.unitSpatialID) {
-			units.add(new UnitObject(id){
+		final List<UnitObject> units = new ArrayList<>();
+		for (final String id : evt.unitSpatialID)
+			units.add(new UnitObject(id) {
 				@Override
 				public String getOwnerSpatialID() {
-					return client.getSpatialID();
+					return ClientEventSubscriber.this.client.getSpatialID();
 				}
-
+				
 				@Override
 				public String getUnitType() {
 					return "unknown";
-				}});
-		}
-		for (String id:evt.alliance) {
-			client.ally(id);
-		}
+				}
+			});
+		for (final String id : evt.alliance)
+			this.client.ally(id);
 	}
 	
 	@SubscribeEvent(SYS)
@@ -115,10 +113,11 @@ public class ClientEventSubscriber {
 	public void onConnect(final ConnectEvent evt) throws IOException {
 		this.client.server = evt.adapter;
 		this.client.server.writePacket(Main.createPacket(0, Main.PREFS.getUsername(), Main.PRO_VER));
-		new Thread("game"){
+		new Thread("game") {
+			@Override
 			public void run() {
-				client.initApp();
-				client.getApp().start();
+				ClientEventSubscriber.this.client.initApp();
+				ClientEventSubscriber.this.client.getApp().start();
 			}
 		}.start();
 	}

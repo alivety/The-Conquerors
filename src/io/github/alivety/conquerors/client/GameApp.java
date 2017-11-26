@@ -9,13 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 
-import com.jme3.app.DebugKeysAppState;
-import com.jme3.app.FlyCamAppState;
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.StatsAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingSphere;
 import com.jme3.bullet.BulletAppState;
@@ -24,21 +19,18 @@ import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.font.BitmapText;
 import com.jme3.input.CameraInput;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.InputListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
@@ -46,16 +38,12 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.SceneGraphVisitorAdapter;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.geomipmap.TerrainQuad;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.heightmap.HillHeightMap;
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import com.jme3.texture.Texture2D;
 
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
@@ -68,45 +56,41 @@ public class GameApp extends SimpleApplication {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	private final Client client;
 	
-	private BulletAppState bullet=new BulletAppState();
+	private final BulletAppState bullet = new BulletAppState();
 	protected CharacterControl player;
 	private RigidBodyControl entityBody;
 	
-	protected List<Spatial> selected=new Vector<>();
+	protected List<Spatial> selected = new Vector<>();
 	
-	private boolean showStats=false;
+	private boolean showStats = false;
 	
 	private final Node entities = new Node("entities");
 	
 	private boolean dragToRotate = false;
 	
-	public final float SPEED=0.4f;
+	public final float SPEED = 0.4f;
 	
 	public GameApp(final Client client) {
 		this.client = client;
 	}
 	
 	public void scheduleAddEntity(final String spatialID, final String material, final String model) {
-		this.scheduleTask(new Runnable() {
-			public void run() {
-				Spatial spat = null;
-				try {
-					spat = GameApp.newSpatial(GameApp.this.assetManager, model, material, spatialID);
-				} catch (final Exception e) {
-					Main.handleError(e);
-				}
-				spat.setLocalTranslation(1, -1, 1);
-				GameApp.this.entities.attachChild(spat);
+		this.scheduleTask(() -> {
+			Spatial spat = null;
+			try {
+				spat = GameApp.newSpatial(GameApp.this.assetManager, model, material, spatialID);
+			} catch (final Exception e) {
+				Main.handleError(e);
 			}
+			spat.setLocalTranslation(1, -1, 1);
+			GameApp.this.entities.attachChild(spat);
 		});
 	}
 	
 	public void scheduleChangeEntityOwnership(final String spatialID, final String ownerSpatialID) {
-		this.scheduleTask(new Runnable() {
-			public void run() {
-				final Spatial spat = GameApp.this.getSpatial(spatialID);
-				spat.setUserData("owner", ownerSpatialID);
-			}
+		this.scheduleTask(() -> {
+			final Spatial spat = GameApp.this.getSpatial(spatialID);
+			spat.setUserData("owner", ownerSpatialID);
 		});
 	}
 	
@@ -117,54 +101,54 @@ public class GameApp extends SimpleApplication {
 		return spat;
 	}
 	
-	public void removeSpatial(String spatialID) {
-		selected.remove(entities.getChild(spatialID));
+	public void removeSpatial(final String spatialID) {
+		this.selected.remove(this.entities.getChild(spatialID));
 		this.entities.detachChildNamed(spatialID);
 	}
 	
-	public void selectEntity(Spatial spat) {
+	public void selectEntity(final Spatial spat) {
 		Main.out.debug(spat);
-		if (selected.contains(spat)) {
-			SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
-			    @Override
-			    public void visit(Geometry geom) {
-			        Main.out.debug("visiting geomety " + geom.getName());
-			        geom.getMaterial().clearParam("GlowColor");
-			    }
+		if (this.selected.contains(spat)) {
+			final SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
+				@Override
+				public void visit(final Geometry geom) {
+					Main.out.debug("visiting geomety " + geom.getName());
+					geom.getMaterial().clearParam("GlowColor");
+				}
 			};
 			spat.depthFirstTraversal(geometryGlowVisitor);
-			selected.remove(spat);
+			this.selected.remove(spat);
 		} else {
-			SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
-			    @Override
-			    public void visit(Geometry geom) {
-			        Main.out.debug("visiting geomety " + geom.getName());
-			        geom.getMaterial().setColor("GlowColor", client.color);
-			    }
+			final SceneGraphVisitorAdapter geometryGlowVisitor = new SceneGraphVisitorAdapter() {
+				@Override
+				public void visit(final Geometry geom) {
+					Main.out.debug("visiting geomety " + geom.getName());
+					geom.getMaterial().setColor("GlowColor", GameApp.this.client.color);
+				}
 			};
 			spat.depthFirstTraversal(geometryGlowVisitor);
-			selected.add(spat);
+			this.selected.add(spat);
 		}
 	}
 	
 	@Override
 	public void simpleInitApp() {
 		Model.assetManager = this.assetManager;
-		stateManager.attach(bullet);
+		this.stateManager.attach(this.bullet);
 		
-		CapsuleCollisionShape capsule=new CapsuleCollisionShape(1.5f,6f,1);
-		player=new CharacterControl(capsule,0.05f);
-		player.setJumpSpeed(20);
-	    player.setFallSpeed(30);
-	    player.setGravity(30);
-	    player.setPhysicsLocation(new Vector3f(0, 10, 0));
-	    bullet.getPhysicsSpace().add(player);
+		final CapsuleCollisionShape capsule = new CapsuleCollisionShape(1.5f, 6f, 1);
+		this.player = new CharacterControl(capsule, 0.05f);
+		this.player.setJumpSpeed(20);
+		this.player.setFallSpeed(30);
+		this.player.setGravity(30);
+		this.player.setPhysicsLocation(new Vector3f(0, 10, 0));
+		this.bullet.getPhysicsSpace().add(this.player);
 		
 		KeyEvents.app = this;
 		this.initKeyBindings();
 		
-		this.setDisplayFps(showStats);
-		this.setDisplayStatView(showStats);
+		this.setDisplayFps(this.showStats);
+		this.setDisplayStatView(this.showStats);
 		
 		this.guiFont = this.assetManager.loadFont("Interface/Fonts/Default.fnt");
 		final BitmapText ch = new BitmapText(this.guiFont, false);
@@ -175,240 +159,188 @@ public class GameApp extends SimpleApplication {
 		
 		this.rootNode.attachChild(this.entities);
 		
+		this.viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
 		
-		viewPort.setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
-		
-	    this.enqueue(() -> {
-			Material mat_terrain = new Material(assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
-
-			Texture grass = assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
+		this.enqueue(() -> {
+			final Material mat_terrain = new Material(this.assetManager, "Common/MatDefs/Terrain/Terrain.j3md");
+			
+			final Texture grass = this.assetManager.loadTexture("Textures/Terrain/splat/grass.jpg");
 			grass.setWrap(WrapMode.Repeat);
 			mat_terrain.setTexture("Tex1", grass);
 			mat_terrain.setFloat("Tex1Scale", 64f);
-
-			Texture dirt = assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
+			
+			final Texture dirt = this.assetManager.loadTexture("Textures/Terrain/splat/dirt.jpg");
 			dirt.setWrap(WrapMode.Repeat);
 			mat_terrain.setTexture("Tex2", dirt);
 			mat_terrain.setFloat("Tex2Scale", 32f);
-
-			Texture rock = assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
+			
+			final Texture rock = this.assetManager.loadTexture("Textures/Terrain/splat/road.jpg");
 			rock.setWrap(WrapMode.Repeat);
 			mat_terrain.setTexture("Tex3", rock);
 			mat_terrain.setFloat("Tex3Scale", 128f);
 			
-		    HillHeightMap heightmap = null;
-		    HillHeightMap.NORMALIZE_RANGE = 100;
-		    try {
-		        heightmap = new HillHeightMap(513, 1000, 50, 100, (byte) 3);
-		    } catch (Exception ex) {
-		        ex.printStackTrace();
-		    }
-		    
-		    mat_terrain.setTexture("Alpha", assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
-
-		    int patchSize = 65;
-		    TerrainQuad terrain = new TerrainQuad("the ground", patchSize, 513, heightmap.getHeightMap());
-
-		    terrain.setMaterial(mat_terrain);
-		    terrain.setLocalTranslation(0, -300, 0);
-		    terrain.setLocalScale(2f, 1f, 2f);
-		    entities.attachChild(terrain);
-
-		    TerrainLodControl control = new TerrainLodControl(terrain, getCamera());
-		    terrain.addControl(control);
-	    });
-	    
-	    FilterPostProcessor fpp=new FilterPostProcessor(assetManager);
-	    BloomFilter bloom=new BloomFilter(BloomFilter.GlowMode.Objects);
-	    fpp.addFilter(bloom);
-	    viewPort.addProcessor(fpp);
+			HillHeightMap heightmap = null;
+			AbstractHeightMap.NORMALIZE_RANGE = 100;
+			try {
+				heightmap = new HillHeightMap(513, 1000, 50, 100, (byte) 3);
+			} catch (final Exception ex) {
+				ex.printStackTrace();
+			}
+			
+			mat_terrain.setTexture("Alpha", this.assetManager.loadTexture("Textures/Terrain/splat/alphamap.png"));
+			
+			final int patchSize = 65;
+			final TerrainQuad terrain = new TerrainQuad("the ground", patchSize, 513, heightmap.getHeightMap());
+			
+			terrain.setMaterial(mat_terrain);
+			terrain.setLocalTranslation(0, -300, 0);
+			terrain.setLocalScale(2f, 1f, 2f);
+			this.entities.attachChild(terrain);
+			
+			final TerrainLodControl control = new TerrainLodControl(terrain, this.getCamera());
+			terrain.addControl(control);
+		});
+		
+		final FilterPostProcessor fpp = new FilterPostProcessor(this.assetManager);
+		final BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
+		fpp.addFilter(bloom);
+		this.viewPort.addProcessor(fpp);
 	}
 	
+	@Override
 	public void start() {
 		super.start();
 	}
 	
-	private boolean left,right,up,down;
+	private boolean left, right, up, down;
 	
 	private void initKeyBindings() {
 		this.inputManager.clearMappings();
 		
-		this.addKeyMapping(KeyInput.KEY_W, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				up=keyPressed;
-			}});
-		this.addKeyMapping(KeyInput.KEY_A, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				left=keyPressed;
-			}});
-		this.addKeyMapping(KeyInput.KEY_D, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				right=keyPressed;
-			}});
-		this.addKeyMapping(KeyInput.KEY_S, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				down=keyPressed;
-			}});
-		this.addKeyMapping(KeyInput.KEY_SPACE, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				if (keyPressed) player.jump();
-			}});
+		this.addKeyMapping(KeyInput.KEY_W, (ActionListener) (name, keyPressed, tpf) -> GameApp.this.up = keyPressed);
+		this.addKeyMapping(KeyInput.KEY_A, (ActionListener) (name, keyPressed, tpf) -> GameApp.this.left = keyPressed);
+		this.addKeyMapping(KeyInput.KEY_D, (ActionListener) (name, keyPressed, tpf) -> GameApp.this.right = keyPressed);
+		this.addKeyMapping(KeyInput.KEY_S, (ActionListener) (name, keyPressed, tpf) -> GameApp.this.down = keyPressed);
+		this.addKeyMapping(KeyInput.KEY_SPACE, (ActionListener) (name, keyPressed, tpf) -> {
+			if (keyPressed)
+				GameApp.this.player.jump();
+		});
 		
-		this.addKeyMapping(KeyInput.KEY_TAB, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				if (!keyPressed) {
-					showStats=!showStats;
-					setDisplayFps(showStats);
-					setDisplayStatView(showStats);
-				}
-			}});
+		this.addKeyMapping(KeyInput.KEY_TAB, (ActionListener) (name, keyPressed, tpf) -> {
+			if (!keyPressed) {
+				GameApp.this.showStats = !GameApp.this.showStats;
+				GameApp.this.setDisplayFps(GameApp.this.showStats);
+				GameApp.this.setDisplayStatView(GameApp.this.showStats);
+			}
+		});
 		
 		this.addKeyMapping(KeyInput.KEY_ESCAPE, KeyEvents.ExitControl);
 		this.addKeyMapping("Clear", KeyInput.KEY_C);
-		inputManager.addListener(new ActionListener(){
-			@Override
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!isPressed) {
-					Iterator<Spatial> iter=new Vector(selected).iterator();
-					while (iter.hasNext()) {
-						selectEntity(iter.next());
-					}
-				}
-			}}, "Clear");
-		this.addKeyMapping("Chat", KeyInput.KEY_T);//TODO open chat
+		this.inputManager.addListener((ActionListener) (name, isPressed, tpf) -> {
+			if (!isPressed) {
+				final Iterator<Spatial> iter = new Vector(GameApp.this.selected).iterator();
+				while (iter.hasNext())
+					GameApp.this.selectEntity(iter.next());
+			}
+		}, "Clear");
+		this.addKeyMapping("Chat", KeyInput.KEY_T);// TODO open chat
 		this.addKeyMapping("SelN", KeyInput.KEY_G);
-		inputManager.addListener(new ActionListener(){
-			@Override
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!isPressed) {
-					float radius=24;
-					BoundingSphere s=new BoundingSphere(radius,cam.getLocation().add(0, -6, 0));
-					CollisionResults results=new CollisionResults();
-					entities.collideWith(s, results);
-					for (int i=0;i<results.size();i++) {
-						Spatial spat=results.getCollision(i).getGeometry();
-						if (spat==null) continue;
-						while (!spat.getParent().equals(entities)) {
-							spat=spat.getParent();
-						}
-						if (client.username().equals(spat.getUserData("owner"))) {
-							if (!selected.contains(spat)) {
-								selectEntity(spat);
-							}
-						}
-					}
+		this.inputManager.addListener((ActionListener) (name, isPressed, tpf) -> {
+			if (!isPressed) {
+				final float radius = 24;
+				final BoundingSphere s = new BoundingSphere(radius, GameApp.this.cam.getLocation().add(0, -6, 0));
+				final CollisionResults results = new CollisionResults();
+				GameApp.this.entities.collideWith(s, results);
+				for (int i = 0; i < results.size(); i++) {
+					Spatial spat = results.getCollision(i).getGeometry();
+					if (spat == null)
+						continue;
+					while (!spat.getParent().equals(GameApp.this.entities))
+						spat = spat.getParent();
+					if (GameApp.this.client.username().equals(spat.getUserData("owner")))
+						if (!GameApp.this.selected.contains(spat))
+							GameApp.this.selectEntity(spat);
 				}
-			}}, "SelN");
+			}
+		}, "SelN");
 		this.addKeyMapping("Win", KeyInput.KEY_E);
-		inputManager.addListener(new ActionListener(){
-			@Override
-			public void onAction(String name, boolean isPressed, float tpf) {
-				if (!isPressed) {
-					PacketRequestWindow prw=new PacketRequestWindow();
-					prw.spatialID=selected.get(0).getName();
-					try {
-						client.server.writePacket(prw);
-					} catch (IOException e) {
-						Main.handleError(e);
-					}
+		this.inputManager.addListener((ActionListener) (name, isPressed, tpf) -> {
+			if (!isPressed) {
+				final PacketRequestWindow prw = new PacketRequestWindow();
+				prw.spatialID = GameApp.this.selected.get(0).getName();
+				try {
+					GameApp.this.client.server.writePacket(prw);
+				} catch (final IOException e) {
+					Main.handleError(e);
 				}
-			}}, "Win");
+			}
+		}, "Win");
 		
-		inputManager.addMapping("select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		inputManager.addListener(new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				if (!keyPressed) {
-					CollisionResults results = new CollisionResults();
-					Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-					entities.collideWith(ray, results);
-					if (results.size()>0) {
-						Spatial spat=results.getClosestCollision().getGeometry();
-						while (!spat.getParent().equals(entities)) {
-							spat=spat.getParent();
-						}
-						if ("the ground".equals(spat.getName())) {
-							List<String> id_list=new ArrayList<>();
-							Iterator<Spatial> iter=selected.iterator();
-							while (iter.hasNext()) {
-								Spatial s=iter.next();
-								if (client.username().equals(s.getUserData("owner"))) {
-									id_list.add(s.getName());
-								} else {
-									Main.EVENT_BUS.bus(new PlayerChatEvent(null,Main.formatChatMessage("You cannot control units that are not yours")));
-									return;
-								}
+		this.inputManager.addMapping("select", new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		this.inputManager.addListener((ActionListener) (name, keyPressed, tpf) -> {
+			if (!keyPressed) {
+				final CollisionResults results = new CollisionResults();
+				final Ray ray = new Ray(GameApp.this.cam.getLocation(), GameApp.this.cam.getDirection());
+				GameApp.this.entities.collideWith(ray, results);
+				if (results.size() > 0) {
+					Spatial spat = results.getClosestCollision().getGeometry();
+					while (!spat.getParent().equals(GameApp.this.entities))
+						spat = spat.getParent();
+					if ("the ground".equals(spat.getName())) {
+						final List<String> id_list = new ArrayList<>();
+						final Iterator<Spatial> iter = GameApp.this.selected.iterator();
+						while (iter.hasNext()) {
+							final Spatial s = iter.next();
+							if (GameApp.this.client.username().equals(s.getUserData("owner")))
+								id_list.add(s.getName());
+							else {
+								Main.EVENT_BUS.bus(new PlayerChatEvent(null, Main.formatChatMessage("You cannot control units that are not yours")));
+								return;
 							}
-							String[] spatialID=id_list.toArray(new String[] {});
-							Vector3f loc=results.getClosestCollision().getContactPoint();
-							System.out.println(loc);
-							try {
-								client.server.writePacket(Main.createPacket(18, new Object[]{spatialID, (int)loc.x,(int)loc.y,(int)loc.z}));
-							} catch (IOException e) {
-								Main.handleError(e);
-							}
-						} else {
-							if (client.username().equals(spat.getUserData("owner")) || client.allies.contains(spat.getUserData("owner")))
-								selectEntity(spat);
 						}
-					}
+						final String[] spatialID = id_list.toArray(new String[] {});
+						final Vector3f loc = results.getClosestCollision().getContactPoint();
+						System.out.println(loc);
+						try {
+							GameApp.this.client.server.writePacket(Main.createPacket(18, new Object[] { spatialID, (int) loc.x, (int) loc.y, (int) loc.z }));
+						} catch (final IOException e) {
+							Main.handleError(e);
+						}
+					} else if (GameApp.this.client.username().equals(spat.getUserData("owner")) || GameApp.this.client.allies.contains(spat.getUserData("owner")))
+						GameApp.this.selectEntity(spat);
 				}
-			}}, "select");
-		this.addKeyMapping(KeyInput.KEY_ADD, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				GameApp.this.scheduleTask(new Runnable(){
-					@Override
-					public void run() {
-						if (!keyPressed) {
-							String uuid=Main.uuid("testcube");
-							Ray ray = new Ray(cam.getLocation(), cam.getDirection());
-							CollisionResults results = new CollisionResults();
-							entities.collideWith(ray, results);
-							if (results.size() > 0) {
-								Vector3f loc=results.getClosestCollision().getContactPoint();
-						Main.EVENT_BUS.bus(new CreateModelEvent(uuid,
-								new float[]{
-										loc.x,
-										loc.y,
-										loc.z
-										},
-								new float[][]{
-							{0,255,255,255,0,0,0,0,1,1,1}
-						}));
-						Main.EVENT_BUS.bus(new EntityOwnershipChangedEvent(uuid, client.username()));
-						}
-						}
-					}});
-			}});
+			}
+		}, "select");
+		this.addKeyMapping(KeyInput.KEY_ADD, (ActionListener) (name, keyPressed, tpf) -> GameApp.this.scheduleTask(() -> {
+			if (!keyPressed) {
+				final String uuid = Main.uuid("testcube");
+				final Ray ray = new Ray(GameApp.this.cam.getLocation(), GameApp.this.cam.getDirection());
+				final CollisionResults results = new CollisionResults();
+				GameApp.this.entities.collideWith(ray, results);
+				if (results.size() > 0) {
+					final Vector3f loc = results.getClosestCollision().getContactPoint();
+					Main.EVENT_BUS.bus(new CreateModelEvent(uuid, new float[] { loc.x, loc.y, loc.z }, new float[][] { { 0, 255, 255, 255, 0, 0, 0, 0, 1, 1, 1 } }));
+					Main.EVENT_BUS.bus(new EntityOwnershipChangedEvent(uuid, GameApp.this.client.username()));
+				}
+			}
+		}));
 		
-		this.addKeyMapping(KeyInput.KEY_J, new ActionListener(){
-			@Override
-			public void onAction(String name, boolean keyPressed, float tpf) {
-				if (!keyPressed) {
-					player.setPhysicsLocation(new Vector3f(0,0,0));
-				}
-			}});
+		this.addKeyMapping(KeyInput.KEY_J, (ActionListener) (name, keyPressed, tpf) -> {
+			if (!keyPressed)
+				GameApp.this.player.setPhysicsLocation(new Vector3f(0, 0, 0));
+		});
 		
-		this.addKeyMapping(KeyInput.KEY_P, new ActionListener() {
-			public void onAction(final String name, final boolean keyPressed, final float tpf) {
-				if (!keyPressed) {
-					GameApp.this.dragToRotate = !GameApp.this.dragToRotate;
-					GameApp.this.flyCam.setDragToRotate(GameApp.this.dragToRotate);
-				}
+		this.addKeyMapping(KeyInput.KEY_P, (ActionListener) (name, keyPressed, tpf) -> {
+			if (!keyPressed) {
+				GameApp.this.dragToRotate = !GameApp.this.dragToRotate;
+				GameApp.this.flyCam.setDragToRotate(GameApp.this.dragToRotate);
 			}
 		});
 		this.enqueue(() -> {
-			inputManager.deleteMapping(CameraInput.FLYCAM_UP);
-			inputManager.deleteMapping(CameraInput.FLYCAM_DOWN);
-			inputManager.deleteMapping(CameraInput.FLYCAM_RIGHT);
-			inputManager.deleteMapping(CameraInput.FLYCAM_LEFT);
+			this.inputManager.deleteMapping(CameraInput.FLYCAM_UP);
+			this.inputManager.deleteMapping(CameraInput.FLYCAM_DOWN);
+			this.inputManager.deleteMapping(CameraInput.FLYCAM_RIGHT);
+			this.inputManager.deleteMapping(CameraInput.FLYCAM_LEFT);
 		});
 	}
 	
@@ -420,15 +352,13 @@ public class GameApp extends SimpleApplication {
 		final String id = "key_map_" + key;
 		this.inputManager.addMapping(id, new KeyTrigger(key));
 		this.inputManager.addListener(listener, id);
-		this.inputManager.addListener(new ActionListener() {
-			public void onAction(final String name, final boolean keyPressed, final float tpf) {
-				if (!keyPressed)
-					try {
-						Main.out.debug(name + ": " + KeyEvents.getKey(name));
-					} catch (final Exception e) {
-						Main.handleError(e);
-					}
-			}
+		this.inputManager.addListener((ActionListener) (name, keyPressed, tpf) -> {
+			if (!keyPressed)
+				try {
+					Main.out.debug(name + ": " + KeyEvents.getKey(name));
+				} catch (final Exception e) {
+					Main.handleError(e);
+				}
 		}, id);
 		Main.out.debug("Added input mapping for " + id);
 	}
@@ -438,25 +368,25 @@ public class GameApp extends SimpleApplication {
 		while (this.hasMoreTasks())
 			this.getNextTask().run();
 		
-		CollisionShape shape=CollisionShapeFactory.createMeshShape(this.entities);
-		bullet.getPhysicsSpace().remove(this.entityBody);
-		this.entityBody=new RigidBodyControl(shape,0);
-		bullet.getPhysicsSpace().add(this.entityBody);
+		final CollisionShape shape = CollisionShapeFactory.createMeshShape(this.entities);
+		this.bullet.getPhysicsSpace().remove(this.entityBody);
+		this.entityBody = new RigidBodyControl(shape, 0);
+		this.bullet.getPhysicsSpace().add(this.entityBody);
 		
-		Vector3f camDir=cam.getDirection().multLocal(speed);
-		Vector3f camLeft=cam.getLeft().multLocal(speed);
-		Vector3f walkDirection=new Vector3f(0,0,0);
-		if (left)
+		final Vector3f camDir = this.cam.getDirection().multLocal(this.speed);
+		final Vector3f camLeft = this.cam.getLeft().multLocal(this.speed);
+		final Vector3f walkDirection = new Vector3f(0, 0, 0);
+		if (this.left)
 			walkDirection.addLocal(camLeft);
-		if (right)
+		if (this.right)
 			walkDirection.addLocal(camLeft.negate());
-		if (up)
+		if (this.up)
 			walkDirection.addLocal(camDir);
-		if (down)
+		if (this.down)
 			walkDirection.addLocal(camDir.negate());
 		
-		player.setWalkDirection(walkDirection);
-		cam.setLocation(player.getPhysicsLocation());
+		this.player.setWalkDirection(walkDirection);
+		this.cam.setLocation(this.player.getPhysicsLocation());
 	}
 	
 	public Client getClient() {

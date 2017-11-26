@@ -15,7 +15,6 @@ import io.github.alivety.conquerors.client.events.PlayerListUpdatedEvent;
 import io.github.alivety.conquerors.client.events.PlayerVariablesUpdateEvent;
 import io.github.alivety.conquerors.client.events.WindowOpenedEvent;
 import io.github.alivety.conquerors.client.packets.PacketChatMessage;
-import io.github.alivety.conquerors.client.packets.PacketCheckModel;
 import io.github.alivety.conquerors.client.packets.PacketCreateModel;
 import io.github.alivety.conquerors.client.packets.PacketCreateModelSpatial;
 import io.github.alivety.conquerors.client.packets.PacketLoginFailure;
@@ -42,7 +41,6 @@ import io.github.alivety.conquerors.server.packets.PacketPlayerMovement;
 import io.github.alivety.conquerors.server.packets.PacketRequestWindow;
 import io.github.alivety.conquerors.server.packets.PacketSelectWindowSlot;
 import io.github.alivety.conquerors.server.packets.PacketSendChat;
-import io.github.alivety.ppl.PPL;
 import io.github.alivety.ppl.packet.Packet;
 
 public class PacketResolver {
@@ -57,7 +55,7 @@ public class PacketResolver {
 				return new LoginFailureEvent(p2.reason);
 			case 1:
 				final PacketLoginSuccess p1 = (PacketLoginSuccess) p;
-				return new LoginSuccessEvent(p1.spatialID,p1.team);
+				return new LoginSuccessEvent(p1.spatialID, p1.team);
 			case 4:
 				final PacketSpawnEntity p4 = (PacketSpawnEntity) p;
 				return new EntitySpawnEvent(p4.model, p4.material, p4.spatialId);
@@ -89,7 +87,7 @@ public class PacketResolver {
 				return new WindowRequestedEvent(client, p14.spatialID);
 			case 15:
 				final PacketOpenWindow p15 = (PacketOpenWindow) p;
-				return new WindowOpenedEvent(p15.spatialID,p15.slots);
+				return new WindowOpenedEvent(p15.spatialID, p15.slots);
 			case 16:
 				final PacketSelectWindowSlot p16 = (PacketSelectWindowSlot) p;
 				return new WindowSlotSelectedEvent(client, p16.spatialID, p16.slot);
@@ -101,7 +99,7 @@ public class PacketResolver {
 				return new PlayerMoveUnitsEvent(client, p18.spatialID, p18.x, p18.y, p18.z);
 			case 19:
 				final PacketUpdatePlayer p19 = (PacketUpdatePlayer) p;
-				return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID,p19.alliance);
+				return new PlayerVariablesUpdateEvent(p19.money, p19.mpm, p19.unitSpatialID, p19.alliance);
 			case 20:
 				final PacketCreateModelSpatial p20 = (PacketCreateModelSpatial) p;
 				return new CreateModelSpatialEvent(p20.shape, p20.vectors);

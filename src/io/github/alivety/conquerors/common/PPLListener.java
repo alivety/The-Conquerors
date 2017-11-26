@@ -1,17 +1,13 @@
 package io.github.alivety.conquerors.common;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,13 +22,11 @@ import javax.swing.table.TableModel;
 import com.google.common.collect.Maps;
 
 import io.github.alivety.conquerors.test.ButtonColumn;
-import io.github.alivety.conquerors.test.PacketBuilder;
-import io.github.alivety.conquerors.test.Test;
 import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 
 public class PPLListener extends JFrame {
-
+	
 	private static final long serialVersionUID = -1638241863909262836L;
 	public JPanel contentPane;
 	public JTable table;
@@ -71,6 +65,7 @@ public class PPLListener extends JFrame {
 			 */
 			private static final long serialVersionUID = -2431380960329863102L;
 			
+			@Override
 			public void actionPerformed(final ActionEvent e) {
 				final JTable table = (JTable) e.getSource();
 				final int modelRow = Integer.valueOf(e.getActionCommand());
@@ -107,9 +102,8 @@ public class PPLListener extends JFrame {
 		private final int l_bounds_4 = 14;
 		private final int incr = 25;
 		
-
 		public PacketBuilder(final Packet p) throws IllegalArgumentException, IllegalAccessException {
-			setTitle(p.toString());
+			this.setTitle(p.toString());
 			
 			this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			this.setBounds(100, 100, 891, 300);

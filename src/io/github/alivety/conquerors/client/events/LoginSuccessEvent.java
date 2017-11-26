@@ -10,8 +10,8 @@ public class LoginSuccessEvent extends Event {
 	public String spatialID;
 	public ColorRGBA team;
 	
-	public LoginSuccessEvent(final String spatialID,ColorRGBA team) {
+	public LoginSuccessEvent(final String spatialID, final ColorRGBA team) {
 		this.spatialID = spatialID;
-		this.team=team;
+		this.team = team;
 	}
 }

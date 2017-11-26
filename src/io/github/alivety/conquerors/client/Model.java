@@ -2,8 +2,6 @@ package io.github.alivety.conquerors.client;
 
 import com.google.common.base.Preconditions;
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.control.CharacterControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -30,9 +28,9 @@ public abstract class Model {
 		return new Geometry(Main.uuid("sphere"), sphere);
 	}
 	
-	protected Spatial makeCylinder(int axisSamples,int radialSamples,float radius,float height) {
-		Cylinder cyl=new Cylinder(axisSamples,radialSamples,radius,height);
-		return new Geometry(Main.uuid("cylinder"),cyl);
+	protected Spatial makeCylinder(final int axisSamples, final int radialSamples, final float radius, final float height) {
+		final Cylinder cyl = new Cylinder(axisSamples, radialSamples, radius, height);
+		return new Geometry(Main.uuid("cylinder"), cyl);
 	}
 	
 	protected void positionSpatial(final Spatial spat, final Vector3f location) {
@@ -62,35 +60,33 @@ public abstract class Model {
 		@Override
 		public Spatial build() {
 			final Node node = new Node(this.evt.spatialID);
-			float[] ops=evt.form[0];
-			boolean gravity=ops[0]==1;
-			for (int i=1;i<evt.form.length;i++) {
-				float[]shape=evt.form[i];
+			final float[] ops = this.evt.form[0];
+			final boolean gravity = ops[0] == 1;
+			for (int i = 1; i < this.evt.form.length; i++) {
+				final float[] shape = this.evt.form[i];
 				/*
-				 * shape[0] = type (0=cube,1=sphere,2=cylindar)
-				 * shape[1-4] = RGBA color
-				 * shape[5-7] = position
-				 * shape[8-*] = shape-specific constructors
+				 * shape[0] = type (0=cube,1=sphere,2=cylindar) shape[1-4] =
+				 * RGBA color shape[5-7] = position shape[8-*] = shape-specific
+				 * constructors
 				 */
 				final ColorRGBA color = new ColorRGBA(shape[1], shape[2], shape[3], shape[4]);
 				final Vector3f pos = new Vector3f(shape[5], shape[6], shape[7]);
 				Spatial spat;
-				if (shape[0]==0)
+				if (shape[0] == 0)
 					spat = this.makeCube(new Vector3f(shape[8], shape[9], shape[10]));
-				else if (shape[0]==1)
+				else if (shape[0] == 1)
 					spat = this.makeSphere(3, 3, shape[8]);
-				else if (shape[0]==2)
-					spat=this.makeCylinder(3, 3, shape[8], shape[10]);
+				else if (shape[0] == 2)
+					spat = this.makeCylinder(3, 3, shape[8], shape[10]);
 				else
-					throw new IllegalArgumentException(shape[0]+" is not a valid shape ID");
+					throw new IllegalArgumentException(shape[0] + " is not a valid shape ID");
 				this.colorSpatial(spat, color);
 				this.positionSpatial(spat, pos);
 				node.attachChild(spat);
 			}
 			node.setLocalTranslation(new Vector3f(this.evt.position[0], this.evt.position[1], this.evt.position[2]));
-			if (gravity) {
+			if (gravity)
 				Main.out.debug("gravity deprecated");
-			}
 			return node;
 		}
 		

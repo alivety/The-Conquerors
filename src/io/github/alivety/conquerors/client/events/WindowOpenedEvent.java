@@ -9,8 +9,8 @@ public class WindowOpenedEvent extends Event implements Cancelable {
 	public String spatialID;
 	public String[] slots;
 	
-	public WindowOpenedEvent(String spatialID, final String[] slots) {
-		this.spatialID=spatialID;
+	public WindowOpenedEvent(final String spatialID, final String[] slots) {
+		this.spatialID = spatialID;
 		this.slots = slots;
 	}
 }

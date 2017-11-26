@@ -34,6 +34,7 @@ public class EventBus {
 				}
 		}
 		
+		@Override
 		public int compareTo(final EventListener el) {
 			return (this.priority - el.priority) * -1;
 		}

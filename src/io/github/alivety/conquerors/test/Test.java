@@ -22,10 +22,12 @@ public class Test implements ConquerorsApp {
 		
 	}
 	
+	@Override
 	public PlayerObject[] getOnlinePlayers() {
 		return new PlayerObject[] {};
 	}
 	
+	@Override
 	public void go() {
 		
 		try {
