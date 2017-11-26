@@ -87,34 +87,7 @@ public class ServerEventSubscriber {
 		units.add(new Unit(server){
 			@Override
 			public float[][] getForm() {
-				return new float[][]{
-					{
-						0,//cube
-						evt.client.color.r,//color red
-						evt.client.color.g,//color green
-						evt.client.color.b,//color blue
-						evt.client.color.a,//alpha
-						0,//pos x (left-right)
-						0,// pos y (up-down)
-						0,//pos z (forward-backward)
-						1,//width
-						1,//height
-						1//length
-					},
-					{
-						0,
-						255,
-						255,
-						255,
-						1,
-						0.5f,
-						3,
-						0,
-						0.25f,
-						1,
-						0.25f
-					}
-				};
+				return FormMaster.getCommandCenter(evt.client.color);
 			}
 
 			@Override
@@ -151,6 +124,9 @@ public class ServerEventSubscriber {
 			position=new Vector3f(0,0,0);
 		}
 		for (Unit u:units.toArray(new Unit[] {})) {
+			if (!"CoCe".equals(u.getUnitType())) {
+				
+			}
 			u.teleport(position);
 			PacketCreateModel pcm=new PacketCreateModel();
 			pcm.spatialID=u.getSpatialID();

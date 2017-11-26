@@ -43,7 +43,7 @@ public class Server implements ConquerorsApp {
 	
 	protected final ColorRGBA[] teams={
 			ColorRGBA.White,
-			ColorRGBA.Black,
+			new ColorRGBA(102,51,153,1),//purple
 			ColorRGBA.Blue,
 			ColorRGBA.Cyan,
 			ColorRGBA.Gray,
