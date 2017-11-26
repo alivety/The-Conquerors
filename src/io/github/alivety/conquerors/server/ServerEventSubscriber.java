@@ -99,10 +99,55 @@ public class ServerEventSubscriber {
 			public String getUnitType() {
 				return "CoCe";
 			}});
+		units.add(new Unit(server){
+			@Override
+			public float[][] getForm() {
+				return FormMaster.getLightSolider(evt.client.color);
+			}
+
+			@Override
+			public String getOwnerSpatialID() {
+				return evt.client.getSpatialID();
+			}
+
+			@Override
+			public String getUnitType() {
+				return "LSoldier";
+			}});
+		units.add(new Unit(server){
+			@Override
+			public float[][] getForm() {
+				return FormMaster.getLightSolider(evt.client.color);
+			}
+
+			@Override
+			public String getOwnerSpatialID() {
+				return evt.client.getSpatialID();
+			}
+
+			@Override
+			public String getUnitType() {
+				return "LSoldier";
+			}});
+		units.add(new Unit(server){
+			@Override
+			public float[][] getForm() {
+				return FormMaster.getHeavySolider(evt.client.color);
+			}
+
+			@Override
+			public String getOwnerSpatialID() {
+				return evt.client.getSpatialID();
+			}
+
+			@Override
+			public String getUnitType() {
+				return "HSoldier";
+			}});
 		Vector3f position;
 		if (evt.client.color.equals(ColorRGBA.White)) {
 			position=new Vector3f(41,-268,315);
-		} else if (evt.client.color.equals(ColorRGBA.Black)) {
+		} else if (evt.client.color.equals(new ColorRGBA(102,51,153,1))) {
 			position=new Vector3f(190,-253,294);
 		} else if (evt.client.color.equals(ColorRGBA.Blue)) {
 			position=new Vector3f(-329,-204,253);
@@ -125,7 +170,7 @@ public class ServerEventSubscriber {
 		}
 		for (Unit u:units.toArray(new Unit[] {})) {
 			if (!"CoCe".equals(u.getUnitType())) {
-				
+				position.addLocal((float)Math.random()*5, (float)Math.random()*5, (float)Math.random()*5);
 			}
 			u.teleport(position);
 			PacketCreateModel pcm=new PacketCreateModel();

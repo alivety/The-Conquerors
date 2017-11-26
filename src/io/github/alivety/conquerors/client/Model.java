@@ -2,6 +2,8 @@ package io.github.alivety.conquerors.client;
 
 import com.google.common.base.Preconditions;
 import com.jme3.asset.AssetManager;
+import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
+import com.jme3.bullet.control.CharacterControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -60,7 +62,10 @@ public abstract class Model {
 		@Override
 		public Spatial build() {
 			final Node node = new Node(this.evt.spatialID);
-			for (final float[] shape : this.evt.form) {
+			float[] ops=evt.form[0];
+			boolean gravity=ops[0]==1;
+			for (int i=1;i<evt.form.length;i++) {
+				float[]shape=evt.form[i];
 				/*
 				 * shape[0] = type (0=cube,1=sphere,2=cylindar)
 				 * shape[1-4] = RGBA color
@@ -73,9 +78,9 @@ public abstract class Model {
 				if (shape[0]==0)
 					spat = this.makeCube(new Vector3f(shape[8], shape[9], shape[10]));
 				else if (shape[0]==1)
-					spat = this.makeSphere(32, 32, shape[8]);
+					spat = this.makeSphere(3, 3, shape[8]);
 				else if (shape[0]==2)
-					spat=this.makeCylinder(32, 32, shape[8], shape[10]);
+					spat=this.makeCylinder(3, 3, shape[8], shape[10]);
 				else
 					throw new IllegalArgumentException(shape[0]+" is not a valid shape ID");
 				this.colorSpatial(spat, color);
@@ -83,6 +88,9 @@ public abstract class Model {
 				node.attachChild(spat);
 			}
 			node.setLocalTranslation(new Vector3f(this.evt.position[0], this.evt.position[1], this.evt.position[2]));
+			if (gravity) {
+				Main.out.debug("gravity deprecated");
+			}
 			return node;
 		}
 		
