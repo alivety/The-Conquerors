@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -48,6 +50,18 @@ public class PlayerObject extends UnitObject {
 	@Override
 	public String getUnitType() {
 		return "Player";
+	}
+	
+	public void addUnit(UnitObject u) {
+		this.units.add(u);
+	}
+	
+	public void addUnits(UnitObject...u) {
+		this.units.addAll(Arrays.asList(u));
+	}
+	
+	public void addUnits(Collection<? extends UnitObject> u) {
+		this.units.addAll(u);
 	}
 	
 	public void redefineUnits(List<UnitObject> list) {

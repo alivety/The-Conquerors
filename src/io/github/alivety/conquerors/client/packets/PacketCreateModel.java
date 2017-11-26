@@ -8,6 +8,6 @@ import io.github.alivety.ppl.packet.PacketField;
 @PacketData(id = 21, desc = "Create Model", bound = Clientside.class)
 public class PacketCreateModel extends Packet {
 	@PacketField public String spatialID;
-	@PacketField public int[] position;
-	@PacketField public int[][] form;
+	@PacketField public float[] position;
+	@PacketField public float[][] form;
 }

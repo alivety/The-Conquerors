@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -61,6 +60,7 @@ import com.jme3.texture.Texture2D;
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.common.Main;
+import io.github.alivety.conquerors.common.Stack;
 import io.github.alivety.conquerors.common.events.PlayerChatEvent;
 import io.github.alivety.conquerors.server.packets.PacketRequestWindow;
 
@@ -80,7 +80,7 @@ public class GameApp extends SimpleApplication {
 	
 	private boolean dragToRotate = false;
 	
-	public final float SPEED=1f;
+	public final float SPEED=0.4f;
 	
 	public GameApp(final Client client) {
 		this.client = client;
@@ -347,6 +347,7 @@ public class GameApp extends SimpleApplication {
 							}
 							String[] spatialID=id_list.toArray(new String[] {});
 							Vector3f loc=results.getClosestCollision().getContactPoint();
+							System.out.println(loc);
 							try {
 								client.server.writePacket(Main.createPacket(18, new Object[]{spatialID, (int)loc.x,(int)loc.y,(int)loc.z}));
 							} catch (IOException e) {
@@ -373,12 +374,12 @@ public class GameApp extends SimpleApplication {
 							if (results.size() > 0) {
 								Vector3f loc=results.getClosestCollision().getContactPoint();
 						Main.EVENT_BUS.bus(new CreateModelEvent(uuid,
-								new int[]{
-										(int) loc.x,
-										(int) loc.y,
-										(int) loc.z
+								new float[]{
+										loc.x,
+										loc.y,
+										loc.z
 										},
-								new int[][]{
+								new float[][]{
 							{0,255,255,255,0,0,0,0,1,1,1}
 						}));
 						Main.EVENT_BUS.bus(new EntityOwnershipChangedEvent(uuid, client.username()));
@@ -442,8 +443,8 @@ public class GameApp extends SimpleApplication {
 		this.entityBody=new RigidBodyControl(shape,0);
 		bullet.getPhysicsSpace().add(this.entityBody);
 		
-		Vector3f camDir=cam.getDirection().multLocal(0.2f);
-		Vector3f camLeft=cam.getLeft().multLocal(0.2f);
+		Vector3f camDir=cam.getDirection().multLocal(speed);
+		Vector3f camLeft=cam.getLeft().multLocal(speed);
 		Vector3f walkDirection=new Vector3f(0,0,0);
 		if (left)
 			walkDirection.addLocal(camLeft);

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Stack;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
@@ -19,6 +19,7 @@ import com.jme3.math.ColorRGBA;
 import io.github.alivety.conquerors.common.ConquerorsApp;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.PlayerObject;
+import io.github.alivety.conquerors.common.Stack;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.Event;
 import io.github.alivety.conquerors.common.window.Window;
@@ -33,10 +34,11 @@ import io.github.alivety.ppl.packet.Packet;
 public class Server implements ConquerorsApp {
 	HashMap<PPLAdapter, PlayerObject> lookup = new HashMap<PPLAdapter, PlayerObject>();
 	protected final List<PlayerObject> players = new ArrayList<PlayerObject>();
-	private final HashMap<String, UnitObject> units = new HashMap<String, UnitObject>();
+	protected final HashMap<String, Unit> units = new HashMap<String, Unit>();
 	private final HashMap<String,Window> windows=new HashMap<>();
 	private final Stack<Entry<PlayerObject, Packet>> packets = new Stack<Entry<PlayerObject, Packet>>();
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
+	public List<Integer> usedTeams=new Vector<>();
 	private int port;
 	
 	protected final ColorRGBA[] teams={
@@ -218,7 +220,7 @@ public class Server implements ConquerorsApp {
 	// return !this.packets.empty();
 	// }
 	
-	public UnitObject unregister(final UnitObject u) {
-		return this.units.remove(u);
+	public Unit unregister(final Unit u) {
+		return this.units.remove(u.getSpatialID());
 	}
 }

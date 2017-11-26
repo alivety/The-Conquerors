@@ -8,6 +8,8 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import com.jme3.math.Vector3f;
+
 import io.github.alivety.conquerors.client.events.ConnectEvent;
 import io.github.alivety.conquerors.client.events.CreateModelEvent;
 import io.github.alivety.conquerors.client.events.CreateModelSpatialEvent;
@@ -35,7 +37,13 @@ public class ClientEventSubscriber {
 	
 	@SubscribeEvent(SYS)
 	public void onEntityMove(final EntityMovedEvent evt) {
-		this.client.getApp().getSpatial(evt.spatialID).setLocalTranslation(evt.x, evt.y, evt.z);
+		System.out.println(client.username());
+		System.out.println(evt.spatialID);
+		if (evt.spatialID.startsWith("Player")) {
+			client.getApp().player.setPhysicsLocation(new Vector3f(evt.x,evt.y,evt.z));
+		} else {
+			this.client.getApp().getSpatial(evt.spatialID).setLocalTranslation(evt.x, evt.y, evt.z);
+		}
 	}
 	
 	@SubscribeEvent(SYS)
@@ -67,6 +75,7 @@ public class ClientEventSubscriber {
 	@SubscribeEvent(SYS)
 	public void onLoginSuccess(final LoginSuccessEvent evt) {
 		client.username(evt.spatialID);
+		Main.out.debug("SET CLIENT TO "+client.username());
 		client.color=evt.team;
 	}
 	

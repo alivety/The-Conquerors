@@ -56,6 +56,7 @@ public class Client extends PlayerObject implements ConquerorsApp {
 					}
 					Client.this.app.scheduleTask(new Runnable(){
 						public void run() {
+							Main.out.debug("scheduled bus for "+evt);
 							Main.EVENT_BUS.bus(evt);
 						}});
 				}

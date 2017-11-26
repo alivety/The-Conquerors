@@ -2,8 +2,16 @@ package io.github.alivety.conquerors.server;
 
 import static io.github.alivety.conquerors.common.event.EventPriority.SYS;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
+
+import io.github.alivety.conquerors.client.packets.PacketCreateModel;
+import io.github.alivety.conquerors.client.packets.PacketTranslateEntity;
+import io.github.alivety.conquerors.client.packets.PacketUpdateEntityOwnership;
 import io.github.alivety.conquerors.common.Main;
 import io.github.alivety.conquerors.common.UnitObject;
 import io.github.alivety.conquerors.common.event.SubscribeEvent;
@@ -38,8 +46,15 @@ public class ServerEventSubscriber {
 			return;
 		}
 		
+		int teamColor=(int) (Math.random()*server.teams.length);
+		while (server.usedTeams.contains(teamColor)) {
+			teamColor=(int) (Math.random()*server.teams.length);
+		}
+		server.usedTeams.add(teamColor);
+		
 		evt.client.username(evt.username);
-		evt.client.packet(1, evt.client.getSpatialID(), server.teams[(int) (Math.random()*server.teams.length)]);
+		evt.client.color=server.teams[teamColor];
+		evt.client.packet(1, evt.client.getSpatialID(), server.teams[teamColor]);
 		this.server.broadcast(Main.createPacket(12, new Object[] { this.server.playerList() }));
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.username + " has joined the game")));
 		evt.client.packet(9, Main.formatChatMessage(evt.username + ".spatialID=" + evt.client.getSpatialID()));
@@ -49,7 +64,113 @@ public class ServerEventSubscriber {
 			server.begin=false;
 		}
 		
+		evt.client.money=300;
+		evt.client.mpm=0;
+		
+		//send currents
+		System.out.println(server.units);
+		for (Unit u:server.units.values().toArray(new Unit[]{})) {
+			if (u==null) continue;
+			PacketCreateModel pcm=new PacketCreateModel();
+			pcm.spatialID=u.getSpatialID();
+			pcm.position=new float[]{u.getPosition().x,u.getPosition().y,u.getPosition().z};
+			pcm.form=u.getForm();
+			PacketUpdateEntityOwnership pueo=new PacketUpdateEntityOwnership();
+			pueo.spatialID=u.getSpatialID();
+			pueo.ownerSpatialID=u.getOwnerSpatialID();
+			evt.client.write(pcm);
+			evt.client.write(pueo);
+		}
+		
 		// TODO spawn starter items
+		List<Unit> units=new ArrayList<>();
+		units.add(new Unit(server){
+			@Override
+			public float[][] getForm() {
+				return new float[][]{
+					{
+						0,//cube
+						evt.client.color.r,//color red
+						evt.client.color.g,//color green
+						evt.client.color.b,//color blue
+						evt.client.color.a,//alpha
+						0,//pos x (left-right)
+						0,// pos y (up-down)
+						0,//pos z (forward-backward)
+						1,//width
+						1,//height
+						1//length
+					},
+					{
+						0,
+						255,
+						255,
+						255,
+						1,
+						0.5f,
+						3,
+						0,
+						0.25f,
+						1,
+						0.25f
+					}
+				};
+			}
+
+			@Override
+			public String getOwnerSpatialID() {
+				return evt.client.getSpatialID();
+			}
+
+			@Override
+			public String getUnitType() {
+				return "CoCe";
+			}});
+		Vector3f position;
+		if (evt.client.color.equals(ColorRGBA.White)) {
+			position=new Vector3f(41,-268,315);
+		} else if (evt.client.color.equals(ColorRGBA.Black)) {
+			position=new Vector3f(190,-253,294);
+		} else if (evt.client.color.equals(ColorRGBA.Blue)) {
+			position=new Vector3f(-329,-204,253);
+		} else if (evt.client.color.equals(ColorRGBA.Cyan)) {
+			position=new Vector3f(474,-228,365);
+		} else if (evt.client.color.equals(ColorRGBA.Gray)) {
+			position=new Vector3f(-379,-249,-376);
+		} else if (evt.client.color.equals(ColorRGBA.Green)) {
+			position=new Vector3f(38,-219,-386);
+		} else if (evt.client.color.equals(ColorRGBA.Magenta)) {
+			position=new Vector3f(191,-205,-272);
+		} else if (evt.client.color.equals(ColorRGBA.Pink)) {
+			position=new Vector3f(287,-202,147);
+		} else if (evt.client.color.equals(ColorRGBA.Red)) {
+			position=new Vector3f(85,-235,475);
+		} else if (evt.client.color.equals(ColorRGBA.Yellow)) {
+			position=new Vector3f(-164,-268,474);
+		} else {
+			position=new Vector3f(0,0,0);
+		}
+		for (Unit u:units.toArray(new Unit[] {})) {
+			u.teleport(position);
+			PacketCreateModel pcm=new PacketCreateModel();
+			pcm.spatialID=u.getSpatialID();
+			pcm.position=new float[]{position.x,position.y,position.z};
+			pcm.form=u.getForm();
+			PacketUpdateEntityOwnership pueo=new PacketUpdateEntityOwnership();
+			pueo.spatialID=u.getSpatialID();
+			pueo.ownerSpatialID=u.getOwnerSpatialID();
+			server.broadcast(pcm);
+			server.broadcast(pueo);
+			
+		}
+		PacketTranslateEntity pte=new PacketTranslateEntity();
+		pte.spatialID=evt.client.getSpatialID();
+		pte.x=position.x;
+		pte.y=position.y+5;
+		pte.z=position.z;
+		evt.client.write(pte);
+		evt.client.addUnits(units);
+		evt.client.packet(19, evt.client.money, evt.client.mpm, evt.client.getUnitSpatialIDs(), evt.client.getAlliesSpatialID());
 	}
 	
 	@SubscribeEvent(SYS)
@@ -63,9 +184,16 @@ public class ServerEventSubscriber {
 	public void onPlayerDisconnect(final PlayerDisconnectEvent evt) {
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage(evt.player.username() + " has left the game")));
 		this.server.broadcast(Main.createPacket(9, Main.formatChatMessage("Their assets will now be liquidated")));
-		for (final UnitObject u : evt.player.getUnits()) {
-			this.server.broadcast(Main.createPacket(11, u.getSpatialID()));
-			this.server.unregister(u);
+		for (Unit u:server.units.values().toArray(new Unit[] {})) {
+			if (u.getOwnerSpatialID().equals(evt.player.getSpatialID())) {
+				this.server.broadcast(Main.createPacket(11, u.getSpatialID()));
+				server.units.containsKey(server.unregister(u));
+			}
+		}
+		for (int i=0;i<server.teams.length;i++) {
+			if (server.teams[i].equals(evt.player.color)) {
+				server.usedTeams.remove((Integer)i);
+			}
 		}
 		server.players.remove(evt.player);
 		evt.player.username(null);
