@@ -5,8 +5,8 @@ import io.github.alivety.ppl.packet.Packet;
 import io.github.alivety.ppl.packet.PacketData;
 import io.github.alivety.ppl.packet.PacketField;
 
-@Deprecated
-@PacketData(id = 7, desc = "Rotate Entity", bound = Clientside.class)
+@PacketData(id = 7, desc = "Rotate Entity (Set Look)", bound = Clientside.class)
 public class PacketRotateEntity extends Packet {
+	@PacketField public String spatialID;
 	@PacketField public float x, y, z;
 }

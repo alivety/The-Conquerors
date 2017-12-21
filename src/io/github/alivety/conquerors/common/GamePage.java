@@ -132,7 +132,11 @@ public class GamePage extends JFrame {
 		final JButton btnNewButton = new JButton("Host");
 		btnNewButton.addActionListener(e -> {
 			GamePage.this.dispose();
-			new Server(Integer.parseInt(GamePage.this.textField.getText())).go();
+			try {
+				new Server(Integer.parseInt(GamePage.this.textField.getText())).go();
+			} catch (Exception e1) {
+				Main.handleError(e1);
+			}
 		});
 		btnNewButton.setBounds(10, 42, 355, 23);
 		panel_1.add(btnNewButton);

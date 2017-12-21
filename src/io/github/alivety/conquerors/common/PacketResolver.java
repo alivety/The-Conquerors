@@ -8,6 +8,7 @@ import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
 import io.github.alivety.conquerors.client.events.EntityResizedEvent;
+import io.github.alivety.conquerors.client.events.EntityRotateEvent;
 import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
 import io.github.alivety.conquerors.client.events.LoginFailureEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
@@ -22,6 +23,7 @@ import io.github.alivety.conquerors.client.packets.PacketLoginSuccess;
 import io.github.alivety.conquerors.client.packets.PacketOpenWindow;
 import io.github.alivety.conquerors.client.packets.PacketPlayerList;
 import io.github.alivety.conquerors.client.packets.PacketRemoveEntity;
+import io.github.alivety.conquerors.client.packets.PacketRotateEntity;
 import io.github.alivety.conquerors.client.packets.PacketScaleEntity;
 import io.github.alivety.conquerors.client.packets.PacketSpawnEntity;
 import io.github.alivety.conquerors.client.packets.PacketTranslateEntity;
@@ -65,6 +67,9 @@ public class PacketResolver {
 			case 6:
 				final PacketScaleEntity p6 = (PacketScaleEntity) p;
 				return new EntityResizedEvent(p6.spatialID, p6.x, p6.y, p6.z);
+			case 7:
+				final PacketRotateEntity p7=(PacketRotateEntity)p;
+				return new EntityRotateEvent(p7.spatialID,p7.x,p7.y,p7.z);
 			case 8:
 				final PacketSendChat p8 = (PacketSendChat) p;
 				return new PlayerChatEvent(client, p8.message);

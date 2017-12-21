@@ -80,8 +80,6 @@ public class ServerEventSubscriber {
 			evt.client.write(pcm);
 			evt.client.write(pueo);
 		}
-		
-		// TODO spawn starter items
 		final List<Unit> units = new ArrayList<>();
 		units.add(new Unit(this.server) {
 			@Override
