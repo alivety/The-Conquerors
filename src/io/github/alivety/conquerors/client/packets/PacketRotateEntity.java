@@ -9,4 +9,5 @@ import io.github.alivety.ppl.packet.PacketField;
 public class PacketRotateEntity extends Packet {
 	@PacketField public String spatialID;
 	@PacketField public float x, y, z;
+	@PacketField public float ux,uy,uz;
 }

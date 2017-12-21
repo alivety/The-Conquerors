@@ -17,6 +17,7 @@ import io.github.alivety.conquerors.client.events.EntityMovedEvent;
 import io.github.alivety.conquerors.client.events.EntityOwnershipChangedEvent;
 import io.github.alivety.conquerors.client.events.EntityRemovedEvent;
 import io.github.alivety.conquerors.client.events.EntityResizedEvent;
+import io.github.alivety.conquerors.client.events.EntityRotateEvent;
 import io.github.alivety.conquerors.client.events.EntitySpawnEvent;
 import io.github.alivety.conquerors.client.events.LoginFailureEvent;
 import io.github.alivety.conquerors.client.events.LoginSuccessEvent;
@@ -33,6 +34,11 @@ public class ClientEventSubscriber {
 	
 	public ClientEventSubscriber(final Client client) {
 		this.client = client;
+	}
+	
+	@SubscribeEvent(SYS)
+	public void onEntityRotate(EntityRotateEvent evt) {
+		this.client.getApp().getSpatial(evt.spatialID).lookAt(new Vector3f(evt.x,evt.y,evt.z), new Vector3f(evt.ux,evt.uy,evt.uz));
 	}
 	
 	@SubscribeEvent(SYS)

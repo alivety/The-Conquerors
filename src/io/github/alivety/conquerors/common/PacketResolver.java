@@ -69,7 +69,7 @@ public class PacketResolver {
 				return new EntityResizedEvent(p6.spatialID, p6.x, p6.y, p6.z);
 			case 7:
 				final PacketRotateEntity p7=(PacketRotateEntity)p;
-				return new EntityRotateEvent(p7.spatialID,p7.x,p7.y,p7.z);
+				return new EntityRotateEvent(p7.spatialID,p7.x,p7.y,p7.z,p7.ux,p7.uy,p7.uz);
 			case 8:
 				final PacketSendChat p8 = (PacketSendChat) p;
 				return new PlayerChatEvent(client, p8.message);
