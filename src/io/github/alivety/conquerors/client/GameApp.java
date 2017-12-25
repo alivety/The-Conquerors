@@ -195,7 +195,7 @@ public class GameApp extends SimpleApplication {
 			terrain.setMaterial(mat_terrain);
 			terrain.setLocalTranslation(0, -300, 0);
 			terrain.setLocalScale(2f, 1f, 2f);
-			this.attachEntity(terrain);
+			entities.attachChild(terrain);
 			
 			final TerrainLodControl control = new TerrainLodControl(terrain, this.getCamera());
 			terrain.addControl(control);
