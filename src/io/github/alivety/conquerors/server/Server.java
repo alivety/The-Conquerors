@@ -35,7 +35,6 @@ public class Server implements ConquerorsApp {
 	private final Stack<Runnable> tasks = new Stack<Runnable>();
 	public List<Integer> usedTeams = new Vector<>();
 	private final int port;
-	private final HillHeightMap heightmap;
 	
 	protected final ColorRGBA[] teams = { ColorRGBA.White, new ColorRGBA(102, 51, 153, 1), // purple
 			ColorRGBA.Blue, ColorRGBA.Cyan, ColorRGBA.Gray, ColorRGBA.Green, ColorRGBA.Magenta, ColorRGBA.Pink, ColorRGBA.Red, ColorRGBA.Yellow };
@@ -44,7 +43,6 @@ public class Server implements ConquerorsApp {
 	
 	public Server(final int port) throws Exception {
 		this.port = port;
-		this.heightmap=new HillHeightMap(513, 1000, 50, 100, (byte) 3);
 	}
 	
 	protected void broadcast(final Packet p) {
