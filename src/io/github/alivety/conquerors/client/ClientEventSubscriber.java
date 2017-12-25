@@ -45,10 +45,12 @@ public class ClientEventSubscriber {
 	public void onEntityMove(final EntityMovedEvent evt) {
 		System.out.println(this.client.username());
 		System.out.println(evt.spatialID);
-		if (evt.spatialID.startsWith("Player"))
+		if (evt.spatialID.startsWith("Player")) {
 			this.client.getApp().player.setPhysicsLocation(new Vector3f(evt.x, evt.y, evt.z));
-		else
+		} else {
 			this.client.getApp().getSpatial(evt.spatialID).setLocalTranslation(evt.x, evt.y, evt.z);
+			this.client.getApp().getSpatialControl(evt.spatialID).setPhysicsLocation(new Vector3f(evt.x,evt.y,evt.z));
+		}
 	}
 	
 	@SubscribeEvent(SYS)

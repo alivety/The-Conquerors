@@ -83,7 +83,7 @@ public class GameApp extends SimpleApplication {
 				Main.handleError(e);
 			}
 			spat.setLocalTranslation(1, -1, 1);
-			GameApp.this.entities.attachChild(spat);
+			GameApp.this.attachEntity(spat);
 		});
 	}
 	
@@ -103,7 +103,7 @@ public class GameApp extends SimpleApplication {
 	
 	public void removeSpatial(final String spatialID) {
 		this.selected.remove(this.entities.getChild(spatialID));
-		this.entities.detachChildNamed(spatialID);
+		detachEntity(this.entities.getChild(spatialID));
 	}
 	
 	public void selectEntity(final Spatial spat) {
@@ -195,7 +195,7 @@ public class GameApp extends SimpleApplication {
 			terrain.setMaterial(mat_terrain);
 			terrain.setLocalTranslation(0, -300, 0);
 			terrain.setLocalScale(2f, 1f, 2f);
-			this.entities.attachChild(terrain);
+			this.attachEntity(terrain);
 			
 			final TerrainLodControl control = new TerrainLodControl(terrain, this.getCamera());
 			terrain.addControl(control);
@@ -368,10 +368,10 @@ public class GameApp extends SimpleApplication {
 		while (this.hasMoreTasks())
 			this.getNextTask().run();
 		
-		final CollisionShape shape = CollisionShapeFactory.createMeshShape(this.entities);
+		/*final CollisionShape shape = CollisionShapeFactory.createMeshShape(this.entities);
 		this.bullet.getPhysicsSpace().remove(this.entityBody);
 		this.entityBody = new RigidBodyControl(shape, 0);
-		this.bullet.getPhysicsSpace().add(this.entityBody);
+		this.bullet.getPhysicsSpace().add(this.entityBody);*/
 		
 		final Vector3f camDir = this.cam.getDirection().multLocal(this.speed);
 		final Vector3f camLeft = this.cam.getLeft().multLocal(this.speed);
@@ -387,6 +387,12 @@ public class GameApp extends SimpleApplication {
 		
 		this.player.setWalkDirection(walkDirection);
 		this.cam.setLocation(this.player.getPhysicsLocation());
+		
+		Iterator<Spatial> itr=entities.getChildren().iterator();
+		while(itr.hasNext()) {
+			Spatial spat=itr.next();
+			spat.setLocalTranslation(spatControls.get(spat).getPhysicsLocation());
+		}
 	}
 	
 	public Client getClient() {
@@ -417,7 +423,26 @@ public class GameApp extends SimpleApplication {
 	private static Map<String, Class<?>> classmap = new HashMap<String, Class<?>>();
 	
 	public void addModel(final Model m) {
-		this.entities.attachChild(m.build());
+		this.attachEntity(m.build());
+	}
+	
+	private HashMap<Spatial,CharacterControl> spatControls=new HashMap<>();
+	
+	public void attachEntity(Spatial spat) {
+		this.entities.attachChild(spat);
+		CollisionShape shape = CollisionShapeFactory.createMeshShape(spat);
+		CharacterControl cc=new CharacterControl(shape,0.05f);
+		cc.setJumpSpeed(20);
+		cc.setFallSpeed(30);
+		cc.setGravity(30);
+		cc.setPhysicsLocation(spat.getLocalTranslation());
+		this.bullet.getPhysicsSpace().add(cc);
+		spatControls.put(spat, cc);
+	}
+	
+	public void detachEntity(Spatial spat) {
+		this.entities.detachChild(spat);
+		bullet.getPhysicsSpace().remove(spatControls.get(spat));
 	}
 	
 	public static Spatial newSpatial(final AssetManager assetManager, final String model, final String material, final String spatialID) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, NoSuchFieldException {
@@ -447,5 +472,9 @@ public class GameApp extends SimpleApplication {
 		spat.setMaterial(mat);
 		spat.setName(spatialID);
 		return spat;
+	}
+
+	public CharacterControl getSpatialControl(String spatialID) {
+		return spatControls.get(entities.getChild(spatialID));
 	}
 }
